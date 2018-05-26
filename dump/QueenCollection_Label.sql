@@ -34,7 +34,7 @@ CREATE TABLE `Label` (
 
 LOCK TABLES `Label` WRITE;
 /*!40000 ALTER TABLE `Label` DISABLE KEYS */;
-INSERT INTO `Label` VALUES ('Amiga'),('Atlantic'),('Balkanton'),('Electra'),('EMI'),('EMI Parlophone'),('EMI Supraphon'),('Hollywood Records'),('Melodia'),('Parlophone'),('Virgin EMI Records');
+INSERT INTO `Label` VALUES ('Amiga'),('Atlantic'),('Balkanton'),('Dreamworks Records'),('Electra'),('EMI'),('EMI Parlophone'),('EMI Supraphon'),('Hollywood Records'),('Melodia'),('Parlophone'),('Virgin EMI Records');
 /*!40000 ALTER TABLE `Label` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -47,4 +47,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-13 23:40:37
+-- Dump completed on 2018-05-26 23:20:20

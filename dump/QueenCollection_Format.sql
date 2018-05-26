@@ -36,7 +36,7 @@ CREATE TABLE `Format` (
 
 LOCK TABLES `Format` WRITE;
 /*!40000 ALTER TABLE `Format` DISABLE KEYS */;
-INSERT INTO `Format` VALUES ('CD','Long Play Compact Disc',0),('LP','Long Play Vinyl Record',1);
+INSERT INTO `Format` VALUES ('12\'\'','12\'\' Vinyl Single',1),('CD','Long Play Compact Disc',0),('LP','Long Play Vinyl Record',1),('LP+12\'\'','Box Format: Long Play And 12\'\' Single Vinyls',1);
 /*!40000 ALTER TABLE `Format` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-13 23:40:38
+-- Dump completed on 2018-05-26 23:20:20

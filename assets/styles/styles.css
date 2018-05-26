@@ -1,0 +1,39 @@
+body {
+  background-color: lightcyan;
+}
+h1 {
+  color: darkred;
+  text-align: center;
+  font-size: 50px;
+  border-bottom: 1px solid;
+}
+
+.category-name {
+  text-align: center;
+}
+
+#artist-list {
+  list-style: none;
+}
+
+#artist-list > li > h2{
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.category-table {
+  width: 50%;
+}
+
+th:first-child {
+  text-align: left;
+  width: 80%
+}
+
+.hidden {
+  display: none;
+}
+
+.entry-typies {
+  background-color: #fff;
+}

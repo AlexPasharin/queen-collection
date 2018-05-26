@@ -1,0 +1,32 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title><%=name %> - Entries</title>
+  <link type="text/css" rel="stylesheet" href="/assets/styles/styles.css">
+</head>
+
+<body>
+  <h1><%=name %></h1>
+  <% categories.map(category => { %>
+    <h2 class="category-name"><%= category.name %></h2>
+    <table class="category-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Original Release Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% category.entries.map(entry => { %>
+          <tr>
+            <td class="entry-name"> <%=entry.name %> </td>
+            <td class="entry-date"><%=entry.release_date %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% }) %>
+</body>
+</html>

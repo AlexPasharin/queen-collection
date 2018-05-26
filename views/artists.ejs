@@ -1,0 +1,25 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Queen Collection - Artists</title>
+  <link type="text/css" rel="stylesheet" href="/assets/styles/styles.css">
+</head>
+
+<body>
+  <h1>Artists</h1>
+  <ul id="artist-list">
+    <% artists.map(artist => {
+      const {name, id} = artist
+    %>
+      <li data-artist-id=<%=id %>>
+        <h2><%=name %></h2>
+        <div class="entry-typies hidden"></div>
+      </li>
+    <%}) %>
+  </ul>
+
+  <script src="/assets/scripts/artists.js"></script>
+</body>
+</html>

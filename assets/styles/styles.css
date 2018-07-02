@@ -8,10 +8,6 @@ h1 {
   border-bottom: 1px solid;
 }
 
-.category-name {
-  text-align: center;
-}
-
 #artist-list, #artist-list ul {
   list-style: none;
 }
@@ -25,13 +21,17 @@ h1 {
   font-size: 20px;
 }
 
-.category-table {
-  width: 50%;
-}
-
-th:first-child {
+.entries-table th:first-child {
   text-align: left;
   width: 80%
+}
+
+.entries-table th, .entries-table td {
+  padding: 5px;
+}
+
+.entry-date {
+  text-align: right;
 }
 
 .hidden {

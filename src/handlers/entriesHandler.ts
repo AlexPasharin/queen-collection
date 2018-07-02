@@ -1,3 +1,5 @@
+import * as moment from 'moment'
+
 const normalizeTypeName = (typeName: string) =>
   `${typeName[0].toUpperCase()}${typeName.slice(1)}s`
 
@@ -20,6 +22,22 @@ const compareEntries = (entry1, entry2) => {
 
   return day1 != day2 ? day1 - day2 : entry1.name < entry2.name ? -1 : 1
 }
+
+const formatDate = date => {
+  const dateAsMoment = moment(date)
+  if (date.length === 4)
+    return dateAsMoment.format('YYYY')
+  else if (date.length === 7)
+    return dateAsMoment.format('MMMM YYYY')
+  else
+    return moment(dateAsMoment).format('D MMMM YYYY')
+}
+
+const formatDates = entries =>
+  entries.map(e => ({
+    ...e,
+    release_date: formatDate(e.release_date)
+  }))
 
 const entriesHandler = (artistID: number, typeID: number, dbConnection) =>
   Promise.all([
@@ -50,7 +68,7 @@ const entriesHandler = (artistID: number, typeID: number, dbConnection) =>
     return ({
       artist: artist[0].name,
       type: normalizeTypeName(type[0].name),
-      entries: entries.sort(compareEntries),
+      entries: formatDates(entries.sort(compareEntries)),
     })
   })
 

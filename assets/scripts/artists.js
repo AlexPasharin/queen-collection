@@ -3,26 +3,33 @@ window.onload = () => {
 
   // note - artistList.children is a live HTML collection, not array
   // [...] is an ES6 way to convert it to an array
-  const artistNodes = [...artistList.children]
+  const artistNodes = ([...artistList.children]).reduce(
+    (acc, group) => {
+      const artists = [...group.getElementsByTagName('ul')[0].children]
+      return acc.concat(artists)
+    },
+  [])
 
   artistNodes.forEach(el => {
+    const header = el.getElementsByTagName('h2')[0]
     const entryTypesEl = el.getElementsByClassName('entry-typies')[0]
-    const id = el.dataset.artistId
+    const {artistId} = el.dataset
 
-    el.addEventListener('click', () => {
+    header.addEventListener('click', () => {
       if (!entryTypesEl.classList.contains('hidden')) {
         entryTypesEl.classList.add('hidden')
         return
       }
 
-      getArtistsTypes(id)
+      getArtistsTypes(artistId)
         .then(types => {
           const typeList = document.createElement('ul')
 
           types.forEach(t => {
             const {id, name} = t
             const typeLi = document.createElement('li')
-            typeLi.innerHTML = `${name}s`
+            const link = `http://localhost:2000/entries?type=${id}&artist=${artistId}`
+            typeLi.innerHTML = `<a href="${link}">${name}s</a>`
             typeList.appendChild(typeLi)
           })
 

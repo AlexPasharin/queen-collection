@@ -1,5 +1,3 @@
-import {Connection} from 'promise-mysql'
-
 const normalizeTypeName = (typeName: string) =>
   `${typeName[0].toUpperCase()}${typeName.slice(1)}s`
 
@@ -23,42 +21,37 @@ const compareEntries = (entry1, entry2) => {
   return day1 != day2 ? day1 - day2 : entry1.name < entry2.name ? -1 : 1
 }
 
-const resortEntriesByTypes = (entries: any[], types) =>
-  types
-    .map(type => ({
-      name: normalizeTypeName(type.name),
-      entries: entries
-        .filter(entry => entry.type === type.id)
-        .sort(compareEntries)
-    }))
-    .filter(category => category.entries.length)
-
-const entriesHandler = (artist: string, dbConnection: Connection) =>
+const entriesHandler = (artistID: number, typeID: number, dbConnection) =>
   Promise.all([
-    dbConnection.query(
-      'SELECT name FROM ARTIST WHERE id=?',
-      [artist]
-    ),
-    dbConnection.query(
-      'SELECT * FROM Discography_entry WHERE artist_id=?',
-      [artist]
-    ),
-    dbConnection.query(
-      'SELECT * FROM Type ORDER BY id'
-    )
-  ]).then(([artist, entries, types]) => {
-
+    dbConnection
+      .select('name')
+      .from('artist')
+      .where({
+        id: artistID,
+      }),
+      dbConnection
+      .select('name')
+      .from('type')
+      .where({
+        id: typeID,
+      }),
+    dbConnection
+      .select()
+      .from('Discography_entry')
+      .where({
+        artist_id: artistID,
+        type: typeID,
+      })
+  ]).then(([artist, type, entries]) => {
     if (artist.length !== 1) {
       return null
     }
 
     return ({
-      name: artist[0].name,
-      categories: resortEntriesByTypes(entries, types)
+      artist: artist[0].name,
+      type: normalizeTypeName(type[0].name),
+      entries: entries.sort(compareEntries),
     })
-  })
-  .catch(err => {
-    throw err
   })
 
 export default entriesHandler

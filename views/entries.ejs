@@ -3,30 +3,30 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title><%=name %> - Entries</title>
+  <title><%=artist %> - <%=type %></title>
   <link type="text/css" rel="stylesheet" href="/assets/styles/styles.css">
 </head>
 
 <body>
-  <h1><%=name %></h1>
-  <% categories.map(category => { %>
-    <h2 class="category-name"><%= category.name %></h2>
-    <table class="category-table">
-      <thead>
+  <a href="http://localhost:2000/artists">Back to artists</a>
+  <h1><%=artist %></h1>
+  <h2><%=type %></h2>
+
+  <table class="category-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Original Release Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% entries.map(entry => { %>
         <tr>
-          <th>Name</th>
-          <th>Original Release Date</th>
+          <td class="entry-name"> <%=entry.name %> </td>
+          <td class="entry-date"><%=entry.release_date %></td>
         </tr>
-      </thead>
-      <tbody>
-        <% category.entries.map(entry => { %>
-          <tr>
-            <td class="entry-name"> <%=entry.name %> </td>
-            <td class="entry-date"><%=entry.release_date %></td>
-          </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  <% }) %>
+      <% }) %>
+    </tbody>
+  </table>
 </body>
 </html>

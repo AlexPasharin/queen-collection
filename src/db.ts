@@ -1,13 +1,12 @@
-import * as sql from 'promise-mysql'
+import * as knex from 'knex'
 
-const establishDBConnection = () =>
-  sql.createConnection({
-    database: 'QueenCollection',
-    user: 'root'
-  }).then(connection => {
-    connection.query = connection.query.bind(connection)
-
-    return connection
+const dBConnection =
+  knex({
+    client: 'mysql',
+    connection: {
+      user: 'root',
+      database: 'QueenCollection'
+    }
   })
 
-export default establishDBConnection
+export default dBConnection

@@ -12,8 +12,12 @@ h1 {
   text-align: center;
 }
 
-#artist-list {
+#artist-list, #artist-list ul {
   list-style: none;
+}
+
+#artist-list ul li {
+  cursor: pointer;
 }
 
 #artist-list > li > h2{
@@ -36,4 +40,8 @@ th:first-child {
 
 .entry-typies {
   background-color: #fff;
+  padding: 10px 0;
+  font-size: 18px;
+  line-height: 1.5em;
+  color: blue;
 }

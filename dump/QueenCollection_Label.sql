@@ -34,7 +34,7 @@ CREATE TABLE `Label` (
 
 LOCK TABLES `Label` WRITE;
 /*!40000 ALTER TABLE `Label` DISABLE KEYS */;
-INSERT INTO `Label` VALUES ('Amiga'),('AnTrop'),('Atlantic'),('Balkanton'),('Band Of Joy'),('Capitol Records'),('CBS'),('Croatia Records Parlophone'),('Dreamworks Records'),('Electra'),('EMI'),('EMI Electrola'),('EMI Parlophone'),('EMI Supraphon'),('Hollywood Records'),('K-tel'),('Melodia'),('No More Brothers'),('Omnivore Recordings'),('Parlophone'),('Santa Records'),('Virgin'),('Virgin EMI Records'),('Virgin Siren');
+INSERT INTO `Label` VALUES ('Amiga'),('AnTrop'),('Atlantic'),('Balkanton'),('Band Of Joy'),('Capitol Records'),('CBS'),('Croatia Records Parlophone'),('Dreamworks Records'),('Electra'),('EMI'),('EMI Electrola'),('EMI Parlophone'),('EMI Supraphon'),('Hollywood BASIC'),('Hollywood Records'),('Island Records'),('K-tel'),('MCA Records'),('Melodia'),('No More Brothers'),('Omnivore Recordings'),('Parlophone'),('Polydor'),('Positiva'),('RCA'),('Santa Records'),('SBK'),('Universal'),('Virgin'),('Virgin EMI Records'),('Virgin Siren');
 /*!40000 ALTER TABLE `Label` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -47,4 +47,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-02 17:56:14
+-- Dump completed on 2018-08-02 13:02:41

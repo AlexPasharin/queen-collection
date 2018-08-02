@@ -27,7 +27,7 @@ CREATE TABLE `Type` (
   `name` varchar(40) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,7 +36,7 @@ CREATE TABLE `Type` (
 
 LOCK TABLES `Type` WRITE;
 /*!40000 ALTER TABLE `Type` DISABLE KEYS */;
-INSERT INTO `Type` VALUES (5,'Bootleg Live Album'),(4,'Compilation Album'),(7,'EP'),(3,'Live Album'),(10,'Mini-album'),(11,'Remix Album'),(6,'Single'),(2,'Soundtrack Album'),(1,'Studio Album'),(9,'Video Single');
+INSERT INTO `Type` VALUES (5,'Bootleg Live Album'),(4,'Compilation Album'),(7,'EP'),(12,'Interview Disk'),(3,'Live Album'),(10,'Mini-album'),(11,'Remix Album'),(6,'Single'),(2,'Soundtrack Album'),(1,'Studio Album'),(9,'Video Single');
 /*!40000 ALTER TABLE `Type` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -49,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-02 17:56:15
+-- Dump completed on 2018-08-02 13:02:41

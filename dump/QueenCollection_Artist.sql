@@ -29,7 +29,7 @@ CREATE TABLE `Artist` (
   `number_in_group` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +38,7 @@ CREATE TABLE `Artist` (
 
 LOCK TABLES `Artist` WRITE;
 /*!40000 ALTER TABLE `Artist` DISABLE KEYS */;
-INSERT INTO `Artist` VALUES (1,'Queen','Queen',1),(2,'Queen+','Queen',6),(3,'Various Artists','Various Artists',1),(4,'Queen & David Bowie','Queen',3),(5,'George Michael and Queen with Lisa Stansfield','Queen',4),(6,'Queen/Wyclef Jean featuring Pras & Free','Queen',5),(7,'Roger Taylor','Roger Taylor',1),(8,'The Cross','Roger Taylor',2),(9,'Roger Taylor & Yoshiki','Roger Taylor',3),(10,'Felix and Arty','Roger Taylor',4),(11,'Brian May','Brian May',1),(12,'Brian May+Friends','Brian May',2),(13,'The Brian May Band','Brian May',3),(14,'Brian May with Cozy Powell','Brian May',4),(15,'MC SPY-D+Friends','Brian May',5),(16,'Weebl and May feat. Brian Blessed, King Of The Hawkmen','Brian May',6),(17,'Brian May & Czech National Symphony Orchestra','Brian May',7),(18,'Larry Lurex','Freddie Mercury',1),(19,'Freddie Mercury','Freddie Mercury',2),(20,'Freddie Mercury & Montserrat Caballe','Freddie Mercury',3),(21,'The Royal Philharmonic Orchestra','Other Artists',1),(22,'Al Stewart','Other Artists',2),(23,'Billy Squier','Other Artists',3),(24,'The London Symphony Orchestra','Other Artists',4),(25,'Elaine Paige','Other Artists',5);
+INSERT INTO `Artist` VALUES (1,'Queen','Queen',1),(2,'Queen+','Queen',6),(3,'Various Artists','Various Artists',1),(4,'Queen & David Bowie','Queen',3),(5,'George Michael and Queen with Lisa Stansfield','Queen',4),(6,'Queen/Wyclef Jean featuring Pras & Free','Queen',5),(7,'Roger Taylor','Roger Taylor',1),(8,'The Cross','Roger Taylor',2),(9,'Roger Taylor & Yoshiki','Roger Taylor',3),(10,'Felix and Arty','Roger Taylor',4),(11,'Brian May','Brian May',1),(12,'Brian May+Friends','Brian May',2),(13,'The Brian May Band','Brian May',3),(14,'Brian May with Cozy Powell','Brian May',4),(15,'MC SPY-D+Friends','Brian May',5),(16,'Weebl and May feat. Brian Blessed, King Of The Hawkmen','Brian May',6),(17,'Brian May & Czech National Symphony Orchestra','Brian May',7),(18,'Larry Lurex','Freddie Mercury',1),(19,'Freddie Mercury','Freddie Mercury',2),(20,'Freddie Mercury & Montserrat Caballe','Freddie Mercury',3),(21,'The Royal Philharmonic Orchestra','Other Artists',1),(22,'Al Stewart','Other Artists',2),(23,'Billy Squier','Other Artists',3),(24,'The London Symphony Orchestra','Other Artists',4),(25,'Elaine Paige','Other Artists',5),(26,'Queen + Paul Rodgers','Queen',7),(27,'The Immortals','John Deacon',1),(28,'Jimmy Nail','Other Artists',6),(29,'Vanilla Ice','Other Artists',7),(30,'We Will Rock You Original London Cast ','Queen',8),(31,'We Will Rock You Original Madrid Cast ','Queen',9),(32,'Five + Queen ','Queen',10),(33,'Queen vs The Miami Project ','Queen',11);
 /*!40000 ALTER TABLE `Artist` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-02 17:56:14
+-- Dump completed on 2018-08-02 13:02:40

@@ -35,7 +35,7 @@ CREATE TABLE `Country` (
 
 LOCK TABLES `Country` WRITE;
 /*!40000 ALTER TABLE `Country` DISABLE KEYS */;
-INSERT INTO `Country` VALUES ('BEL','Belgium'),('BUL','Bulgaria'),('CRO','Croatia'),('CZS','Czechoslovakia'),('EEC','EEC'),('EU','EU'),('FIN','Finland'),('FRA','France'),('GDR','East Germany'),('GER','Germany'),('HOL','Holland'),('ITA','Italy'),('JAP','Japan'),('RUS','Russia'),('SA','South Africa'),('SWE','Sweden'),('UK','UK'),('US','USA'),('USSR','USSR');
+INSERT INTO `Country` VALUES ('BEL','Belgium'),('BUL','Bulgaria'),('CRO','Croatia'),('CZS','Czechoslovakia'),('EEC','EEC'),('EU','EU'),('FIN','Finland'),('FRA','France'),('GDR','East Germany'),('GER','Germany'),('HOL','Holland'),('ITA','Italy'),('JAP','Japan'),('MEX','Mexico'),('RUS','Russia'),('SA','South Africa'),('SPA','Spain'),('SWE','Sweden'),('UK','UK'),('US','USA'),('USSR','USSR');
 /*!40000 ALTER TABLE `Country` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -48,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-07-02 17:56:14
+-- Dump completed on 2018-08-02 13:02:40

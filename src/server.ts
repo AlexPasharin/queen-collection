@@ -9,7 +9,7 @@ const server = dBConnection => {
 
   app.use('/assets', express.static('assets'))
 
-  app.get('/artists', async (_req, res) => {
+  app.get('/artists', (_req, res) =>
     dBConnection
       .select('a.id', 'a.name', 'a.group', 'a.number_in_group')
       .distinct()
@@ -28,7 +28,7 @@ const server = dBConnection => {
         console.log(err.stack)
         res.status(500).send('Could not retrieve artists from the database')
       })
-  })
+  )
 
   app.get('/entries', (req, res) => {
     const {artist, type} = req.query

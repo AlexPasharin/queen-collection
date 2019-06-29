@@ -56,5 +56,5 @@ window.onload = () => {
 }
 
 const getArtistsTypes = (artistID) =>
-  fetch(`/types?artist=${artistID}`)
+  fetch(`/rest/types?artist=${artistID}`)
     .then(data => data.json())

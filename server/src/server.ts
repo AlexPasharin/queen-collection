@@ -48,7 +48,7 @@ const server = dBConnection => {
       })
   })
 
-  app.get('/types', (req, res) => {
+  app.get('/rest/types', (req, res) => {
     const {artist} = req.query
 
     dBConnection
@@ -63,13 +63,54 @@ const server = dBConnection => {
       .where('artist_id', artist)
       .orderBy('t.id')
       .then(data => {
-        res.send(data)
+        res.set("Access-Control-Allow-Origin", "*").json(data)
       }).catch(err => {
         console.log(err.stack)
         res.status(500).send('Could not retrieve artist\'s entry types from the database')
       })
   })
 
+  app.get('/rest/releaseview', (_, res) =>
+    dBConnection
+      .from('releaseview')
+      .then(releases => {
+        res.set("Access-Control-Allow-Origin", "*").json(releases)
+      }
+      ).catch(err => {
+        console.log(err.stack)
+        res.status(500).send('Could not retrieve releases from the database')
+    })
+  )
+
+  app.get('/rest/artists', (_, res) =>
+    dBConnection
+      .from('artist as a')
+      .then(releases => {
+        res.set("Access-Control-Allow-Origin", "*").json(releases)
+      }
+      ).catch(err => {
+        console.log(err.stack)
+        res.status(500).send('Could not retrieve artists from the database')
+    })
+  )
+
+  app.get('/rest/entries', (req, res) => {
+    const {artist, type} = req.query
+
+    entriesHandler(Number(artist), Number(type), dBConnection)
+      .then(data => {
+        if (!data) {
+          res.status(404).send('Artist is not in the database')
+          return
+        }
+
+        res.set("Access-Control-Allow-Origin", "*").json(data)
+      })
+      .catch(err => {
+        console.log(err.stack)
+        res.status(500).send('Could not retrieve artist\'s entries from the database')
+      })
+  })
 
   return app
 }

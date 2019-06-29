@@ -1,0 +1,15 @@
+.app-header {
+  padding: 20px;
+  background-color: #282c34;
+  color: white;
+}
+
+.app-header__title {
+  text-align: center;
+}
+
+.app-header__select-box {
+  display: block;
+  height: 30px;
+  margin: 10px;
+}

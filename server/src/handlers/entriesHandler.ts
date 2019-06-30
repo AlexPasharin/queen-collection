@@ -36,7 +36,7 @@ const formatDate = date => {
 const formatDates = entries =>
   entries.map(e => ({
     ...e,
-    release_date: formatDate(e.release_date)
+    release_date: e.release_date ? formatDate(e.release_date) : null
   }))
 
 const entriesHandler = (artistID: number, typeID: number, dbConnection) =>

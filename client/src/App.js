@@ -1,105 +1,79 @@
 import React from 'react'
+import { getArtistTypes, getArtists, getEntries } from './utils/dataGetters'
+
 import './App.css'
-
-const BASE_URL = 'http://localhost:2000'
-
-const fetchData = resource =>
-  fetch(`${BASE_URL}/rest/${resource}`)
-    .then(response => response.json())
-
-const getArtists = () => fetchData('artists')
-const getArtistTypes = artistID => fetchData(`types?artist=${artistID}`)
-
-const getReleases = () => fetchData('releaseview')
-
+import NavBar from './components/NavBar';
 
 export default class App extends React.Component {
   state = {
     artists: null,
     selectedArtistID: null,
     types: null,
-    content: null
+    selectedTypeID: null,
+    entries: null
   }
 
   async componentDidMount () {
     const artists = await getArtists()
 
-    artists.sort((a, b) => {
-      const aName = a.name.toLowerCase()
-      const bName = b.name.toLowerCase()
-
-      if (aName < bName) return -1
-      else if (aName > bName) return 1
-      else return 0
-    })
-
     const selectedArtist = artists.find(a => a.name === 'Queen')
+    const selectedArtistID = selectedArtist ?
+      selectedArtist.id.toString() :
+      artists[0].id.toString()
 
-    const selectedArtistID = selectedArtist ? selectedArtist.id.toString() : artists[0].id.toString()
-
-    const types = await getArtistTypes(selectedArtistID)
-
-
-      this.setState({
-        artists,
-        selectedArtistID,
-        types,
-//        content
-      })
+    this.setState({
+      artists,
+      ...(await this.artistChangeData(selectedArtistID))
+    })
   }
 
   onSelectArtist = async e => {
-    const selectedArtistID = e.target.value.toString()
-    const types = await getArtistTypes(selectedArtistID)
-
-    this.setState({ selectedArtistID, types })
+    this.setState(await this.artistChangeData(e.target.value.toString()))
   }
 
+  onSelectType = async e => {
+    this.setState(await this.typeData(e.target.value))
+  }
 
-  onSelectType = e => {
-    const newType = e.target.value
+  typeData = async typeID => ({
+    selectedTypeID: typeID,
+    entries: typeID ? (await getEntries(this.state.selectedArtistID, typeID)) : null
+  })
 
-    if (newType) {
+  artistChangeData = async artistID => {
+    const types = await getArtistTypes(artistID)
+    const selectedTypeID = types.length === 1 ? types[0].id : null
 
-    }
+    return ({
+      selectedArtistID: artistID,
+      types,
+      ...(await this.typeData(selectedTypeID))
+    })
   }
 
   render() {
-    const { artists, selectedArtistID, types, content } = this.state
+    const { artists, selectedArtistID, types, entries } = this.state
 
     return (
       <div className="app">
-        <header className="app-header">
-          <h1 className="app-header__title">Queen Collection</h1>
-          {artists &&
-            <select
-              value={selectedArtistID}
-              onChange={this.onSelectArtist}
-              className="app-header__select-box"
-            >
-              {artists.map(a => (
-                <option key={a.id} value={a.id.toString()}>
-                  {a.name}
-                </option>
-              ))}
-            </select>
-          }
-          {types &&
-            <select
-              onChange={this.onSelectType}
-              className="app-header__select-box"
-            >
-              {types.length > 1 && <option key="empty" value="" />}
-              {types.map(t => (
-                <option key={t.id} value={t.name}>
-                  {t.name}
-                </option>
-              ))}
-            </select>
-          }
-        </header>
+        <NavBar
+          artists={artists}
+          selectedArtistID={selectedArtistID}
+          onSelectArtist={this.onSelectArtist}
+          types={types}
+          onSelectType={this.onSelectType}
+        />
         <main>
-          {content && <ul>
+        {entries && <ul>
+            {entries.map(e => (
+              <li key={e.id}>
+                <h2>{e.name} </h2>
+                <p>Original release date: {e.release_date ? e.release_date : 'unknown'}</p>
+              </li>
+            ))}
+          </ul>
+          }
+          {/* {content && <ul>
             {content.map(c => (
               <li key={c.id}>
                 <h2>{c.name} </h2>
@@ -110,7 +84,7 @@ export default class App extends React.Component {
               </li>
             ))}
           </ul>
-          }
+          } */}
         </main>
       </div>
     )

@@ -44,6 +44,7 @@ main {
   list-style-type: none;
   cursor: pointer;
   padding: 10px 40px;
+  border-bottom: 1px solid grey;
 }
 
 .entry-block:hover:not(.entry-block__open) {
@@ -52,6 +53,8 @@ main {
 
 .entry-block:hover, .entry-block__open {
   background-color: var(--entry-block-open-bg-color);
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
 }
 
 .release-block {

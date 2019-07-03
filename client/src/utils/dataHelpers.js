@@ -15,8 +15,8 @@ export const sortByReleaseDate = arr => {
 }
 
 const compareStrings = (str1, str2) => {
-  const a = str1.toLowerCase()
-  const b = str2.toLowerCase()
+  const a = str1 ? str1.toLowerCase() : ""
+  const b = str2 ? str2.toLowerCase() : ""
 
   if (a < b) return -1
   else if (a > b) return 1

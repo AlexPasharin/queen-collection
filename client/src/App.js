@@ -1,5 +1,5 @@
 import React from 'react'
-import { getArtistTypes, getArtists, getEntries } from './utils/dataGetters'
+import { getArtistTypes, getArtists, getEntries, getReleases } from './utils/dataGetters'
 
 import './App.css'
 import NavBar from './components/NavBar';
@@ -10,7 +10,8 @@ export default class App extends React.Component {
     selectedArtistID: null,
     types: null,
     selectedTypeID: null,
-    entries: null
+    entries: null,
+    releases: null
   }
 
   async componentDidMount () {
@@ -23,36 +24,56 @@ export default class App extends React.Component {
 
     this.setState({
       artists,
-      ...(await this.artistChangeData(selectedArtistID))
+      ...(await this.artistData(selectedArtistID))
     })
   }
 
   onSelectArtist = async e => {
-    this.setState(await this.artistChangeData(e.target.value.toString()))
+    this.setState(await this.artistData(e.target.value.toString()))
   }
 
   onSelectType = async e => {
-    this.setState(await this.typeData(e.target.value))
+    this.setState(await this.typeData(this.state.selectedArtistID, e.target.value || null))
   }
 
-  typeData = async typeID => ({
+  typeData = async (artistID, typeID) => ({
     selectedTypeID: typeID,
-    entries: typeID ? (await getEntries(this.state.selectedArtistID, typeID)) : null
+    entries: typeID ? (await getEntries(artistID, typeID)) : null
   })
 
-  artistChangeData = async artistID => {
+  artistData = async artistID => {
     const types = await getArtistTypes(artistID)
     const selectedTypeID = types.length === 1 ? types[0].id : null
+
+    console.log({artistID, types, selectedTypeID})
 
     return ({
       selectedArtistID: artistID,
       types,
-      ...(await this.typeData(selectedTypeID))
+      ...(await this.typeData(artistID, selectedTypeID))
     })
   }
 
+  onSelectEntry = async entry => {
+    let releases = entry.releases
+
+    if (!releases) {
+      releases = await getReleases(entry.id)
+
+      const entryIndex = this.state.entries.findIndex(e => e.id === entry.id)
+      const newEntries = [...this.state.entries]
+
+      newEntries[entryIndex] = {
+        ...entry,
+        releases
+      }
+
+      this.setState({ entries: newEntries })
+    }
+  }
+
   render() {
-    const { artists, selectedArtistID, types, entries } = this.state
+    const { artists, selectedArtistID, types, selectedTypeID, entries } = this.state
 
     return (
       <div className="app">
@@ -61,30 +82,32 @@ export default class App extends React.Component {
           selectedArtistID={selectedArtistID}
           onSelectArtist={this.onSelectArtist}
           types={types}
+          selectedTypeID={selectedTypeID}
           onSelectType={this.onSelectType}
         />
         <main>
         {entries && <ul>
             {entries.map(e => (
-              <li key={e.id}>
+              <li className="entry-block" key={e.id} onClick={() => this.onSelectEntry(e)}>
                 <h2>{e.name} </h2>
                 <p>Original release date: {e.release_date ? e.release_date : 'unknown'}</p>
+                {e.releases &&
+                  <ul className="release-view">{
+                    e.releases.map(r => (
+                      <li className="release-block" key={r.id}>
+                        <h2>{r.name} </h2>
+                        <p>Country: {r.country}</p>
+                        <p>Format: {r.format} </p>
+                        <p>Version: {r.version} </p>
+                        {r.discogs_url && <a href={r.discogs_url}>{r.discogs_url}</a>}
+                      </li>
+                    ))
+                  }</ul>
+                  }
               </li>
             ))}
           </ul>
           }
-          {/* {content && <ul>
-            {content.map(c => (
-              <li key={c.id}>
-                <h2>{c.name} </h2>
-                <p>Country: {c.country}</p>
-                <p>Format: {c.format} </p>
-                <p>Version: {c.version} </p>
-                {c.discogs_url && <a href={c.discogs_url}>{c.discogs_url}</a>}
-              </li>
-            ))}
-          </ul>
-          } */}
         </main>
       </div>
     )

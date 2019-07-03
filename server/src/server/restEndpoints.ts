@@ -1,11 +1,15 @@
+import { Express } from 'express'
+
+import { dbConnection } from "../db"
+
 const successHandler = res => data => res.set("Access-Control-Allow-Origin", "*").json(data)
 
-const errorHandler = (res, message) => err => {
+const errorHandler = (res, message: string) => err => {
   console.log(err.stack)
   res.status(500).send(message)
 }
 
-export const setUpRestEndPoints = (app, dBConnection) => {
+export const setUpRestEndPoints = (app: Express, dBConnection: dbConnection) => {
   app.get('/rest/artists', (_, res) =>
     dBConnection
       .getArtists()
@@ -13,19 +17,29 @@ export const setUpRestEndPoints = (app, dBConnection) => {
       .catch(errorHandler(res, 'Could not retrieve artists from the database'))
   )
 
-  app.get('/rest/types', (req, res) =>
+  app.get('/rest/types', (req, res) => {
+    const { artist } = req.query
+
     dBConnection
-      .getArtistTypes(Number(req.query.artist))
+      .getArtistTypes(Number(artist))
       .then(successHandler(res))
-      .catch(errorHandler(res, 'Could not retrieve artist\'s entry types from the database'))
-  )
+      .catch(errorHandler(res, `Could not retrieve artist\'s with id ${artist} entry types from the database`))
+  })
 
   app.get('/rest/entries', (req, res) => {
     const { artist, type } = req.query
 
     dBConnection.getEntriesByArtistAndType(Number(artist), Number(type))
       .then(successHandler(res))
-      .catch(errorHandler(res, 'Could not retrieve artist\'s entries from the database'))
+      .catch(errorHandler(res, `Could not retrieve artist\'s ${artist} entries of type ${type} from the database`))
+  })
+
+  app.get('/rest/releases', (req, res) => {
+    const { entry } = req.query
+
+    dBConnection.getReleases(Number(entry))
+      .then(successHandler(res))
+      .catch(errorHandler(res, `Could not retrieve releases of an entry ${entry} from the database`))
   })
 
   return app

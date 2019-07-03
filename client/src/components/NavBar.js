@@ -1,11 +1,11 @@
 import React from 'react'
 
-const NavBar = ({ artists, selectedArtistID, onSelectArtist, types, onSelectType }) => (
+const NavBar = ({ artists, selectedArtistID, onSelectArtist, types, selectedTypeID, onSelectType }) => (
   <header className="app-header">
     <h1 className="app-header__title">Queen Collection</h1>
     {artists &&
       <select
-        value={selectedArtistID? selectedArtistID : ""}
+        value={selectedArtistID ? selectedArtistID : ""}
         onChange={onSelectArtist}
         className="app-header__select-box"
       >
@@ -18,6 +18,7 @@ const NavBar = ({ artists, selectedArtistID, onSelectArtist, types, onSelectType
     }
     {types &&
       <select
+        value={selectedTypeID ? selectedTypeID : ""}
         onChange={onSelectType}
         className="app-header__select-box"
         disabled={types.length === 1}

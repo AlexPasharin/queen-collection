@@ -17,3 +17,17 @@
 .app-header__select-box:disabled {
   color: initial;
 }
+
+.entry-block {
+  cursor: pointer;
+}
+
+.entry-block:hover {
+  background-color: papayawhip;
+  transform: scale(1.05);
+}
+
+.release-block {
+  margin: 20px;
+  background-color: pink;
+}

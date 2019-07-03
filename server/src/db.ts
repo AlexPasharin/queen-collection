@@ -1,7 +1,7 @@
 import * as knex from 'knex'
 
-const dBConnection =
-  knex({
+export class dbConnection {
+  dbInstance = knex({
     client: 'mysql',
     connection: {
       user: 'root',
@@ -9,26 +9,36 @@ const dBConnection =
     }
   })
 
-dBConnection.getArtists = () => dBConnection('Artist').select()
+  getArtists = () => this.dbInstance('Artist').select()
 
-dBConnection.getArtistTypes = (artistID: number) => dBConnection
-  .distinct('t.id', 't.name')
-  .select()
-  .from('type as t')
-  .leftJoin(
-    'Discography_entry as e',
-    'e.type',
-    't.id',
-  )
-  .where('artist_id', artistID)
-
-dBConnection.getEntriesByArtistAndType = (artistID: number, typeID: number) =>
-  dBConnection
+  getArtistTypes = (artistID: number) => this.dbInstance
+    .distinct('t.id', 't.name')
     .select()
-    .from('Discography_entry')
-    .where({
-      artist_id: artistID,
-      type: typeID,
-    })
+    .from('type as t')
+    .leftJoin(
+      'Discography_entry as e',
+      'e.type',
+      't.id',
+    )
+    .where('artist_id', artistID)
 
-export default dBConnection
+  getEntriesByArtistAndType = (artistID: number, typeID: number) =>
+    this.dbInstance
+      .select()
+      .from('Discography_entry')
+      .where({
+        artist_id: artistID,
+        type: typeID,
+      })
+
+  getReleases = (entry: number) =>
+    this.dbInstance
+      .select()
+      .from('Release')
+      .where({
+        entry_id: entry
+      })
+
+}
+
+export default (new dbConnection)

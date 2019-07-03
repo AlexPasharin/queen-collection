@@ -3,6 +3,7 @@ import { getArtistTypes, getArtists, getEntries, getReleases } from './utils/dat
 
 import './App.css'
 import NavBar from './components/NavBar';
+import Entry from './components/Entry';
 
 export default class App extends React.Component {
   state = {
@@ -86,28 +87,11 @@ export default class App extends React.Component {
           onSelectType={this.onSelectType}
         />
         <main>
-        {entries && <ul>
-            {entries.map(e => (
-              <li className="entry-block" key={e.id} onClick={() => this.onSelectEntry(e)}>
-                <h2>{e.name} </h2>
-                <p>Original release date: {e.release_date ? e.release_date : 'unknown'}</p>
-                {e.releases &&
-                  <ul className="release-view">{
-                    e.releases.map(r => (
-                      <li className="release-block" key={r.id}>
-                        <h2>{r.name} </h2>
-                        <p>Country: {r.country}</p>
-                        <p>Format: {r.format} </p>
-                        <p>Version: {r.version} </p>
-                        {r.discogs_url && <a href={r.discogs_url}>{r.discogs_url}</a>}
-                      </li>
-                    ))
-                  }</ul>
-                  }
-              </li>
-            ))}
+        {entries &&
+          <ul className="entry-list">
+            {entries.map(e => <Entry entry={e} onSelectEntry={() => this.onSelectEntry(e)}/>)}
           </ul>
-          }
+        }
         </main>
       </div>
     )

@@ -35,10 +35,10 @@ const compareByReleaseDate = (entry1, entry2) => {
   const month1 = date1 && date1.length > 4? +date1.slice(5, 7) : 13
   const month2 = date2 && date2.length > 4? +date2.slice(5, 7) : 13
 
-  if (month1 != month2) return month1 - month2
+  if (month1 !== month2) return month1 - month2
 
   const day1 = date1 && date1.length > 7? +date1.slice(8, 10) : 32
   const day2 = date2 && date2.length > 7? +date2.slice(8, 10) : 32
 
-  return day1 != day2 ? day1 - day2 : compareStrings(entry1.name, entry2.name)
+  return day1 !== day2 ? day1 - day2 : compareStrings(entry1.name, entry2.name)
 }

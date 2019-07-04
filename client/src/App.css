@@ -5,7 +5,7 @@
   --release-block-bg-color: pink;
 }
 
-body, ul {
+body, ul, p {
   margin: 0;
   padding: 0;
 }
@@ -42,9 +42,12 @@ main {
 
 .entry-block {
   list-style-type: none;
+  border-bottom: 1px solid grey;
+}
+
+.entry-block__details {
   cursor: pointer;
   padding: 10px 40px;
-  border-bottom: 1px solid grey;
 }
 
 .entry-block:hover:not(.entry-block__open) {
@@ -57,7 +60,20 @@ main {
   border-top: 1px solid black;
 }
 
+.detail__title {
+  font-weight: bold;
+}
+
+.release-view {
+  background-color: var(--release-block-bg-color);
+  padding: 20px 40px;
+  list-style-type: decimal;
+}
+
 .release-block {
   margin: 20px;
-  background-color: var(--release-block-bg-color);
+}
+
+.release-info-block {
+  line-height: 25px;
 }

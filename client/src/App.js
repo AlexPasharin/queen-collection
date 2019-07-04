@@ -2,8 +2,8 @@ import React from 'react'
 import { getArtistTypes, getArtists, getEntries, getReleases } from './utils/dataGetters'
 
 import './App.css'
-import NavBar from './components/NavBar';
-import Entry from './components/Entry';
+import NavBar from './components/NavBar'
+import Entry from './components/Entry'
 
 export default class App extends React.Component {
   state = {
@@ -18,14 +18,19 @@ export default class App extends React.Component {
   async componentDidMount () {
     const artists = await getArtists()
 
-    const selectedArtist = artists.find(a => a.name === 'Queen')
-    const selectedArtistID = selectedArtist ?
-      selectedArtist.id.toString() :
-      artists[0].id.toString()
+    const urlParams = new URLSearchParams(window.location.search)
+    const artist = urlParams.get("artist") || "queen"
+    const type = urlParams.get("type") || "studio_album"
+
+    let selectedArtist = artists.find(a => a.name.trim().toLowerCase() === artist.toLowerCase().replace("_", " "))
+
+    if (!selectedArtist) {
+      selectedArtist = artists[0]
+    }
 
     this.setState({
       artists,
-      ...(await this.artistData(selectedArtistID))
+      ...(await this.artistData(selectedArtist.id, type.replace("_", " ")))
     })
   }
 
@@ -42,16 +47,17 @@ export default class App extends React.Component {
     entries: typeID ? (await getEntries(artistID, typeID)) : null
   })
 
-  artistData = async artistID => {
+  artistData = async (artistID, typeRequestString) => {
     const types = await getArtistTypes(artistID)
-    const selectedTypeID = types.length === 1 ? types[0].id : null
 
-    console.log({artistID, types, selectedTypeID})
+    const selectedType = (typeRequestString && types.find(
+      t => t.name.trim().toLowerCase() === typeRequestString.toLowerCase()
+    )) || (types.length === 1 && types[0]) || null
 
     return ({
       selectedArtistID: artistID,
       types,
-      ...(await this.typeData(artistID, selectedTypeID))
+      ...(await this.typeData(artistID, selectedType? selectedType.id : null))
     })
   }
 

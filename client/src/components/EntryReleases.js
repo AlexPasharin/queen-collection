@@ -5,20 +5,12 @@ const EntryReleases = ({ releases }) => {
   if (!releases)
     return null
 
-  return (
-    <div className="release-view">
-      {
-        releases.length ?
-        (
-          <ul >
-            {releases.map(r => <Release release={r} />)}
-          </ul>
-        )
-        :
-        <p> This entry does not have releases in the collection</p>
-      }
-    </div>
-  )
+  return releases.length ?
+      <ul className="release-view">
+        {releases.map(r => <Release release={r} />)}
+      </ul>
+      :
+      <p className="release-view detail__title"> This entry does not have releases in the collection</p>
 }
 
 export default EntryReleases

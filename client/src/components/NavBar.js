@@ -1,36 +1,37 @@
 import React from 'react'
 
-const NavBar = ({ artists, selectedArtistID, onSelectArtist, types, selectedTypeID, onSelectType }) => (
+const Selector = ({ choices, onChange, selected }) => (
+  choices &&
+  <select
+    value={selected || ""}
+    onChange={onChange}
+    className="app-header__select-box"
+    disabled={choices.length === 1}
+  >
+    {choices.map(c => (
+      <option key={c.id} value={c.id.toString()}>
+        {c.name}
+      </option>
+    ))}
+  </select>
+)
+
+const NavBar = ({ artists, selectedArtistID, onSelectArtist, types, selectedTypeID, onSelectType, entryFilterText, onChangeEntryFilterText }) => (
   <header className="app-header">
     <h1 className="app-header__title">Queen Collection</h1>
-    {artists &&
-      <select
-        value={selectedArtistID ? selectedArtistID : ""}
+    <div className="app-header__selectors">
+      <Selector
+        choices={artists}
         onChange={onSelectArtist}
-        className="app-header__select-box"
-      >
-        {artists.map(a => (
-          <option key={a.id} value={a.id.toString()}>
-            {a.name}
-          </option>
-        ))}
-      </select>
-    }
-    {types &&
-      <select
-        value={selectedTypeID ? selectedTypeID : ""}
+        selected={selectedArtistID}
+      />
+      <Selector
+        choices={types}
         onChange={onSelectType}
-        className="app-header__select-box"
-        disabled={types.length === 1}
-      >
-        {types.length > 1 && <option key="empty" value="" />}
-        {types.map(t => (
-          <option key={t.id} value={t.id.toString()}>
-            {t.name}
-          </option>
-        ))}
-      </select>
-    }
+        selected={selectedTypeID}
+      />
+      <input type="text" placeholder="Filter entries" value={entryFilterText} onChange={onChangeEntryFilterText}  />
+    </div>
   </header>
 )
 

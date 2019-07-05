@@ -1,13 +1,17 @@
 :root {
-  --nav-bar-height: 200px;
+  --nav-bar-height: 230px;
   --nav-bar-bg-color: #282c34;
   --entry-block-open-bg-color: papayawhip;
   --release-block-bg-color: pink;
 }
 
-body, ul, p {
+body, ul, p, h1 {
   margin: 0;
   padding: 0;
+}
+
+.app {
+  position: relative;
 }
 
 .app-header {
@@ -30,14 +34,31 @@ main {
   text-align: center;
 }
 
-.app-header__select-box {
-  display: block;
+.app-header__selectors {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  margin: 10px 0;
+}
+
+.app-header__selectors > * {
   height: 30px;
   margin: 10px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  padding: 0;
+  border-width: 1px;
 }
 
 .app-header__select-box:disabled {
   color: initial;
+}
+
+.entry-list-empty {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  padding-top: 20px;
 }
 
 .entry-block {
@@ -67,6 +88,9 @@ main {
 .release-view {
   background-color: var(--release-block-bg-color);
   padding: 20px 40px;
+}
+
+.release-view ul {
   list-style-type: decimal;
 }
 
@@ -76,4 +100,31 @@ main {
 
 .release-info-block {
   line-height: 25px;
+}
+
+.release-discogs-url {
+  display: block;
+  max-width: 500px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.modal-container {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
+
+.modal {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: red;
+  z-index: 1;
 }

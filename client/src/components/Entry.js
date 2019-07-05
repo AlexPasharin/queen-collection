@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+
 import EntryReleases from './EntryReleases'
+import { formatDate } from '../utils/dataHelpers'
 
 const Entry = ({ entry, onSelectEntry }) => {
   const [open, setOpen] = useState(false)
@@ -18,7 +20,7 @@ const Entry = ({ entry, onSelectEntry }) => {
         <h2>{entry.name} </h2>
         <p>
           <span className="detail__title">Original release date: </span>
-          {entry.release_date ? entry.release_date : 'unknown'}
+          {formatDate(entry.release_date)}
       </p>
       </div>
       {open && <EntryReleases releases={entry.releases}/>}

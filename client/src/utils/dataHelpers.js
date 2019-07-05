@@ -42,3 +42,5 @@ const compareByReleaseDate = (entry1, entry2) => {
 
   return day1 !== day2 ? day1 - day2 : compareStrings(entry1.name, entry2.name)
 }
+
+export const formatDate = date => date || "unknown"

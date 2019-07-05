@@ -3,7 +3,7 @@ import { getArtistTypes, getArtists, getEntries, getReleases } from './utils/dat
 
 import './App.css'
 import NavBar from './components/NavBar'
-import Entry from './components/Entry'
+import Entries from './components/Entries'
 
 export default class App extends React.Component {
   state = {
@@ -12,7 +12,8 @@ export default class App extends React.Component {
     types: null,
     selectedTypeID: null,
     entries: null,
-    releases: null
+    releases: null,
+    entryFilterText: ""
   }
 
   async componentDidMount () {
@@ -52,7 +53,7 @@ export default class App extends React.Component {
 
     const selectedType = (typeRequestString && types.find(
       t => t.name.trim().toLowerCase() === typeRequestString.toLowerCase()
-    )) || (types.length === 1 && types[0]) || null
+    )) || types[0]
 
     return ({
       selectedArtistID: artistID,
@@ -79,8 +80,12 @@ export default class App extends React.Component {
     }
   }
 
+  onChangeEntryFilterText = e => {
+    this.setState({ entryFilterText: e.target.value })
+  }
+
   render() {
-    const { artists, selectedArtistID, types, selectedTypeID, entries } = this.state
+    const { artists, selectedArtistID, types, selectedTypeID, entries, entryFilterText } = this.state
 
     return (
       <div className="app">
@@ -91,14 +96,19 @@ export default class App extends React.Component {
           types={types}
           selectedTypeID={selectedTypeID}
           onSelectType={this.onSelectType}
+          entryFilterText={entryFilterText}
+          onChangeEntryFilterText={this.onChangeEntryFilterText}
         />
         <main>
-        {entries &&
-          <ul className="entry-list">
-            {entries.map(e => <Entry entry={e} onSelectEntry={() => this.onSelectEntry(e)}/>)}
-          </ul>
-        }
+          <Entries
+            entries={entries}
+            onSelectEntry={this.onSelectEntry}
+            entryFilterText={entryFilterText}
+          />
         </main>
+        <div className="modal-container">
+          <div className="modal" />
+        </div>
       </div>
     )
   }

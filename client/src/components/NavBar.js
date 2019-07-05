@@ -30,7 +30,7 @@ const NavBar = ({ artists, selectedArtistID, onSelectArtist, types, selectedType
         onChange={onSelectType}
         selected={selectedTypeID}
       />
-      <input type="text" placeholder="Filter entries" value={entryFilterText} onChange={onChangeEntryFilterText}  />
+      <input className="entries-filter" type="text" placeholder="Filter entries" value={entryFilterText} onChange={onChangeEntryFilterText}  />
     </div>
   </header>
 )

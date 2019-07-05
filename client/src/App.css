@@ -10,8 +10,8 @@ body, ul, p, h1 {
   padding: 0;
 }
 
-.app {
-  position: relative;
+.main-content {
+  opacity: 0.5; /* when modal is opened */
 }
 
 .app-header {
@@ -52,6 +52,10 @@ main {
 
 .app-header__select-box:disabled {
   color: initial;
+}
+
+.entries-filter::placeholder, .entries-filter::-webkit-input-placeholder {
+  text-indent: 10px;
 }
 
 .entry-list-empty {
@@ -120,11 +124,15 @@ main {
 
 .modal {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  max-width: 500px;
+  min-width: 300px;
+  height: 500px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: red;
+  border: 2px solid grey;
+  border-radius: 5px;
+  background-color: white;
   z-index: 1;
+  padding: 20px;
 }

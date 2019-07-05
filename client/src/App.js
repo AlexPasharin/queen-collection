@@ -88,7 +88,8 @@ export default class App extends React.Component {
     const { artists, selectedArtistID, types, selectedTypeID, entries, entryFilterText } = this.state
 
     return (
-      <div className="app">
+      <div>
+        <div className="main-content">
         <NavBar
           artists={artists}
           selectedArtistID={selectedArtistID}
@@ -106,8 +107,11 @@ export default class App extends React.Component {
             entryFilterText={entryFilterText}
           />
         </main>
+        </div>
         <div className="modal-container">
-          <div className="modal" />
+          <div className="modal" >
+            HELLO WORLD
+          </div>
         </div>
       </div>
     )

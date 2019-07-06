@@ -2,6 +2,7 @@ import React from 'react'
 import { getArtistTypes, getArtists, getEntries, getReleases } from './utils/dataGetters'
 
 import './App.css'
+import ReleaseDetailsModal from './components/modals/ReleaseDetailsModal'
 import NavBar from './components/NavBar'
 import Entries from './components/Entries'
 
@@ -13,6 +14,7 @@ export default class App extends React.Component {
     selectedTypeID: null,
     entries: null,
     releases: null,
+    selectedRelease: null,
     entryFilterText: ""
   }
 
@@ -84,34 +86,38 @@ export default class App extends React.Component {
     this.setState({ entryFilterText: e.target.value })
   }
 
+  selectRelease = (selectedRelease) => {
+    this.setState({ selectedRelease })
+  }
+
   render() {
-    const { artists, selectedArtistID, types, selectedTypeID, entries, entryFilterText } = this.state
+    const { artists, selectedArtistID, types, selectedTypeID, entries, entryFilterText, selectedRelease } = this.state
+    console.log({selectedRelease})
 
     return (
       <div>
+        {selectedRelease &&
+          <ReleaseDetailsModal release={selectedRelease} onCloseModal={() => this.selectRelease(null)} />
+        }
         <div className="main-content">
-        <NavBar
-          artists={artists}
-          selectedArtistID={selectedArtistID}
-          onSelectArtist={this.onSelectArtist}
-          types={types}
-          selectedTypeID={selectedTypeID}
-          onSelectType={this.onSelectType}
-          entryFilterText={entryFilterText}
-          onChangeEntryFilterText={this.onChangeEntryFilterText}
-        />
-        <main>
-          <Entries
-            entries={entries}
-            onSelectEntry={this.onSelectEntry}
+          <NavBar
+            artists={artists}
+            selectedArtistID={selectedArtistID}
+            onSelectArtist={this.onSelectArtist}
+            types={types}
+            selectedTypeID={selectedTypeID}
+            onSelectType={this.onSelectType}
             entryFilterText={entryFilterText}
+            onChangeEntryFilterText={this.onChangeEntryFilterText}
           />
-        </main>
-        </div>
-        <div className="modal-container">
-          <div className="modal" >
-            HELLO WORLD
-          </div>
+          <main>
+            <Entries
+              entries={entries}
+              onSelectEntry={this.onSelectEntry}
+              entryFilterText={entryFilterText}
+              onSelectRelease={this.selectRelease}
+            />
+          </main>
         </div>
       </div>
     )

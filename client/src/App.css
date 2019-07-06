@@ -10,8 +10,31 @@ body, ul, p, h1 {
   padding: 0;
 }
 
-.main-content {
-  opacity: 0.5; /* when modal is opened */
+.modal-container ~ .main-content {
+  opacity: 0.5; /* when a modal is opened main content loses opacity */
+}
+
+.modal-container {
+  position: fixed;
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
+
+.modal {
+  position: absolute;
+  max-width: 500px;
+  min-width: 300px;
+  height: 500px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid grey;
+  border-radius: 5px;
+  background-color: white;
+  padding: 20px;
 }
 
 .app-header {
@@ -114,25 +137,4 @@ main {
   overflow: hidden;
 }
 
-.modal-container {
-  position: fixed;
-  width: 100vw;
-  height: 100vh;
-  top: 0;
-  left: 0;
-}
 
-.modal {
-  position: absolute;
-  max-width: 500px;
-  min-width: 300px;
-  height: 500px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border: 2px solid grey;
-  border-radius: 5px;
-  background-color: white;
-  z-index: 1;
-  padding: 20px;
-}

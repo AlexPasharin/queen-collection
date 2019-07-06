@@ -2,7 +2,7 @@ import React from 'react'
 
 import { formatDate } from '../utils/dataHelpers'
 
-const Release = ({ release }) => {
+const Release = ({ release, onSelect }) => {
   const { id, discogs_url, country, format, version, release_date, name } = release
 
   return (
@@ -22,6 +22,7 @@ const Release = ({ release }) => {
           (Released as "<span className="detail__title">{name}</span>")
         </div>
       }
+      <div onClick={onSelect}>MORE DETAILS</div>
     </li>
   )
 }

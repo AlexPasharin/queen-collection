@@ -2,7 +2,7 @@ import React from 'react'
 
 import Entry from './Entry'
 
-const Entries = ({ entries, onSelectEntry, entryFilterText }) => {
+const Entries = ({ entries, onSelectEntry, entryFilterText, onSelectRelease }) => {
   if (!entries)
     return <div className="entry-list-empty">Loading data...</div>
 
@@ -15,7 +15,9 @@ const Entries = ({ entries, onSelectEntry, entryFilterText }) => {
 
   return (
     <ul>
-      {filteredEntries.map(e => <Entry entry={e} entryFilterText={entryFilterText} onSelectEntry={() => onSelectEntry(e)}/>)}
+      {filteredEntries.map(e =>
+        <Entry entry={e} entryFilterText={entryFilterText} onSelectEntry={() => onSelectEntry(e)} onSelectRelease={onSelectRelease}/>
+      )}
     </ul>
   )
 }

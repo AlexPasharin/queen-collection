@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import EntryReleases from './EntryReleases'
 import { formatDate } from '../utils/dataHelpers'
 
-const Entry = ({ entry, onSelectEntry }) => {
+const Entry = ({ entry, onSelectEntry, onSelectRelease }) => {
   const [open, setOpen] = useState(false)
 
   const onSelect = () => {
@@ -23,7 +23,7 @@ const Entry = ({ entry, onSelectEntry }) => {
           {formatDate(entry.release_date)}
       </p>
       </div>
-      {open && <EntryReleases releases={entry.releases}/>}
+      {open && <EntryReleases releases={entry.releases} onSelectRelease={onSelectRelease}/>}
     </li>
   )
 }

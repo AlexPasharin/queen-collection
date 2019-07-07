@@ -16,7 +16,7 @@ const Entries = ({ entries, onSelectEntry, entryFilterText, onSelectRelease }) =
   return (
     <ul>
       {filteredEntries.map(e =>
-        <Entry entry={e} entryFilterText={entryFilterText} onSelectEntry={() => onSelectEntry(e)} onSelectRelease={onSelectRelease}/>
+        <Entry key={e.id} entry={e} entryFilterText={entryFilterText} onSelectEntry={() => onSelectEntry(e)} onSelectRelease={onSelectRelease}/>
       )}
     </ul>
   )

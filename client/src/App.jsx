@@ -1,17 +1,18 @@
 import React from 'react'
-import { getArtistTypes, getArtists, getEntries, getReleases } from './utils/dataGetters'
+import { getArtistData, getArtistsData, getReleases, getTypeData } from './utils/dataGetters'
 
 import './App.css'
 import ReleaseDetailsModal from './components/modals/ReleaseDetailsModal'
 import NavBar from './components/NavBar'
 import Entries from './components/Entries'
 
+
 export default class App extends React.Component {
   state = {
     artists: null,
-    selectedArtistID: null,
+    selectedArtistIdx: null,
     types: null,
-    selectedTypeID: null,
+    selectedTypeIdx: null,
     entries: null,
     releases: null,
     selectedRelease: null,
@@ -19,49 +20,34 @@ export default class App extends React.Component {
   }
 
   async componentDidMount () {
-    const artists = await getArtists()
-
     const urlParams = new URLSearchParams(window.location.search)
     const artist = urlParams.get("artist") || "queen"
     const type = urlParams.get("type") || "studio_album"
 
-    let selectedArtist = artists.find(a => a.name.trim().toLowerCase() === artist.toLowerCase().replace("_", " "))
+    this.setState(getArtistsData(artist.replace("_", " "), type.replace("_", " ")))
+  }
 
-    if (!selectedArtist) {
-      selectedArtist = artists[0]
+
+  componentDidUpdate() {
+    const { artists, types, selectedArtistIdx, selectedTypeIdx } = this.state
+    const selectedArtist = artists[selectedArtistIdx]
+    const selectedType = types[selectedTypeIdx]
+
+    if (window.history.pushState) {
+      const newurl = window.location.protocol +
+        "//" + window.location.host + window.location.pathname +
+        `?artist=${selectedArtist.name.toLowerCase().replace(" ", "_")}` +
+        `&type=${selectedType.name.toLowerCase().replace(" ", "_")}`
+      window.history.pushState({ path: newurl },'', newurl)
     }
-
-    this.setState({
-      artists,
-      ...(await this.artistData(selectedArtist.id, type.replace("_", " ")))
-    })
   }
 
-  onSelectArtist = async e => {
-    this.setState(await this.artistData(e.target.value.toString()))
+  onSelectArtist = async artistIdx => {
+    this.setState(await getArtistData(this.state.artists, artistIdx))
   }
 
-  onSelectType = async e => {
-    this.setState(await this.typeData(this.state.selectedArtistID, e.target.value || null))
-  }
-
-  typeData = async (artistID, typeID) => ({
-    selectedTypeID: typeID,
-    entries: typeID ? (await getEntries(artistID, typeID)) : null
-  })
-
-  artistData = async (artistID, typeRequestString) => {
-    const types = await getArtistTypes(artistID)
-
-    const selectedType = (typeRequestString && types.find(
-      t => t.name.trim().toLowerCase() === typeRequestString.toLowerCase()
-    )) || types[0]
-
-    return ({
-      selectedArtistID: artistID,
-      types,
-      ...(await this.typeData(artistID, selectedType? selectedType.id : null))
-    })
+  onSelectType = async typeIdx => {
+    this.setState(await getTypeData(this.state.artists, this.state.types, this.state.selectedArtistIdx, typeIdx))
   }
 
   onSelectEntry = async entry => {
@@ -91,8 +77,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { artists, selectedArtistID, types, selectedTypeID, entries, entryFilterText, selectedRelease } = this.state
-    console.log({selectedRelease})
+    const { artists, selectedArtistIdx, types, selectedTypeIdx, entries, entryFilterText, selectedRelease } = this.state
 
     return (
       <div>
@@ -102,10 +87,10 @@ export default class App extends React.Component {
         <div className="main-content">
           <NavBar
             artists={artists}
-            selectedArtistID={selectedArtistID}
+            selectedArtistIdx={selectedArtistIdx}
             onSelectArtist={this.onSelectArtist}
             types={types}
-            selectedTypeID={selectedTypeID}
+            selectedTypeIdx={selectedTypeIdx}
             onSelectType={this.onSelectType}
             entryFilterText={entryFilterText}
             onChangeEntryFilterText={this.onChangeEntryFilterText}

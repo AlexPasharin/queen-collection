@@ -9,7 +9,11 @@ const EntryReleases = ({ releases, onSelectRelease }) => {
     <div className="release-view">
       <div className="detail__title"> {releases.length > 1 ? `${releases.length} releases in the collection` : "1 release in the collection"} </div>
       <ul>
-        {releases.map(r => <Release release={r} onSelect={() => {console.log(r); onSelectRelease(r)}}/>)}
+        {releases.map(r =>
+            <li key={r.id}>
+              <Release release={r} onSelect={() => onSelectRelease(r)} />
+            </li>
+        )}
       </ul>
     </div>
       :

@@ -1,5 +1,6 @@
 import React from 'react'
 import { getArtistData, getArtistsData, getReleases, getTypeData } from './utils/dataGetters'
+import { decode, encode } from './utils/stringHelpers'
 
 import './App.css'
 import ReleaseDetailsModal from './components/modals/ReleaseDetailsModal'
@@ -24,7 +25,7 @@ export default class App extends React.Component {
     const artist = urlParams.get("artist") || "queen"
     const type = urlParams.get("type") || "studio_album"
 
-    this.setState(await getArtistsData(artist.replace("_", " "), type.replace("_", " ")))
+    this.setState(await getArtistsData(decode(artist), decode(type)))
   }
 
 
@@ -39,8 +40,8 @@ export default class App extends React.Component {
       return
     }
 
-    const selectedArtistName = artists[selectedArtistIdx].name.toLowerCase().replace(" ", "_")
-    const selectedTypeName = types[selectedTypeIdx].name.toLowerCase().replace(" ", "_")
+    const selectedArtistName = encode(artists[selectedArtistIdx].name.toLowerCase())
+    const selectedTypeName = encode(types[selectedTypeIdx].name.toLowerCase())
 
     const newurl = `${window.location.origin}?artist=${selectedArtistName}&type=${selectedTypeName}`
     window.history.pushState({ path: newurl },'', newurl)

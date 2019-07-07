@@ -24,22 +24,27 @@ export default class App extends React.Component {
     const artist = urlParams.get("artist") || "queen"
     const type = urlParams.get("type") || "studio_album"
 
-    this.setState(getArtistsData(artist.replace("_", " "), type.replace("_", " ")))
+    this.setState(await getArtistsData(artist.replace("_", " "), type.replace("_", " ")))
   }
 
 
-  componentDidUpdate() {
+  componentDidUpdate(_, prevState) {
     const { artists, types, selectedArtistIdx, selectedTypeIdx } = this.state
-    const selectedArtist = artists[selectedArtistIdx]
-    const selectedType = types[selectedTypeIdx]
 
-    if (window.history.pushState) {
-      const newurl = window.location.protocol +
-        "//" + window.location.host + window.location.pathname +
-        `?artist=${selectedArtist.name.toLowerCase().replace(" ", "_")}` +
-        `&type=${selectedType.name.toLowerCase().replace(" ", "_")}`
-      window.history.pushState({ path: newurl },'', newurl)
+    if (selectedArtistIdx === null || selectedTypeIdx === null) {
+      return
     }
+
+    if (prevState.selectedArtistIdx === selectedArtistIdx && prevState.selectedTypeIdx === selectedTypeIdx) {
+      return
+    }
+
+    const selectedArtistName = artists[selectedArtistIdx].name.toLowerCase().replace(" ", "_")
+    const selectedTypeName = types[selectedTypeIdx].name.toLowerCase().replace(" ", "_")
+
+    const newurl = `${window.location.origin}?artist=${selectedArtistName}&type=${selectedTypeName}`
+    window.history.pushState({ path: newurl },'', newurl)
+
   }
 
   onSelectArtist = async artistIdx => {

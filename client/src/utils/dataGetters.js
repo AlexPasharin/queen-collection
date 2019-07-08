@@ -9,37 +9,33 @@ export const getReleases = entryID => fetchReleases(entryID).then(sortByReleaseD
 export const getArtistsData = async (preferredSelectedArtistName, preferredSelectedTypeName) => {
   const artists = await getArtists()
 
-  let selectedArtistIdx = artists.findIndex(a => a.name.toLowerCase() === preferredSelectedArtistName.toLowerCase())
+  let selectedArtist = artists.find(a => a.name.toLowerCase() === preferredSelectedArtistName.toLowerCase())
 
-  if (selectedArtistIdx < 0) {
-    selectedArtistIdx = 0
+  if (!selectedArtist) {
+    selectedArtist = artists[0]
   }
 
   return ({
     artists,
-    ...(await getArtistData(artists, selectedArtistIdx, preferredSelectedTypeName))
+    ...(await getArtistData(selectedArtist, preferredSelectedTypeName))
   })
 }
 
-export const getArtistData = async (artists, artistIdx, typeRequestString) => {
-  const types = await getArtistTypes(artists[artistIdx].id)
+export const getArtistData = async (artist, typeRequestString) => {
+  const types = await getArtistTypes(artist.id)
 
-  let selectedTypeIdx = (typeRequestString && types.findIndex(
+  let selectedType = (typeRequestString && types.find(
     t => t.name.toLowerCase() === typeRequestString.toLowerCase()
-  ))
-
-  if (!selectedTypeIdx || selectedTypeIdx < 0) {
-    selectedTypeIdx = 0
-  }
+  )) || types[0]
 
   return ({
-    selectedArtistIdx: artistIdx,
+    selectedArtist: artist,
     types,
-    ...(await getTypeData(artists, types, artistIdx, selectedTypeIdx))
+    ...(await getTypeData(artist, selectedType))
   })
 }
 
-export const getTypeData = async (artists, types, artistIdx, typeIdx) => ({
-  selectedTypeIdx: typeIdx,
-  entries: await getEntries(artists[artistIdx].id, types[typeIdx].id)
+export const getTypeData = async (artist, type) => ({
+  selectedType: type,
+  entries: await getEntries(artist.id, type.id)
 })

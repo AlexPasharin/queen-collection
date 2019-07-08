@@ -11,9 +11,9 @@ import Entries from './components/Entries'
 export default class App extends React.Component {
   state = {
     artists: null,
-    selectedArtistIdx: null,
+    selectedArtist: null,
     types: null,
-    selectedTypeIdx: null,
+    selectedType: null,
     entries: null,
     releases: null,
     selectedRelease: null,
@@ -30,30 +30,35 @@ export default class App extends React.Component {
 
 
   componentDidUpdate(_, prevState) {
-    const { artists, types, selectedArtistIdx, selectedTypeIdx } = this.state
+    const { selectedArtist: prevSelectedArtist, selectedType: prevSelectedType } = prevState
+    const { selectedArtist, selectedType } = this.state
 
-    if (selectedArtistIdx === null || selectedTypeIdx === null) {
+    if (prevSelectedArtist === null || prevSelectedType === null) {
       return
     }
 
-    if (prevState.selectedArtistIdx === selectedArtistIdx && prevState.selectedTypeIdx === selectedTypeIdx) {
+    if (selectedArtist === null || selectedType === null) {
       return
     }
 
-    const selectedArtistName = encode(artists[selectedArtistIdx].name.toLowerCase())
-    const selectedTypeName = encode(types[selectedTypeIdx].name.toLowerCase())
+    if (prevSelectedArtist.id === selectedArtist.id && prevSelectedType.id === selectedType.id) {
+      return
+    }
+
+    const selectedArtistName = encode(selectedArtist.name.toLowerCase())
+    const selectedTypeName = encode(selectedType.name.toLowerCase())
 
     const newurl = `${window.location.origin}?artist=${selectedArtistName}&type=${selectedTypeName}`
     window.history.pushState({ path: newurl },'', newurl)
 
   }
 
-  onSelectArtist = async artistIdx => {
-    this.setState(await getArtistData(this.state.artists, artistIdx))
+  onSelectArtist = async artist => {
+    this.setState(await getArtistData(artist))
   }
 
-  onSelectType = async typeIdx => {
-    this.setState(await getTypeData(this.state.artists, this.state.types, this.state.selectedArtistIdx, typeIdx))
+  onSelectType = async type => {
+    this.setState(await getTypeData(this.state.selectedArtistIdx, type))
   }
 
   onSelectEntry = async entry => {
@@ -83,7 +88,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { artists, selectedArtistIdx, types, selectedTypeIdx, entries, entryFilterText, selectedRelease } = this.state
+    const { artists, selectedArtist, types, selectedTypeIdx, entries, entryFilterText, selectedRelease } = this.state
 
     return (
       <div>
@@ -93,13 +98,14 @@ export default class App extends React.Component {
         <div className="main-content">
           <NavBar
             artists={artists}
-            selectedArtistIdx={selectedArtistIdx}
+            selectedArtist={selectedArtist}
             onSelectArtist={this.onSelectArtist}
             types={types}
             selectedTypeIdx={selectedTypeIdx}
             onSelectType={this.onSelectType}
             entryFilterText={entryFilterText}
             onChangeEntryFilterText={this.onChangeEntryFilterText}
+            entries={entries}
           />
           <main>
             <Entries

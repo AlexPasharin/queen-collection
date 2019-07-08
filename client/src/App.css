@@ -48,10 +48,6 @@ body, ul, p, h1 {
   color: white;
 }
 
-main {
-  margin-top: var(--nav-bar-height);
-}
-
 .app-header__title {
   text-align: center;
 }
@@ -65,15 +61,49 @@ main {
 
 .app-header__selectors > * {
   height: 30px;
-  margin: 10px;
+}
+
+.selector-wrapper {
+  position: relative;
+}
+
+.selector-input {
+  width: calc(100% - 22px);
+  padding: 10px;
   border-radius: 5px;
-  box-sizing: border-box;
-  padding: 0;
   border-width: 1px;
+  font-size: inherit;
+}
+
+.selector-list {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  list-style-type: none;
+  max-height: 300px;
+  overflow: scroll;
+  border: 1px solid black;
+}
+
+.selector-list li {
+  background-color: white;
+  height: 30px;
+  color: black;
+  padding: 10px;
+  border-bottom: 1px solid black;
+  cursor: pointer;
+}
+
+.selector-list li:hover {
+  background-color: yellow;
 }
 
 .app-header__select-box:disabled {
   color: initial;
+}
+
+main {
+  margin-top: var(--nav-bar-height);
 }
 
 .entries-filter::placeholder, .entries-filter::-webkit-input-placeholder {

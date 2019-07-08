@@ -4,6 +4,7 @@ import { sortBy, sortByReleaseDate } from './dataHelpers'
 const getArtists = () => fetchArtists().then(sortBy('name'))
 const getArtistTypes = artistID => fetchArtistTypes(artistID).then(sortBy('name'))
 const getEntries = (artistID, type) => fetchEntries(artistID, type).then(sortByReleaseDate)
+
 export const getReleases = entryID => fetchReleases(entryID).then(sortByReleaseDate)
 
 export const getArtistsData = async (preferredSelectedArtistName, preferredSelectedTypeName) => {

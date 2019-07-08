@@ -1,5 +1,5 @@
 :root {
-  --nav-bar-height: 230px;
+  --nav-bar-height: 200px;
   --nav-bar-bg-color: #282c34;
   --entry-block-open-bg-color: papayawhip;
   --release-block-bg-color: pink;
@@ -52,19 +52,10 @@ body, ul, p, h1 {
   text-align: center;
 }
 
-.app-header__selectors {
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-  margin: 10px 0;
-}
-
-.app-header__selectors > * {
-  height: 30px;
-}
-
 .selector-wrapper {
   position: relative;
+  width: 300px;
+  margin: 20px;
 }
 
 .selector-input {

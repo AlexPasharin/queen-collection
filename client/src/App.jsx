@@ -20,7 +20,7 @@ export default class App extends React.Component {
     entryFilterText: ""
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     const urlParams = new URLSearchParams(window.location.search)
     const artist = urlParams.get("artist") || "queen"
     const type = urlParams.get("type") || "studio_album"
@@ -49,7 +49,7 @@ export default class App extends React.Component {
     const selectedTypeName = encode(selectedType.name.toLowerCase())
 
     const newurl = `${window.location.origin}?artist=${selectedArtistName}&type=${selectedTypeName}`
-    window.history.pushState({ path: newurl },'', newurl)
+    window.history.pushState({ path: newurl }, '', newurl)
 
   }
 
@@ -58,7 +58,7 @@ export default class App extends React.Component {
   }
 
   onSelectType = async type => {
-    this.setState(await getTypeData(this.state.selectedArtistIdx, type))
+    this.setState(await getTypeData(this.state.selectedArtist, type))
   }
 
   onSelectEntry = async entry => {
@@ -88,7 +88,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    const { artists, selectedArtist, types, selectedTypeIdx, entries, entryFilterText, selectedRelease } = this.state
+    const { artists, selectedArtist, types, selectedType, entries, entryFilterText, selectedRelease } = this.state
 
     return (
       <div>
@@ -101,7 +101,7 @@ export default class App extends React.Component {
             selectedArtist={selectedArtist}
             onSelectArtist={this.onSelectArtist}
             types={types}
-            selectedTypeIdx={selectedTypeIdx}
+            selectedType={selectedType}
             onSelectType={this.onSelectType}
             entryFilterText={entryFilterText}
             onChangeEntryFilterText={this.onChangeEntryFilterText}

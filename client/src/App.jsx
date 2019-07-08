@@ -7,6 +7,17 @@ import ReleaseDetailsModal from './components/modals/ReleaseDetailsModal'
 import NavBar from './components/NavBar'
 import Entries from './components/Entries'
 
+const addQueryParams = (artist, type) => {
+  const artistQueryParam = artist ? `artist=${encode(artist.name.toLowerCase())}` : ''
+  const typeQueryParam = type ? `type=${encode(type.name.toLowerCase())}` : ''
+
+  const questionMark = artistQueryParam || typeQueryParam ? '?' : ''
+  const ampersand = artistQueryParam ? '&' : ''
+
+  const newurl = `${window.location.origin}${questionMark}${artistQueryParam}${ampersand}${typeQueryParam}`
+  window.history.pushState({ path: newurl }, '', newurl)
+}
+
 
 export default class App extends React.Component {
   state = {
@@ -29,27 +40,9 @@ export default class App extends React.Component {
   }
 
 
-  componentDidUpdate(_, prevState) {
-    const { selectedArtist: prevSelectedArtist, selectedType: prevSelectedType } = prevState
+  componentDidUpdate() {
     const { selectedArtist, selectedType } = this.state
-
-    if (prevSelectedArtist === null || prevSelectedType === null) {
-      return
-    }
-
-    if (selectedArtist === null || selectedType === null) {
-      return
-    }
-
-    if (prevSelectedArtist.id === selectedArtist.id && prevSelectedType.id === selectedType.id) {
-      return
-    }
-
-    const selectedArtistName = encode(selectedArtist.name.toLowerCase())
-    const selectedTypeName = encode(selectedType.name.toLowerCase())
-
-    const newurl = `${window.location.origin}?artist=${selectedArtistName}&type=${selectedTypeName}`
-    window.history.pushState({ path: newurl }, '', newurl)
+    addQueryParams(selectedArtist, selectedType)
 
   }
 

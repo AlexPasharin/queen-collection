@@ -18,6 +18,7 @@ const NavBar = ({ artists, selectedArtist, onSelectArtist, types, selectedType, 
           items={types}
           selectedItem={selectedType}
           onSelect={onSelectType}
+          name="types"
         />
       }
       {/* {entries && <input className="entries-filter" type="text" placeholder="Filter entries" value={entryFilterText} onChange={onChangeEntryFilterText}  />} */}

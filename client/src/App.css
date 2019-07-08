@@ -66,6 +66,11 @@ body, ul, p, h1 {
   font-size: inherit;
 }
 
+.selector-input:disabled {
+  color: black;
+  background-color: #d5dbe3;
+}
+
 .selector-list {
   position: absolute;
   width: 100%;

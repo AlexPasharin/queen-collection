@@ -1,5 +1,5 @@
 :root {
-  --nav-bar-height: 200px;
+  --nav-bar-height: 250px;
   --nav-bar-bg-color: #282c34;
   --entry-block-open-bg-color: papayawhip;
   --release-block-bg-color: pink;
@@ -66,6 +66,15 @@ body, ul, p, h1 {
   font-size: inherit;
 }
 
+.entries-filter {
+  width: calc(300px - 22px);
+  margin: 0 20px;
+  padding: 10px;
+  border-radius: 5px;
+  border-width: 1px;
+  font-size: inherit;
+}
+
 .selector-input:disabled {
   color: black;
   background-color: #d5dbe3;
@@ -102,9 +111,7 @@ main {
   margin-top: var(--nav-bar-height);
 }
 
-.entries-filter::placeholder, .entries-filter::-webkit-input-placeholder {
-  text-indent: 10px;
-}
+
 
 .entry-list-empty {
   text-align: center;

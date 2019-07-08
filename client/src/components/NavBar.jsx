@@ -21,7 +21,9 @@ const NavBar = ({ artists, selectedArtist, onSelectArtist, types, selectedType, 
           name="types"
         />
       }
-      {/* {entries && <input className="entries-filter" type="text" placeholder="Filter entries" value={entryFilterText} onChange={onChangeEntryFilterText}  />} */}
+      {entries &&
+        <input className="entries-filter" type="text" placeholder="Filter entries" value={entryFilterText} onChange={onChangeEntryFilterText} />
+      }
     </header>
   )
 }

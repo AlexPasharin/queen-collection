@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import EntryReleases from './EntryReleases'
-import { formatDate } from '../utils/dataHelpers'
+import { formatDate } from '../../utils/dataHelpers'
 
 const Entry = ({ entry, onSelectEntry, onSelectRelease }) => {
   const [open, setOpen] = useState(false)
@@ -21,9 +21,9 @@ const Entry = ({ entry, onSelectEntry, onSelectRelease }) => {
         <p>
           <span className="detail__title">Original release date: </span>
           {formatDate(entry.release_date)}
-      </p>
+        </p>
       </div>
-      {open && <EntryReleases releases={entry.releases} onSelectRelease={onSelectRelease}/>}
+      {open && <EntryReleases releases={entry.releases} onSelectRelease={onSelectRelease} />}
     </li>
   )
 }

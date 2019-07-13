@@ -1,6 +1,7 @@
 import React from 'react'
 
 import Selector from './Selector'
+import '../../styles/NavBar.css'
 
 const NavBar = ({ artists, selectedArtist, onSelectArtist, types, selectedType, onSelectType, entries, entryFilterText, onChangeEntryFilterText }) => {
   return (
@@ -16,6 +17,7 @@ const NavBar = ({ artists, selectedArtist, onSelectArtist, types, selectedType, 
         }
         {types &&
           <Selector
+            key={selectedArtist.id}
             items={types}
             selectedItem={selectedType}
             onSelect={onSelectType}

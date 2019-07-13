@@ -1,0 +1,27 @@
+:root {
+  --nav-bar-height: 150px;
+  --nav-bar-bg-color: #282c34;
+  --entry-block-open-bg-color: papayawhip;
+  --release-block-bg-color: pink;
+}
+
+body, ul, p, h1 {
+  margin: 0;
+  padding: 0;
+}
+
+.modal-container ~ .main-content {
+  opacity: 0.5; /* when a modal is opened main content loses opacity */
+}
+
+@media screen and (max-width: 1060px) {
+  :root {
+    --nav-bar-height: 200px;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  :root {
+    --nav-bar-height: 260px;
+  }
+}

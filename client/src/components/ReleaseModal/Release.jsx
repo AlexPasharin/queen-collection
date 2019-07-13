@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { formatDate } from '../utils/dataHelpers'
+import { formatDate } from '../../utils/dataHelpers'
 
 const Release = ({ release, onSelect, extended = false }) => {
   const { discogs_url, country, format, version, release_date, name } = release
@@ -29,7 +29,7 @@ const Release = ({ release, onSelect, extended = false }) => {
           </tr>
           <tr>
             <td>Release date: </td>
-            <td>{ formatDate(release_date)} </td>
+            <td>{formatDate(release_date)} </td>
           </tr>
         </tbody>
       </table>

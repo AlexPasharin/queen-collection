@@ -1,6 +1,7 @@
 import React from 'react'
 
 import Entry from './Entry'
+import '../../styles/Entries.css'
 
 const Entries = ({ entries, onSelectEntry, entryFilterText, onSelectRelease }) => {
   if (!entries)
@@ -16,7 +17,7 @@ const Entries = ({ entries, onSelectEntry, entryFilterText, onSelectRelease }) =
   return (
     <ul>
       {filteredEntries.map(e =>
-        <Entry key={e.id} entry={e} entryFilterText={entryFilterText} onSelectEntry={() => onSelectEntry(e)} onSelectRelease={onSelectRelease}/>
+        <Entry key={e.id} entry={e} entryFilterText={entryFilterText} onSelectEntry={() => onSelectEntry(e)} onSelectRelease={onSelectRelease} />
       )}
     </ul>
   )

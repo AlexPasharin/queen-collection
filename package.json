@@ -1,0 +1,19 @@
+{
+  "name": "queen-collection",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "server": "cd server && npm start",
+    "client": "cd client && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexPasharin/queen-collection.git"
+  },
+  "author": "Alex Pasharin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexPasharin/queen-collection/issues"
+  },
+  "homepage": "https://github.com/AlexPasharin/queen-collection#readme"
+}

@@ -2,10 +2,11 @@ import React from 'react'
 import { getArtistData, getArtistsData, getReleases, getTypeData } from './utils/dataGetters'
 import { decode, encode } from './utils/stringHelpers'
 
-import './App.css'
-import ReleaseDetailsModal from './components/modals/ReleaseDetailsModal'
-import NavBar from './components/NavBar'
-import Entries from './components/Entries'
+import ReleaseDetailsModal from './components/ReleaseModal/ReleaseDetailsModal'
+import NavBar from './components/NavBar/NavBar'
+import Entries from './components/Entries/Entries'
+
+import './styles/App.css'
 
 const addQueryParams = (artist, type) => {
   const artistQueryParam = artist ? `artist=${encode(artist.name.toLowerCase())}` : ''
@@ -17,7 +18,6 @@ const addQueryParams = (artist, type) => {
   const newurl = `${window.location.origin}${questionMark}${artistQueryParam}${ampersand}${typeQueryParam}`
   window.history.pushState({ path: newurl }, '', newurl)
 }
-
 
 export default class App extends React.Component {
   state = {

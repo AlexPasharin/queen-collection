@@ -10,7 +10,7 @@ body, ul, p, h1 {
   padding: 0;
 }
 
-.modal-container ~ .main-content {
+.has-modal .main-content {
   opacity: 0.5; /* when a modal is opened main content loses opacity */
 }
 

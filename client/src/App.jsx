@@ -2,7 +2,6 @@ import React from 'react'
 import { getArtistData, getArtistsData, getReleases, getTypeData } from './utils/dataGetters'
 import { decode, encode } from './utils/stringHelpers'
 
-import ReleaseDetailsModal from './components/ReleaseModal/ReleaseDetailsModal'
 import NavBar from './components/NavBar/NavBar'
 import Entries from './components/Entries/Entries'
 
@@ -27,7 +26,6 @@ export default class App extends React.Component {
     selectedType: null,
     entries: null,
     releases: null,
-    selectedRelease: null,
     entryFilterText: ""
   }
 
@@ -76,39 +74,32 @@ export default class App extends React.Component {
     this.setState({ entryFilterText: e.target.value })
   }
 
-  selectRelease = (selectedRelease) => {
-    this.setState({ selectedRelease })
-  }
-
   render() {
-    const { artists, selectedArtist, types, selectedType, entries, entryFilterText, selectedRelease } = this.state
+    const { artists, selectedArtist, types, selectedType, entries, entryFilterText } = this.state
+
+    const filteredEntries = entries && entryFilterText ?
+      entries.filter(e => e.name.toLowerCase().includes(entryFilterText.toLowerCase().trim())) :
+      entries
 
     return (
-      <div>
-        {selectedRelease &&
-          <ReleaseDetailsModal release={selectedRelease} onCloseModal={() => this.selectRelease(null)} />
-        }
-        <div className="main-content">
-          <NavBar
-            artists={artists}
-            selectedArtist={selectedArtist}
-            onSelectArtist={this.onSelectArtist}
-            types={types}
-            selectedType={selectedType}
-            onSelectType={this.onSelectType}
-            entryFilterText={entryFilterText}
-            onChangeEntryFilterText={this.onChangeEntryFilterText}
-            entries={entries}
+      <div className="main-content">
+        <NavBar
+          artists={artists}
+          selectedArtist={selectedArtist}
+          onSelectArtist={this.onSelectArtist}
+          types={types}
+          selectedType={selectedType}
+          onSelectType={this.onSelectType}
+          entryFilterText={entryFilterText}
+          onChangeEntryFilterText={this.onChangeEntryFilterText}
+          entries={entries}
+        />
+        <main>
+          <Entries
+            entries={filteredEntries}
+            onSelectEntry={this.onSelectEntry}
           />
-          <main>
-            <Entries
-              entries={entries}
-              onSelectEntry={this.onSelectEntry}
-              entryFilterText={entryFilterText}
-              onSelectRelease={this.selectRelease}
-            />
-          </main>
-        </div>
+        </main>
       </div>
     )
   }

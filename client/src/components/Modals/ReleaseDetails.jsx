@@ -2,7 +2,7 @@ import React from 'react'
 
 import { formatDate } from '../../utils/dataHelpers'
 
-const Release = ({ release, onSelect, extended = false }) => {
+const ReleaseDetails = ({ release }) => {
   const { discogs_url, country, format, version, release_date, name } = release
 
   return (
@@ -33,7 +33,7 @@ const Release = ({ release, onSelect, extended = false }) => {
           </tr>
         </tbody>
       </table>
-      {name && extended &&
+      {name &&
         <div className="release-info-block">
           (Released as "<span className="detail__title">{name}</span>")
         </div>
@@ -47,9 +47,8 @@ const Release = ({ release, onSelect, extended = false }) => {
           (Released as "<span className="detail__title">{name}</span>")
         </div>
       } */}
-      {!extended && <div className="release-details-link" onClick={onSelect}>Full details</div>}
     </div>
   )
 }
 
-export default Release
+export default ReleaseDetails

@@ -59,11 +59,12 @@ class Selector extends Component {
     this.inputEl.current.focus()
 
     this.setState(prevState => {
-      const { filteredItems } = prevState
+      let { filteredItems, selectedItemIdx } = prevState
 
-      let selectedItemIdx = filteredItems.findIndex(
-        i => i.name.includes(this.state.inputValue)
-      )
+      if (!selectedItemIdx)
+        selectedItemIdx = filteredItems.findIndex(
+          i => i.name.includes(this.state.inputValue)
+        )
 
       if (selectedItemIdx < 0)
         selectedItemIdx = 0

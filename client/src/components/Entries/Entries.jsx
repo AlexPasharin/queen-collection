@@ -3,21 +3,17 @@ import React from 'react'
 import Entry from './Entry'
 import '../../styles/Entries.css'
 
-const Entries = ({ entries, onSelectEntry, entryFilterText, onSelectRelease }) => {
+const Entries = ({ entries, onSelectEntry }) => {
   if (!entries)
     return <div className="entry-list-empty">Loading data...</div>
 
-  const filteredEntries = entryFilterText ?
-    entries.filter(e => e.name.toLowerCase().includes(entryFilterText.toLowerCase().trim())) :
-    entries
-
-  if (!filteredEntries.length)
+  if (!entries.length)
     return <div className="entry-list-empty">No entries correspond to the search release</div>
 
   return (
     <ul>
-      {filteredEntries.map(e =>
-        <Entry key={e.id} entry={e} entryFilterText={entryFilterText} onSelectEntry={() => onSelectEntry(e)} onSelectRelease={onSelectRelease} />
+      {entries.map(e =>
+        <Entry key={e.id} entry={e} onSelectEntry={() => onSelectEntry(e)} />
       )}
     </ul>
   )

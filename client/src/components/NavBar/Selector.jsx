@@ -1,25 +1,49 @@
 import React, { Component, createRef } from 'react'
 
+import { classList } from '../../utils/classList'
+
 class Selector extends Component {
   state = ({
     showList: false,
     inputValue: this.props.selectedItem.name,
-    filteredItems: this.props.items
+    filteredItems: this.props.items,
+    selectedItemIdx: null,
+    inputError: false
   })
 
   inputEl = createRef()
+  itemList = createRef()
+
+  setNewSelectedItemIdx = (idx, scrollIntoView = true) => {
+    this.setState(prevState => ({
+      selectedItemIdx: idx,
+      inputValue: prevState.filteredItems[idx].name
+    }), () => {
+      if (scrollIntoView) {
+        this.scrollSelectedItemIntoView()
+      }
+    })
+  }
 
   onChange = e => {
     const { value } = e.target
+    const { items } = this.props
+    const newFilteredItems = items.filter(i => i.name.toLowerCase().includes(value.trim().toLowerCase()))
+    const noItems = newFilteredItems.length === 0
+
     this.setState({
       showList: true,
       inputValue: value,
-      filteredItems: this.state.items.filter(i => i.name.toLowerCase().includes(value.trim().toLowerCase()))
+      filteredItems: noItems ? items : newFilteredItems,
+      selectedItemIdx: null,
+      error: noItems
     })
   }
 
   onSelect = item => {
-    if (item.id !== this.props.selectedItem.id) {
+    const { selectedItem } = this.props
+
+    if (!selectedItem || item.id !== selectedItem.id) {
       this.props.onSelect(item)
     }
 
@@ -32,27 +56,77 @@ class Selector extends Component {
   }
 
   onInputMouseEnter = () => {
-    this.setState({ showList: true })
     this.inputEl.current.focus()
+
+    this.setState(prevState => {
+      const { filteredItems } = prevState
+
+      let selectedItemIdx = filteredItems.findIndex(
+        i => i.name.includes(this.state.inputValue)
+      )
+
+      if (selectedItemIdx < 0)
+        selectedItemIdx = 0
+
+      return ({
+        showList: true,
+        selectedItemIdx: selectedItemIdx,
+        filteredItems: filteredItems.length ? filteredItems : this.props.items,
+        error: false,
+      })
+    }, this.scrollSelectedItemIntoView)
   }
 
   onKeyDown = e => {
     const { key } = e
 
     if (key === "Enter" || key === "Tab") {
-      const { filteredItems, inputValue } = this.state
-      const item = filteredItems.length === 1 ? filteredItems[0] : filteredItems.find(i => i.name.toLowerCase() === inputValue.trim().toLowerCase())
+      const { filteredItems, inputValue, selectedItemIdx } = this.state
+      const itemIndex = selectedItemIdx !== null ? selectedItemIdx :
+        filteredItems.length === 1 ? 0 :
+          filteredItems.findIndex(i => i.name.toLowerCase() === inputValue.trim().toLowerCase())
+
+      const item = filteredItems[itemIndex]
 
       if (item) {
         this.onSelect(item)
       } else {
         e.preventDefault()
+        this.setState({ error: true })
       }
+    } else if (key === 'ArrowUp' && !this.state.error) {
+      const { selectedItemIdx, filteredItems } = this.state
+      const newSelectedItemIdx = selectedItemIdx === null ? 0 :
+        selectedItemIdx === 0 ? filteredItems.length - 1 : selectedItemIdx - 1
+
+      this.setNewSelectedItemIdx(newSelectedItemIdx)
+    } else if (key === 'ArrowDown' && !this.state.error) {
+      const { selectedItemIdx, filteredItems } = this.state
+      const newSelectedItemIdx = selectedItemIdx === null ? 0 :
+        selectedItemIdx === filteredItems.length - 1 ? 0 : selectedItemIdx + 1
+
+      this.setNewSelectedItemIdx(newSelectedItemIdx)
+    }
+  }
+
+  scrollSelectedItemIntoView = () => {
+    if (this.itemList.current) {
+      const selectedItemElement = this.itemList.current.querySelector(".selector-list__element--selected")
+      selectedItemElement && selectedItemElement.scrollIntoView(true)
     }
   }
 
   onSelectorLeave = () => {
     this.setState({ showList: false })
+
+    if (this.state.error) {
+      this.props.onSelect(null)
+    } else {
+      const selectedItem = this.state.filteredItems[this.state.selectedItemIdx]
+      if (selectedItem) {
+        this.props.onSelect(selectedItem)
+      }
+    }
   }
 
   onFocus = () => {
@@ -60,8 +134,10 @@ class Selector extends Component {
   }
 
   render() {
-    const { showList, inputValue, filteredItems } = this.state
+    const { showList, inputValue, filteredItems, selectedItemIdx, error } = this.state
     const onlyOneItem = this.props.items.length === 1
+
+    const selectedItem = filteredItems[selectedItemIdx]
 
     return (
       <div
@@ -69,10 +145,12 @@ class Selector extends Component {
         onMouseLeave={this.onSelectorLeave}
       >
         <input
-          className="selector-input"
+          className={classList("selector-input", {
+            error
+          })}
           type="text"
           ref={this.inputEl}
-          value={inputValue}
+          value={selectedItem ? selectedItem.name : inputValue}
           onFocus={this.onFocus}
           onKeyDown={this.onKeyDown}
           onChange={this.onChange}
@@ -82,12 +160,17 @@ class Selector extends Component {
         {
           showList && !onlyOneItem &&
           <ul
+            ref={this.itemList}
             className="selector-list"
           >
-            {filteredItems.map(i => (
+            {filteredItems.map((i, idx) => (
               <li
                 key={i.id}
+                className={classList("selector-list__element", {
+                  selected: selectedItemIdx === idx
+                })}
                 onClick={() => this.onSelect(i)}
+                onMouseEnter={() => this.setNewSelectedItemIdx(idx, false)}
               >
                 {i.name}
               </li>

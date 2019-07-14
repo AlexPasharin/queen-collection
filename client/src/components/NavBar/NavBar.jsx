@@ -17,7 +17,7 @@ const NavBar = ({ artists, selectedArtist, onSelectArtist, types, selectedType, 
         }
         {types &&
           <Selector
-            key={selectedArtist.id}
+            key={selectedArtist ? selectedArtist.id : 0}
             items={types}
             selectedItem={selectedType}
             onSelect={onSelectType}

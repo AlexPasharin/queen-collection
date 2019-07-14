@@ -23,6 +23,12 @@ export const getArtistsData = async (preferredSelectedArtistName, preferredSelec
 }
 
 export const getArtistData = async (artist, typeRequestString) => {
+  if (!artist)
+    return ({
+      selectedArtist: null,
+      entries: []
+    })
+
   const types = await getArtistTypes(artist.id)
 
   let selectedType = (typeRequestString && types.find(
@@ -38,5 +44,5 @@ export const getArtistData = async (artist, typeRequestString) => {
 
 export const getTypeData = async (artist, type) => ({
   selectedType: type,
-  entries: await getEntries(artist.id, type.id)
+  entries: artist && type ? await getEntries(artist.id, type.id) : []
 })

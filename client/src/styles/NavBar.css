@@ -53,6 +53,16 @@
   background-color: #d5dbe3;
 }
 
+.selector-input:focus, .entries-filter:focus {
+  outline:none;
+  border: 1px solid blue;
+  border-radius: 5px;
+}
+
+.selector-input--error {
+  border-color: red !important;
+}
+
 .selector-list {
   position: absolute;
   width: 100%;
@@ -63,17 +73,17 @@
   border: 1px solid black;
 }
 
-.selector-list li {
+.selector-list__element {
   background-color: white;
   height: 30px;
   color: black;
   padding: 10px;
   border-bottom: 1px solid black;
-  cursor: pointer;
 }
 
-.selector-list li:hover {
+.selector-list__element--selected {
   background-color: yellow;
+  cursor: pointer;
 }
 
 .app-header__select-box:disabled {

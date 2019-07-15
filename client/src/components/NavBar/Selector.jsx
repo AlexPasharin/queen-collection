@@ -3,22 +3,37 @@ import React, { Component, createRef } from 'react'
 import { classList } from '../../utils/classList'
 
 class Selector extends Component {
+  static getDerivedStateFromProps(newProps, state) {
+    if (newProps.selectedItem && newProps.selectedItem.id !== state.currentItemID) {
+      return ({
+        inputValue: newProps.selectedItem.name,
+        currentItemID: newProps.selectedItem.id,
+        error: false,
+        showList: false,
+        selectedItemIdx: null
+      })
+    }
+
+    if (!newProps.selectedItem) {
+      return ({
+        currentItemID: null,
+        error: true
+      })
+    }
+
+    return null
+  }
+
   state = ({
-    showList: false,
-    inputValue: this.props.selectedItem.name,
-    filteredItems: this.props.items,
-    selectedItemIdx: null,
-    inputError: false
+    inputValue: "",
+    filteredItems: this.props.items
   })
 
   inputEl = createRef()
-  itemList = createRef()
+  selectedItemEl = createRef(null)
 
   setNewSelectedItemIdx = (idx, scrollIntoView = true) => {
-    this.setState(prevState => ({
-      selectedItemIdx: idx,
-      inputValue: prevState.filteredItems[idx].name
-    }), () => {
+    this.setState({ selectedItemIdx: idx }, () => {
       if (scrollIntoView) {
         this.scrollSelectedItemIntoView()
       }
@@ -41,53 +56,43 @@ class Selector extends Component {
   }
 
   onSelect = item => {
-    const { selectedItem } = this.props
+    const { currentItemID } = this.state
 
-    if (!selectedItem || item.id !== selectedItem.id) {
+    // make a new selection request only if current selected item wouldnt change
+    if (!currentItemID || item.id !== currentItemID) {
       this.props.onSelect(item)
+    } else {
+      this.setState({
+        showList: false,
+        selectedItemIdx: null
+      })
     }
-
-    this.setState({
-      showList: false,
-      inputValue: item.name,
-    })
 
     this.inputEl.current.blur()
   }
 
   onInputMouseEnter = () => {
     this.inputEl.current.focus()
+    this.setState({
+      showList: true,
+      selectedItemIdx: null
+    })
+  }
 
-    this.setState(prevState => {
-      let { filteredItems, selectedItemIdx } = prevState
+  get suitableItem() {
+    const { filteredItems, inputValue, selectedItemIdx } = this.state
+    const itemIndex = selectedItemIdx !== null ? selectedItemIdx :
+      filteredItems.length === 1 ? 0 :
+        filteredItems.findIndex(i => i.name.toLowerCase() === inputValue.trim().toLowerCase())
 
-      if (!selectedItemIdx)
-        selectedItemIdx = filteredItems.findIndex(
-          i => i.name.includes(this.state.inputValue)
-        )
-
-      if (selectedItemIdx < 0)
-        selectedItemIdx = 0
-
-      return ({
-        showList: true,
-        selectedItemIdx: selectedItemIdx,
-        filteredItems: filteredItems.length ? filteredItems : this.props.items,
-        error: false,
-      })
-    }, this.scrollSelectedItemIntoView)
+    return filteredItems[itemIndex]
   }
 
   onKeyDown = e => {
     const { key } = e
 
-    if (key === "Enter" || key === "Tab") {
-      const { filteredItems, inputValue, selectedItemIdx } = this.state
-      const itemIndex = selectedItemIdx !== null ? selectedItemIdx :
-        filteredItems.length === 1 ? 0 :
-          filteredItems.findIndex(i => i.name.toLowerCase() === inputValue.trim().toLowerCase())
-
-      const item = filteredItems[itemIndex]
+    if (key === "Enter") {
+      const item = this.suitableItem;
 
       if (item) {
         this.onSelect(item)
@@ -95,38 +100,42 @@ class Selector extends Component {
         e.preventDefault()
         this.setState({ error: true })
       }
-    } else if (key === 'ArrowUp' && !this.state.error) {
+    } else if (key === "Tab") {
+      const item = this.suitableItem;
+
+      if (item) {
+        this.setState({ showList: false })
+      } else {
+        e.preventDefault()
+        this.setState({ error: true })
+      }
+    } else if (key === 'ArrowUp') {
       const { selectedItemIdx, filteredItems } = this.state
-      const newSelectedItemIdx = selectedItemIdx === null ? 0 :
+      const newselectedItemIdx = selectedItemIdx === null ? 0 :
         selectedItemIdx === 0 ? filteredItems.length - 1 : selectedItemIdx - 1
 
-      this.setNewSelectedItemIdx(newSelectedItemIdx)
-    } else if (key === 'ArrowDown' && !this.state.error) {
+      this.setNewSelectedItemIdx(newselectedItemIdx)
+    } else if (key === 'ArrowDown') {
       const { selectedItemIdx, filteredItems } = this.state
-      const newSelectedItemIdx = selectedItemIdx === null ? 0 :
+      const newselectedItemIdx = selectedItemIdx === null ? 0 :
         selectedItemIdx === filteredItems.length - 1 ? 0 : selectedItemIdx + 1
 
-      this.setNewSelectedItemIdx(newSelectedItemIdx)
+      this.setNewSelectedItemIdx(newselectedItemIdx)
     }
   }
 
   scrollSelectedItemIntoView = () => {
-    if (this.itemList.current) {
-      const selectedItemElement = this.itemList.current.querySelector(".selector-list__element--selected")
-      selectedItemElement && selectedItemElement.scrollIntoView(true)
+    if (this.selectedItemEl.current) {
+      this.selectedItemEl.current.scrollIntoView()
     }
   }
 
   onSelectorLeave = () => {
     this.setState({ showList: false })
+    this.inputEl.current.blur()
 
     if (this.state.error) {
       this.props.onSelect(null)
-    } else {
-      const selectedItem = this.state.filteredItems[this.state.selectedItemIdx]
-      if (selectedItem) {
-        this.props.onSelect(selectedItem)
-      }
     }
   }
 
@@ -137,8 +146,6 @@ class Selector extends Component {
   render() {
     const { showList, inputValue, filteredItems, selectedItemIdx, error } = this.state
     const onlyOneItem = this.props.items.length === 1
-
-    const selectedItem = filteredItems[selectedItemIdx]
 
     return (
       <div
@@ -151,7 +158,7 @@ class Selector extends Component {
           })}
           type="text"
           ref={this.inputEl}
-          value={selectedItem ? selectedItem.name : inputValue}
+          value={inputValue}
           onFocus={this.onFocus}
           onKeyDown={this.onKeyDown}
           onChange={this.onChange}
@@ -161,21 +168,25 @@ class Selector extends Component {
         {
           showList && !onlyOneItem &&
           <ul
-            ref={this.itemList}
             className="selector-list"
           >
-            {filteredItems.map((i, idx) => (
-              <li
-                key={i.id}
-                className={classList("selector-list__element", {
-                  selected: selectedItemIdx === idx
-                })}
-                onClick={() => this.onSelect(i)}
-                onMouseEnter={() => this.setNewSelectedItemIdx(idx, false)}
-              >
-                {i.name}
-              </li>
-            ))}
+            {filteredItems.map((i, idx) => {
+              const isSelected = selectedItemIdx === idx
+
+              return (
+                <li
+                  key={i.id}
+                  ref={isSelected ? this.selectedItemEl : null}
+                  className={classList("selector-list__element", {
+                    selected: isSelected
+                  })}
+                  onClick={() => this.onSelect(i)}
+                  onMouseEnter={() => this.setNewSelectedItemIdx(idx, false)}
+                >
+                  {i.name}
+                </li>
+              )
+            })}
           </ul>
         }
       </div >

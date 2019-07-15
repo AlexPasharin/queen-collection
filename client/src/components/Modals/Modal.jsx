@@ -10,7 +10,6 @@ export default class Modal extends Component {
     document.body.classList.add('has-modal')
     document.body.appendChild(this.el);
     this.el.classList.add('modal-container')
-
     this.el.addEventListener('click', this.closeFromOutside)
   }
 

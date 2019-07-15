@@ -1,10 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import EntryReleases from './EntryReleases'
 import { formatDate } from '../../utils/dataHelpers'
+import { classList } from '../../utils/classList'
 
-const Entry = ({ entry, onSelectEntry }) => {
+const Entry = ({ entry, onSelectEntry, focused }) => {
+  // const el = useRef()
   const [open, setOpen] = useState(false)
+
+  // useEffect(() => {
+  //   if (focused && el.current) {
+  //     el.current.scrollIntoView(true)
+  //   }
+  // }, [focused])
 
   const onSelect = () => {
     if (!open) {
@@ -15,7 +23,16 @@ const Entry = ({ entry, onSelectEntry }) => {
   }
 
   return (
-    <li className={`entry-block${open ? " entry-block__open" : ""}`} key={entry.id}>
+    <li
+      // ref={el}
+      className={classList("entry-block", {
+        open, focused
+      })}
+    // tabIndex="0"
+    // onFocus={() => setFocused(true)}
+    // onBlur={() => setFocused(false)}
+    // onKeyDown={onKeyDown}
+    >
       <div className="entry-block__details" onClick={onSelect}>
         <h2>{entry.name} </h2>
         <p>

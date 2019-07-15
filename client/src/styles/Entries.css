@@ -20,7 +20,7 @@ main {
   padding: 10px 40px;
 }
 
-.entry-block:hover, .entry-block__open {
+.entry-block:hover, .entry-block--open, .entry-block--focused {
   background-color: var(--entry-block-open-bg-color);
   border-bottom: 1px solid black;
   border-top: 1px solid black;

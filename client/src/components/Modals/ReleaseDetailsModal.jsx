@@ -4,12 +4,10 @@ import ReleaseDetails from './ReleaseDetails'
 import Modal from './Modal'
 import '../../styles/Modal.css'
 
-const ReleaseDetailsModal = ({ release, onClose }) => {
-  return (
-    <Modal onClose={onClose}>
-      <ReleaseDetails release={release} />
-    </Modal>
-  )
-}
+const ReleaseDetailsModal = ({ release, onClose }) => (
+  <Modal onClose={onClose}>
+    <ReleaseDetails release={release} />
+  </Modal>
+)
 
 export default ReleaseDetailsModal

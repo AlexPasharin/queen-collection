@@ -1,6 +1,7 @@
 import React, { Component, createRef } from 'react'
 
 import { classList } from '../../utils/classList'
+import SelectorItem from './SelectorItem'
 
 class Selector extends Component {
   static getDerivedStateFromProps(newProps, state) {
@@ -174,17 +175,14 @@ class Selector extends Component {
               const isSelected = selectedItemIdx === idx
 
               return (
-                <li
+                <SelectorItem
                   key={i.id}
                   ref={isSelected ? this.selectedItemEl : null}
-                  className={classList("selector-list__element", {
-                    selected: isSelected
-                  })}
+                  name={i.name}
+                  selected={isSelected}
                   onClick={() => this.onSelect(i)}
                   onMouseEnter={() => this.setNewSelectedItemIdx(idx, false)}
-                >
-                  {i.name}
-                </li>
+                />
               )
             })}
           </ul>

@@ -1,48 +1,82 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { Component, createRef } from 'react'
 
-import EntryReleases from './EntryReleases'
 import { formatDate } from '../../utils/dataHelpers'
 import { classList } from '../../utils/classList'
 
-const Entry = ({ entry, onSelectEntry, focused }) => {
-  // const el = useRef()
-  const [open, setOpen] = useState(false)
+import EntryReleases from './EntryReleases'
 
-  // useEffect(() => {
-  //   if (focused && el.current) {
-  //     el.current.scrollIntoView(true)
-  //   }
-  // }, [focused])
-
-  const onSelect = () => {
-    if (!open) {
-      onSelectEntry()
-    }
-
-    setOpen(!open)
+export default class Entry extends Component {
+  state = {
+    open: false
   }
 
-  return (
-    <li
-      // ref={el}
-      className={classList("entry-block", {
-        open, focused
-      })}
-    // tabIndex="0"
-    // onFocus={() => setFocused(true)}
-    // onBlur={() => setFocused(false)}
-    // onKeyDown={onKeyDown}
-    >
-      <div className="entry-block__details" onClick={onSelect}>
-        <h2>{entry.name} </h2>
-        <p>
-          <span className="detail__title">Original release date: </span>
-          {formatDate(entry.release_date)}
-        </p>
-      </div>
-      {open && <EntryReleases releases={entry.releases} />}
-    </li>
-  )
-}
+  el = createRef()
+  releasesEl = createRef()
 
-export default Entry
+  get offsetTop() {
+    return this.el.current.offsetTop;
+  }
+
+  get isOpen() {
+    return this.state.open
+  }
+
+  get hasSelectedRelease() {
+    return this.releasesElement.hasSelectedRelease
+  }
+
+  get releasesElement() {
+    return this.releasesEl.current
+  }
+
+  selectPrevRelease = () => {
+    this.releasesElement.selectPrevRelease()
+  }
+
+  selectNextRelease = () => {
+    this.releasesElement.selectNextRelease()
+  }
+
+  handleEnterKeyPress = () => {
+    if (this.state.open && this.releasesElement.hasSelectedRelease) {
+      this.releasesElement.toggleSelectedReleaseDetails()
+    } else {
+      this.toggleReleasesBlock()
+    }
+  }
+
+  toggleReleasesBlock = () => {
+    this.setState(
+      prevState => ({ open: !prevState.open }),
+      this.props.onClick()
+    )
+  }
+
+  render() {
+    const { entry, focused, afterReleaseDetailsModalClose } = this.props
+    const { open } = this.state
+    const { name, release_date, id } = entry
+
+    return (
+      <li
+        ref={this.el}
+        className={classList("entry-block", { open, focused })}
+      >
+        <div className="entry-block__details" onClick={this.toggleReleasesBlock}>
+          <h2>{name} </h2>
+          <p>
+            <span className="detail__title">Original release date: </span>
+            {formatDate(release_date)}
+          </p>
+        </div>
+        {open &&
+          <EntryReleases
+            entryID={id}
+            ref={this.releasesEl}
+            afterReleaseDetailsModalClose={afterReleaseDetailsModalClose}
+          />
+        }
+      </li>
+    )
+  }
+}

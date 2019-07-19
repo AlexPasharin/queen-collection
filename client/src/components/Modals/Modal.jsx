@@ -26,12 +26,13 @@ export default class Modal extends Component {
 
   render() {
     return (
-      createPortal((
+      createPortal(
         <div className="modal">
           {this.props.children}
           <span onClick={this.props.onClose}>CLOSE MODAL</span>
-        </div>
-      ), this.el)
+        </div>,
+        this.el
+      )
     )
   }
 }

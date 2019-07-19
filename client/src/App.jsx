@@ -1,5 +1,5 @@
 import React from 'react'
-import { getArtistData, getArtistsData, getReleases, getTypeData } from './utils/dataGetters'
+import { getArtistData, getArtistsData, getTypeData } from './utils/dataGetters'
 import { decode, encode } from './utils/stringHelpers'
 
 import NavBar from './components/NavBar/NavBar'
@@ -25,7 +25,6 @@ export default class App extends React.Component {
     types: null,
     selectedType: null,
     entries: null,
-    releases: null,
     entryFilterText: ""
   }
 
@@ -50,24 +49,6 @@ export default class App extends React.Component {
 
   onSelectType = async type => {
     this.setState(await getTypeData(this.state.selectedArtist, type))
-  }
-
-  onSelectEntry = async entry => {
-    let releases = entry.releases
-
-    if (!releases) {
-      releases = await getReleases(entry.id)
-
-      const entryIndex = this.state.entries.findIndex(e => e.id === entry.id)
-      const newEntries = [...this.state.entries]
-
-      newEntries[entryIndex] = {
-        ...entry,
-        releases
-      }
-
-      this.setState({ entries: newEntries })
-    }
   }
 
   onChangeEntryFilterText = e => {
@@ -97,7 +78,6 @@ export default class App extends React.Component {
         <main>
           <Entries
             entries={filteredEntries}
-            onSelectEntry={this.onSelectEntry}
           />
         </main>
       </div>

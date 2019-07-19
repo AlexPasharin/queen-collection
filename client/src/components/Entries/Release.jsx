@@ -1,16 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-import ReleaseDetailsModal from '../Modals/ReleaseDetailsModal'
-
-const Release = ({ release }) => {
-  const [detailsOpen, setDetailsOpen] = useState(false)
-
-  return (
-    <li>
-      <span onClick={() => setDetailsOpen(true)}>{release.version}</span>
-      {detailsOpen && <ReleaseDetailsModal release={release} onClose={() => setDetailsOpen(false)} />}
-    </li>
-  )
-}
+const Release = ({ release, selected, onClick }) => (
+  <li>
+    <span
+      className={selected ? "entry-block-release--selected" : ""}
+      onClick={onClick}
+    >
+      {release.version}
+    </span>
+  </li>
+)
 
 export default Release

@@ -52,6 +52,10 @@ export default class Entry extends Component {
     )
   }
 
+  scrollIntoView = () => {
+    this.el.current.scrollIntoView(false)
+  }
+
   render() {
     const { entry, focused, afterReleaseDetailsModalClose } = this.props
     const { open } = this.state

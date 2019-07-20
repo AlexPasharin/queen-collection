@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 
 import { getReleases } from '../../utils/dataGetters'
 import ReleaseDetailsModal from '../Modals/ReleaseDetailsModal'
@@ -11,9 +11,20 @@ export default class EntryReleases extends Component {
     detailsOpen: false
   }
 
+  el = createRef()
+
   componentDidMount() {
-    getReleases(this.props.entryID).then(releases => this.setState({ releases }))
+    getReleases(this.props.entryID)
+      .then(
+        releases => this.setState({ releases }, () => this.el.current && this.el.current.scrollIntoView(false))
+      )
   }
+
+  // componentDidUpdate(_, prevState) {
+  //   if (prevState.releases !== this.state.releases) {
+  //     this.el.current && this.el.current.scrollIntoView()
+  //   }
+  // }
 
   get hasSelectedRelease() {
     return this.state.selectedReleaseIdx !== null
@@ -73,7 +84,7 @@ export default class EntryReleases extends Component {
       return <p className="release-view detail__title"> This entry does not have releases in the collection</p>
 
     return (
-      <div className="release-view">
+      <div className="release-view" ref={this.el}>
         <div className="detail__title"> {releases.length > 1 ? `${releases.length} releases in the collection` : "1 release in the collection"} </div>
         <ul>
           {releases.map((r, idx) =>

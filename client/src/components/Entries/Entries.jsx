@@ -13,10 +13,7 @@ export default class Entries extends Component {
 
   componentDidUpdate() {
     if (this.scrollOnUpdate) {
-      if (this.currentFocusedEl) {
-        window.scrollTo(0, this.currentFocusedEl.offsetTop - this.el.current.offsetTop)
-      }
-
+      this.currentFocusedEl && this.currentFocusedEl.scrollIntoView()
       this.scrollOnUpdate = undefined
     }
   }
@@ -93,7 +90,11 @@ export default class Entries extends Component {
       }),
       () => this.el.current.focus()
     )
+  }
 
+  onEntryClick = idx => {
+    this.scrollOnUpdate = true
+    this.setState({ focusedEntryIdx: idx })
   }
 
   render() {
@@ -124,7 +125,7 @@ export default class Entries extends Component {
               ref={isFocusedElement ? this.focusedEl : null}
               focused={isFocusedElement}
               entry={e}
-              onClick={() => this.setState({ focusedEntryIdx: idx, scroll: true })}
+              onClick={() => this.onEntryClick(idx)}
               afterReleaseDetailsModalClose={this.afterReleaseDetailsModalClose}
             />)
         })}

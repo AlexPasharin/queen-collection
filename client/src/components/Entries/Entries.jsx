@@ -11,13 +11,6 @@ export default class Entries extends Component {
   el = createRef()
   focusedEl = createRef()
 
-  componentDidUpdate() {
-    if (this.scrollOnUpdate) {
-      this.currentFocusedEl && this.currentFocusedEl.scrollIntoView()
-      this.scrollOnUpdate = undefined
-    }
-  }
-
   get currentFocusedEl() {
     return this.focusedEl.current
   }
@@ -27,9 +20,7 @@ export default class Entries extends Component {
       this.setState({
         focusedEntryIdx: 0,
         prevFocusedEntryIdx: undefined
-      },
-        () => window.scrollTo(0, 0)
-      )
+      })
     }
   }
 
@@ -40,16 +31,31 @@ export default class Entries extends Component {
     }))
   }
 
+  selectPrevRelease = () => {
+    if (!this.currentFocusedEl) {
+      return false
+    }
+
+    return this.currentFocusedEl.selectPrevRelease()
+  }
+
+  selectNextRelease = () => {
+    if (!this.currentFocusedEl) {
+      return false
+    }
+
+    return this.currentFocusedEl.selectNextRelease()
+  }
+
   onKeyDown = e => {
     e.preventDefault()
     const { key } = e
 
-    if (key === 'ArrowUp') {
-      if (this.currentFocusedEl && this.currentFocusedEl.isOpen) {
-        this.currentFocusedEl.selectPrevRelease()
-      } else {
-        this.scrollOnUpdate = true
 
+    if (key === 'ArrowUp') {
+      const releaseSelected = this.selectPrevRelease()
+
+      if (!releaseSelected) {
         this.setState(prevState => {
           const { focusedEntryIdx } = prevState
           const newfocusedIdx = focusedEntryIdx === null ? 0 :
@@ -61,10 +67,9 @@ export default class Entries extends Component {
         })
       }
     } else if (key === 'ArrowDown') {
-      if (this.currentFocusedEl && this.currentFocusedEl.isOpen) {
-        this.currentFocusedEl.selectNextRelease()
-      } else {
-        this.scrollOnUpdate = true
+      const releaseSelected = this.selectNextRelease()
+
+      if (!releaseSelected) {
         this.setState(prevState => {
           const { focusedEntryIdx } = prevState
           const newfocusedIdx = focusedEntryIdx === null ? 0 :
@@ -76,9 +81,7 @@ export default class Entries extends Component {
         })
       }
     } else if (key === "Enter") {
-      if (this.currentFocusedEl) {
-        this.currentFocusedEl.handleEnterKeyPress()
-      }
+      this.currentFocusedEl && this.currentFocusedEl.handleEnterKeyPress()
     }
   }
 
@@ -93,12 +96,11 @@ export default class Entries extends Component {
   }
 
   onEntryClick = idx => {
-    this.scrollOnUpdate = true
     this.setState({ focusedEntryIdx: idx })
   }
 
   render() {
-    const { entries } = this.props
+    const { entries, artist, type } = this.props
     const { focusedEntryIdx } = this.state
 
     if (!entries)
@@ -127,6 +129,8 @@ export default class Entries extends Component {
               entry={e}
               onClick={() => this.onEntryClick(idx)}
               afterReleaseDetailsModalClose={this.afterReleaseDetailsModalClose}
+              artistName={artist.name}
+              typeName={type.name}
             />)
         })}
       </ul>

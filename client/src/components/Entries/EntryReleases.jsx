@@ -32,8 +32,16 @@ export default class EntryReleases extends Component {
 
   get selectedRelease() {
     const { selectedReleaseIdx, releases } = this.state
+    const { artistName, entryName, typeName } = this.props
 
-    return selectedReleaseIdx === null ? null : releases[selectedReleaseIdx]
+    return selectedReleaseIdx === null ?
+      null : ({
+        ...releases[selectedReleaseIdx],
+        artistName,
+        entryName,
+        typeName
+      })
+
   }
 
   selectPrevRelease = () => {
@@ -57,7 +65,10 @@ export default class EntryReleases extends Component {
   }
 
   openReleaseDetails = idx => {
-    this.setState({ selectedReleaseIdx: idx, detailsOpen: true })
+    this.setState({
+      selectedReleaseIdx: idx,
+      detailsOpen: true
+    })
   }
 
   toggleSelectedReleaseDetails = () => {
@@ -91,7 +102,15 @@ export default class EntryReleases extends Component {
             <Release key={r.id} release={r} selected={selectedReleaseIdx === idx} onClick={() => this.openReleaseDetails(idx)} />
           )}
         </ul>
-        {detailsOpen && selectedRelease && <ReleaseDetailsModal release={selectedRelease} onClose={this.toggleSelectedReleaseDetails} />}
+        {
+          detailsOpen &&
+          selectedRelease &&
+          <ReleaseDetailsModal
+            key={selectedRelease.id}
+            release={selectedRelease}
+            onClose={this.toggleSelectedReleaseDetails}
+          />
+        }
       </div>
     )
   }

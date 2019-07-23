@@ -78,6 +78,8 @@ export default class App extends React.Component {
         <main>
           <Entries
             entries={filteredEntries}
+            artist={selectedArtist}
+            type={selectedType}
           />
         </main>
       </div>

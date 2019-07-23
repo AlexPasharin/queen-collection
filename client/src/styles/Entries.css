@@ -60,7 +60,6 @@ main {
   display: inline-block;
   transform: scale(1.05);
   color: blue;
-  text-decoration: underline;
   cursor: pointer;
 }
 

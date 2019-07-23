@@ -13,32 +13,42 @@ export default class Entry extends Component {
   el = createRef()
   releasesEl = createRef()
 
-  get offsetTop() {
-    return this.el.current.offsetTop;
-  }
-
-  get isOpen() {
-    return this.state.open
-  }
-
-  get hasSelectedRelease() {
-    return this.releasesElement.hasSelectedRelease
+  componentDidUpdate(prevProps) {
+    if (!prevProps.focused && this.props.focused) {
+      this.el.current.scrollIntoView(false)
+    }
   }
 
   get releasesElement() {
     return this.releasesEl.current
   }
 
+  get hasSelectedRelease() {
+    return this.releasesElement && this.releasesElement.hasSelectedRelease
+  }
+
   selectPrevRelease = () => {
+    if (!this.releasesElement) {
+      return false
+    }
+
     this.releasesElement.selectPrevRelease()
+
+    return true
   }
 
   selectNextRelease = () => {
+    if (!this.releasesElement) {
+      return false
+    }
+
     this.releasesElement.selectNextRelease()
+
+    return true
   }
 
   handleEnterKeyPress = () => {
-    if (this.state.open && this.releasesElement.hasSelectedRelease) {
+    if (this.state.open && this.hasSelectedRelease) {
       this.releasesElement.toggleSelectedReleaseDetails()
     } else {
       this.toggleReleasesBlock()
@@ -52,12 +62,8 @@ export default class Entry extends Component {
     )
   }
 
-  scrollIntoView = () => {
-    this.el.current.scrollIntoView(false)
-  }
-
   render() {
-    const { entry, focused, afterReleaseDetailsModalClose } = this.props
+    const { entry, artistName, typeName, focused, afterReleaseDetailsModalClose } = this.props
     const { open } = this.state
     const { name, release_date, id } = entry
 
@@ -75,7 +81,11 @@ export default class Entry extends Component {
         </div>
         {open &&
           <EntryReleases
+            key={id}
             entryID={id}
+            artistName={artistName}
+            entryName={entry.name}
+            typeName={typeName}
             ref={this.releasesEl}
             afterReleaseDetailsModalClose={afterReleaseDetailsModalClose}
           />

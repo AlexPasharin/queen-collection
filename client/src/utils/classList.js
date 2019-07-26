@@ -1,4 +1,4 @@
-export const classList = (baseClass, modificatorObject = {}) => {
+export const classList = (baseClass, modificatorObject = {}, otherClasses = []) => {
   const list = [baseClass]
 
   for (let property in modificatorObject) {
@@ -7,5 +7,5 @@ export const classList = (baseClass, modificatorObject = {}) => {
     }
   }
 
-  return list.join(" ")
+  return list.join(" ") + " " + otherClasses.join(" ")
 }

@@ -6,7 +6,7 @@ import '../../styles/Modal.css'
 
 const ReleaseDetailsModal = ({ release, onClose }) => (
   <Modal onClose={onClose}>
-    <ReleaseDetails release={release} />
+    <ReleaseDetails release={release} closeModal={onClose} />
   </Modal>
 )
 

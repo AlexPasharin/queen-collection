@@ -25,3 +25,7 @@ body, ul, p, h1 {
     --nav-bar-height: 260px;
   }
 }
+
+.no-focus-outline:focus {
+  outline: none;
+}

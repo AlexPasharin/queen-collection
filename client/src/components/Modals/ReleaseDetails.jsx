@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { formatDate } from '../../utils/dataHelpers'
 
@@ -40,7 +40,6 @@ const releaseObjFields = [
   }
 ]
 
-
 const DetailRow = ({ fieldObj, release, onChange, copyMode }) => {
   const { key, text, format } = fieldObj
   let value = release[key]
@@ -55,14 +54,12 @@ const DetailRow = ({ fieldObj, release, onChange, copyMode }) => {
 
   const title = text || normalizeKeyString(key)
 
-  const onKeyDown = e => e.stopPropagation()
-
   return (
     <tr>
       <td>{title}:</td>
       <td>
         {copyMode ?
-          <input key={key} type="text" value={value} onKeyDown={onKeyDown} onChange={onChange} name={key} />
+          <input key={key} type="text" value={value} onChange={onChange} name={key} />
           :
           value
         }
@@ -71,9 +68,10 @@ const DetailRow = ({ fieldObj, release, onChange, copyMode }) => {
   )
 }
 
-const ReleaseDetails = ({ release }) => {
+const ReleaseDetails = ({ release, closeModal }) => {
   const [copyMode, setCopyMode] = useState(false)
   const [releaseState, setReleaseState] = useState(release)
+  const [btnFocused, setBtnFocused] = useState(false)
 
   const {
     discogs_url,
@@ -84,7 +82,6 @@ const ReleaseDetails = ({ release }) => {
   } = release
 
   const onChange = e => {
-
     const { name, value } = e.target
 
     setReleaseState(r => ({
@@ -93,8 +90,37 @@ const ReleaseDetails = ({ release }) => {
     }))
   }
 
-  const onCopyMode = () => setCopyMode(true)
-  const onSubmit = () => { }
+  const formEl = useRef()
+
+  useEffect(() => {
+    formEl.current.focus()
+  }, [])
+
+  const onKeyDown = e => {
+    e.stopPropagation()
+
+    const { key } = e
+
+    if (key === "Enter" && !btnFocused) {
+      closeModal()
+    } else if (key === 'ArrowUp' || key === "ArrowDown") {
+      e.preventDefault()
+    }
+  }
+
+  const onSubmit = e => {
+    e.preventDefault()
+
+    if (!copyMode) {
+      setCopyMode(true)
+    } else {
+    }
+  }
+
+  const onBtnBlur = () => {
+    setBtnFocused(false)
+    formEl.current.focus()
+  }
 
   return (
     <div className="release-block">
@@ -113,7 +139,7 @@ const ReleaseDetails = ({ release }) => {
         </a> :
         "(no discogs url)"
       }
-      <form>
+      <form tabIndex="0" ref={formEl} onKeyDown={onKeyDown} className="no-focus-outline">
         <table className="release-block-details">
           <tbody>
             {releaseObjFields.map(
@@ -121,11 +147,15 @@ const ReleaseDetails = ({ release }) => {
             )}
           </tbody>
         </table>
+        <button
+          type="submit"
+          onClick={onSubmit}
+          onFocus={() => setBtnFocused(true)}
+          onBlur={onBtnBlur}
+        >
+          {copyMode ? "SUBMIT" : "COPY"}
+        </button>
       </form>
-      {copyMode ?
-        <button onClick={onSubmit}>SUBMIT</button> :
-        <button onClick={onCopyMode}>COPY</button>
-      }
     </div>
   )
 }

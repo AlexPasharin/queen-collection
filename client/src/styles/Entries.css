@@ -1,6 +1,8 @@
 
 main {
   margin-top: var(--nav-bar-height);
+  height: calc(100vh - var(--nav-bar-height));
+  overflow: scroll
 }
 
 .entry-list:focus {
@@ -24,11 +26,27 @@ main {
   padding: 10px 40px;
 }
 
-.entry-block:hover, .entry-block--open, .entry-block--focused {
-  background-color: var(--entry-block-open-bg-color);
+.entry-block:focus, .entry-block--open, .entry-block--selected {
   border-bottom: 1px solid black;
   border-top: 1px solid black;
 }
+
+.entry-block:hover {
+  background-color: var(--entry-block-open-bg-color);
+}
+
+.entry-block:focus {
+  background-color: var(--entry-block-open-bg-color);
+}
+
+.entry-block--selected {
+  background-color: var(--entry-block-open-bg-color);
+}
+
+.entry-block--open {
+  background-color: var(--entry-block-open-bg-color);
+}
+
 
 .release-block-details td:first-child {
   font-weight: bold;

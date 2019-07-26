@@ -1,33 +1,27 @@
 import React, { Component, createRef } from 'react'
 
 import { getReleases } from '../../utils/dataGetters'
-import ReleaseDetailsModal from '../Modals/ReleaseDetailsModal'
 import Release from './Release'
 
 export default class EntryReleases extends Component {
   state = {
     releases: null,
     selectedReleaseIdx: null,
-    detailsOpen: false
   }
 
   el = createRef()
 
-  componentDidMount() {
-    getReleases(this.props.entryID)
-      .then(
-        releases => this.setState({ releases }, () => this.el.current && this.el.current.scrollIntoView(false))
-      )
+  async componentDidMount() {
+    const releases = await getReleases(this.props.entryID)
+    this.setState({ releases }, () => {
+      this.el.current.focus()
+    })
   }
 
-  // componentDidUpdate(_, prevState) {
-  //   if (prevState.releases !== this.state.releases) {
-  //     this.el.current && this.el.current.scrollIntoView()
-  //   }
-  // }
-
-  get hasSelectedRelease() {
-    return this.state.selectedReleaseIdx !== null
+  componentDidUpdate() {
+    if (this.state.selectedReleaseIdx === null) {
+      this.el.current.focus()
+    }
   }
 
   get selectedRelease() {
@@ -35,13 +29,13 @@ export default class EntryReleases extends Component {
     const { artistName, entryName, typeName } = this.props
 
     return selectedReleaseIdx === null ?
-      null : ({
+      null :
+      ({
         ...releases[selectedReleaseIdx],
         artistName,
         entryName,
         typeName
       })
-
   }
 
   selectPrevRelease = () => {
@@ -64,10 +58,9 @@ export default class EntryReleases extends Component {
     })
   }
 
-  openReleaseDetails = idx => {
+  selectRelease = idx => {
     this.setState({
       selectedReleaseIdx: idx,
-      detailsOpen: true
     })
   }
 
@@ -76,41 +69,65 @@ export default class EntryReleases extends Component {
       prevState => ({ detailsOpen: !prevState.detailsOpen }),
       () => {
         if (!this.state.detailsOpen) {
-          this.props.afterReleaseDetailsModalClose()
+          this.reFocus()
         }
       }
     )
   }
 
+  handleEnterKeyPress = () => {
+    if (this.state.selectedReleaseIdx === null) {
+      this.props.close()
+    } else {
+      this.toggleSelectedReleaseDetails()
+    }
+  }
+
+  onKeyDown = e => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const { key } = e
+
+    if (key === 'ArrowUp') {
+      this.selectPrevRelease()
+    } else if (key === 'ArrowDown') {
+      this.selectNextRelease()
+    }
+
+    if (key === "Enter") {
+      this.handleEnterKeyPress()
+    }
+  }
+
+  reFocus = () => {
+    this.el.current.focus()
+  }
+
   render() {
-    const { releases, selectedReleaseIdx, detailsOpen } = this.state;
-    const selectedRelease = this.selectedRelease;
+    const { releases, selectedReleaseIdx } = this.state;
 
     if (!releases)
       return (
-        <p className="release-view detail__title"> Loading releases...</p>
+        <p ref={this.el} className="release-view detail__title no-focus-outline"> Loading releases...</p>
       )
 
     if (!releases.length)
-      return <p className="release-view detail__title"> This entry does not have releases in the collection</p>
+      return <p ref={this.el} className="release-view detail__title no-focus-outline"> This entry does not have releases in the collection</p>
 
     return (
-      <div className="release-view" ref={this.el}>
+      <div
+        tabIndex="0"
+        className="release-view no-focus-outline"
+        ref={this.el}
+        onKeyDown={this.onKeyDown}
+      >
         <div className="detail__title"> {releases.length > 1 ? `${releases.length} releases in the collection` : "1 release in the collection"} </div>
         <ul>
           {releases.map((r, idx) =>
-            <Release key={r.id} release={r} selected={selectedReleaseIdx === idx} onClick={() => this.openReleaseDetails(idx)} />
+            <Release key={r.id} release={r} selected={selectedReleaseIdx === idx} onSelect={() => this.selectRelease(idx)} />
           )}
         </ul>
-        {
-          detailsOpen &&
-          selectedRelease &&
-          <ReleaseDetailsModal
-            key={selectedRelease.id}
-            release={selectedRelease}
-            onClose={this.toggleSelectedReleaseDetails}
-          />
-        }
       </div>
     )
   }

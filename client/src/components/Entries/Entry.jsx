@@ -11,46 +11,30 @@ export default class Entry extends Component {
   }
 
   el = createRef()
-  releasesEl = createRef()
 
   componentDidUpdate(prevProps) {
-    if (!prevProps.focused && this.props.focused) {
-      this.el.current.scrollIntoView(false)
+    if (!prevProps.selected && this.props.selected) {
+      //      this.el.current.scrollIntoView(false)
+      this.el.current.focus()
     }
   }
 
-  get releasesElement() {
-    return this.releasesEl.current
-  }
+  onKeyDown = e => {
+    e.preventDefault()
 
-  get hasSelectedRelease() {
-    return this.releasesElement && this.releasesElement.hasSelectedRelease
-  }
+    const { key } = e
 
-  selectPrevRelease = () => {
-    if (!this.releasesElement) {
-      return false
-    }
-
-    this.releasesElement.selectPrevRelease()
-
-    return true
-  }
-
-  selectNextRelease = () => {
-    if (!this.releasesElement) {
-      return false
-    }
-
-    this.releasesElement.selectNextRelease()
-
-    return true
-  }
-
-  handleEnterKeyPress = () => {
-    if (this.state.open && this.hasSelectedRelease) {
-      this.releasesElement.toggleSelectedReleaseDetails()
-    } else {
+    if (key === 'ArrowUp') {
+      this.props.selectPrevEntry()
+    } else if (key === 'ArrowDown') {
+      this.props.selectNextEntry()
+    } else if (key === "Tab") {
+      if (this.props.lastEntry) {
+        this.el.current.blur()
+      } else {
+        this.props.selectNextEntry()
+      }
+    } else if (key === "Enter") {
       this.toggleReleasesBlock()
     }
   }
@@ -58,21 +42,53 @@ export default class Entry extends Component {
   toggleReleasesBlock = () => {
     this.setState(
       prevState => ({ open: !prevState.open }),
-      this.props.onClick()
+      () => {
+        if (!this.state.open) {
+          this.reFocus()
+        }
+      }
     )
   }
 
+  reFocus = () => {
+    if (this.props.selected) {
+      this.el.current.focus()
+    }
+  }
+
+  onMouseDown = e => {
+    e.preventDefault()
+  }
+
+  onClick = () => {
+    if (!this.props.selected)
+      this.props.select()
+
+    this.setState(
+      prevState => ({ open: !prevState.open }),
+    )
+  }
+
+  onFocus = () => {
+    if (!this.props.selected)
+      this.props.select()
+  }
+
   render() {
-    const { entry, artistName, typeName, focused, afterReleaseDetailsModalClose } = this.props
+    const { entry, artistName, typeName, selected } = this.props
     const { open } = this.state
     const { name, release_date, id } = entry
 
     return (
       <li
+        tabIndex="0"
         ref={this.el}
-        className={classList("entry-block", { open, focused })}
+        className={classList("entry-block", { open, selected }, ["no-focus-outline"])}
+        onKeyDown={this.onKeyDown}
+        onFocus={this.onFocus}
+        onMouseDown={this.onMouseDown}
       >
-        <div className="entry-block__details" onClick={this.toggleReleasesBlock}>
+        <div className="entry-block__details" onClick={this.onClick}>
           <h2>{name} </h2>
           <p>
             <span className="detail__title">Original release date: </span>
@@ -81,13 +97,12 @@ export default class Entry extends Component {
         </div>
         {open &&
           <EntryReleases
-            key={id}
             entryID={id}
             artistName={artistName}
             entryName={entry.name}
             typeName={typeName}
-            ref={this.releasesEl}
-            afterReleaseDetailsModalClose={afterReleaseDetailsModalClose}
+            close={this.toggleReleasesBlock}
+            afterReleaseDetailsModalClose={this.reFocus}
           />
         }
       </li>

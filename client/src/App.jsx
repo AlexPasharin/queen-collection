@@ -25,7 +25,8 @@ export default class App extends React.Component {
     types: null,
     selectedType: null,
     entries: null,
-    entryFilterText: ""
+    entryFilterText: "",
+    selectedEntryIdx: null
   }
 
   async componentDidMount() {
@@ -51,16 +52,51 @@ export default class App extends React.Component {
     this.setState(await getTypeData(this.state.selectedArtist, type))
   }
 
+  get entries() {
+    const { entries, entryFilterText } = this.state
+
+    return entries && entryFilterText ?
+      entries.filter(e => e.name.toLowerCase().includes(entryFilterText.toLowerCase().trim())) :
+      entries
+  }
+
   onChangeEntryFilterText = e => {
-    this.setState({ entryFilterText: e.target.value })
+    this.setState({
+      entryFilterText: e.target.value,
+      selectedEntryIdx: null
+    })
+  }
+
+  selectPrevEntry = () => {
+    this.setState(prevState => {
+      const { selectedEntryIdx } = prevState
+      const newSelectedIdx = selectedEntryIdx === null ? 0 :
+        selectedEntryIdx === 0 ? this.entries.length - 1 : selectedEntryIdx - 1
+
+      return ({
+        selectedEntryIdx: newSelectedIdx
+      })
+    })
+  }
+
+  selectNextEntry = () => {
+    this.setState(prevState => {
+      const { selectedEntryIdx } = prevState
+      const newSelectedIdx = selectedEntryIdx === null ? 0 :
+        selectedEntryIdx === this.entries.length - 1 ? 0 : selectedEntryIdx + 1
+
+      return ({
+        selectedEntryIdx: newSelectedIdx
+      })
+    })
+  }
+
+  onEntrySelect = selectedEntryIdx => {
+    this.setState({ selectedEntryIdx })
   }
 
   render() {
-    const { artists, selectedArtist, types, selectedType, entries, entryFilterText } = this.state
-
-    const filteredEntries = entries && entryFilterText ?
-      entries.filter(e => e.name.toLowerCase().includes(entryFilterText.toLowerCase().trim())) :
-      entries
+    const { artists, selectedArtist, types, selectedType, entries, selectedEntryIdx, entryFilterText } = this.state
 
     return (
       <div className="main-content">
@@ -73,13 +109,17 @@ export default class App extends React.Component {
           onSelectType={this.onSelectType}
           entryFilterText={entryFilterText}
           onChangeEntryFilterText={this.onChangeEntryFilterText}
-          entries={entries}
+          showEntriesFilter={!!entries}
         />
         <main>
           <Entries
-            entries={filteredEntries}
+            entries={this.entries}
             artist={selectedArtist}
             type={selectedType}
+            selectPrevEntry={this.selectPrevEntry}
+            selectNextEntry={this.selectNextEntry}
+            onEntrySelect={this.onEntrySelect}
+            selectedEntryIdx={selectedEntryIdx}
           />
         </main>
       </div>

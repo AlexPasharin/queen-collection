@@ -37,11 +37,9 @@ export default class App extends React.Component {
     this.setState(await getArtistsData(decode(artist), decode(type)))
   }
 
-
   componentDidUpdate() {
     const { selectedArtist, selectedType } = this.state
     addQueryParams(selectedArtist, selectedType)
-
   }
 
   onSelectArtist = async artist => {

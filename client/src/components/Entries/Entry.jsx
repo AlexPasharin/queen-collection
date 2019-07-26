@@ -14,7 +14,6 @@ export default class Entry extends Component {
 
   componentDidUpdate(prevProps) {
     if (!prevProps.selected && this.props.selected) {
-      //      this.el.current.scrollIntoView(false)
       this.el.current.focus()
     }
   }

@@ -104,6 +104,10 @@ export default class EntryReleases extends Component {
     this.el.current.focus()
   }
 
+  onFocus = e => {
+    e.stopPropagation()
+  }
+
   render() {
     const { releases, selectedReleaseIdx } = this.state;
 
@@ -121,6 +125,7 @@ export default class EntryReleases extends Component {
         className="release-view no-focus-outline"
         ref={this.el}
         onKeyDown={this.onKeyDown}
+        onFocus={this.onFocus}
       >
         <div className="detail__title"> {releases.length > 1 ? `${releases.length} releases in the collection` : "1 release in the collection"} </div>
         <ul>

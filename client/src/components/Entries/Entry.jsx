@@ -7,7 +7,7 @@ import EntryReleases from './EntryReleases'
 
 export default class Entry extends Component {
   state = {
-    open: false
+    open: false,
   }
 
   el = createRef()

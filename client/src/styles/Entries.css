@@ -32,21 +32,20 @@ main {
 }
 
 .entry-block:hover {
-  background-color: var(--entry-block-open-bg-color);
+  background-color: #ebdbc3;
 }
 
 .entry-block:focus {
-  background-color: var(--entry-block-open-bg-color);
+  background-color: #fadbaf;
 }
 
-.entry-block--selected {
-  background-color: var(--entry-block-open-bg-color);
+.entry-block.entry-block--open {
+  background-color: #fadbaf;
 }
 
-.entry-block--open {
-  background-color: var(--entry-block-open-bg-color);
+.entry-block.entry-block--selected {
+  background-color: #ed8f32;
 }
-
 
 .release-block-details td:first-child {
   font-weight: bold;

@@ -39,6 +39,21 @@ export class dbConnection {
         entry_id: entry
       })
 
+  getRelease = (id: Number) =>
+    this.dbInstance
+      .table('Release')
+      .first()
+      .where({
+        id
+      })
+
+  getEntry = (id: Number) =>
+    this.dbInstance
+      .table('Discography_entry')
+      .first()
+      .where({
+        id
+      })
 }
 
 export default (new dbConnection)

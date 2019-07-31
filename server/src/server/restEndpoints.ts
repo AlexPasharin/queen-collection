@@ -34,12 +34,28 @@ export const setUpRestEndPoints = (app: Express, dBConnection: dbConnection) => 
       .catch(errorHandler(res, `Could not retrieve artist\'s ${artist} entries of type ${type} from the database`))
   })
 
+  app.get('/rest/entry', (req, res) => {
+    const { id } = req.query
+
+    dBConnection.getEntry(id)
+      .then(successHandler(res))
+      .catch(errorHandler(res, `Could not retrieve entry ${id} from the database`))
+  })
+
   app.get('/rest/releases', (req, res) => {
     const { entry } = req.query
 
     dBConnection.getReleases(Number(entry))
       .then(successHandler(res))
       .catch(errorHandler(res, `Could not retrieve releases of an entry ${entry} from the database`))
+  })
+
+  app.get('/rest/release', (req, res) => {
+    const { id } = req.query
+
+    dBConnection.getRelease(Number(id))
+      .then(successHandler(res))
+      .catch(errorHandler(res, `Could not retrieve release with id ${id} from the database`))
   })
 
   return app

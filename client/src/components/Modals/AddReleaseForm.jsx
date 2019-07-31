@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { formatDate } from '../../utils/dataHelpers'
 
@@ -40,7 +40,7 @@ const releaseObjFields = [
   }
 ]
 
-const DetailRow = ({ fieldObj, release }) => {
+const DetailRow = ({ fieldObj, release, onChange }) => {
   const { key, text, format } = fieldObj
   let value = release[key]
 
@@ -58,20 +58,64 @@ const DetailRow = ({ fieldObj, release }) => {
     <tr>
       <td>{title}:</td>
       <td>
-        {value}
+        <input key={key} type="text" value={value} onChange={onChange} name={key} />
       </td>
     </tr>
   )
 }
 
-const ReleaseDetails = ({ release, onCopy }) => {
+const AddReleaseForm = ({ releaseData }) => {
+  const [btnFocused, setBtnFocused] = useState(false)
+
   const {
     discogs_url,
     name,
     artistName,
     entryName,
     typeName
-  } = release
+  } = releaseData
+
+  const onChange = e => {
+    const { name, value } = e.target
+
+    // setReleaseState(r => ({
+    //   ...r,
+    //   [name]: value
+    // }))
+  }
+
+  const formEl = useRef()
+
+  // useEffect(() => {
+  //   formEl.current.focus()
+  // }, [])
+
+  const onKeyDown = e => {
+    // if (e.key === 'Tab') {
+    //   e.stopPropagation()
+    // }
+
+
+
+
+
+    // const { key } = e
+
+    // if (key === "Enter" && !btnFocused) {
+    //   closeModal()
+    // } else if (key === 'ArrowUp' || key === "ArrowDown") {
+    //   e.preventDefault()
+    // }
+  }
+
+  const onSubmit = e => {
+    e.preventDefault()
+  }
+
+  const onBtnBlur = () => {
+    setBtnFocused(false)
+    formEl.current.focus()
+  }
 
   return (
     <div className="release-block">
@@ -90,23 +134,28 @@ const ReleaseDetails = ({ release, onCopy }) => {
         </a> :
         "(no discogs url)"
       }
-      <div>
+      <form
+        // tabIndex="0" ref={formEl}
+        onKeyDown={onKeyDown} className="no-focus-outline">
         <table className="release-block-details">
           <tbody>
             {releaseObjFields.map(
-              f => <DetailRow key={f.key} fieldObj={f} release={release} />
+              f => <DetailRow key={f.key} fieldObj={f} onChange={onChange} release={releaseData} />
             )}
           </tbody>
         </table>
         <button
+          ref={formEl}
           type="button"
-          onClick={onCopy}
+        //         onClick={onSubmit}
+        // onFocus={() => setBtnFocused(true)}
+        // onBlur={onBtnBlur}
         >
-          COPY
+          SUBMIT
         </button>
-      </div>
+      </form>
     </div>
   )
 }
 
-export default ReleaseDetails
+export default AddReleaseForm

@@ -1,5 +1,5 @@
 import React from 'react'
-import { getArtistData, getArtistsData, getTypeData } from './utils/dataGetters'
+import { getArtistData, getArtistsData, getRelease, getTypeData, getEntry } from './utils/dataGetters'
 import { decode, encode } from './utils/stringHelpers'
 
 import NavBar from './components/NavBar/NavBar'
@@ -18,7 +18,7 @@ const addQueryParams = (artist, type) => {
   window.history.pushState({ path: newurl }, '', newurl)
 }
 
-export default class App extends React.Component {
+class App extends React.Component {
   state = {
     artists: null,
     selectedArtist: null,
@@ -26,15 +26,44 @@ export default class App extends React.Component {
     selectedType: null,
     entries: null,
     entryFilterText: "",
-    selectedEntryIdx: null
+    selectedEntryIdx: null,
+    initialSelectedReleaseID: null
   }
 
   async componentDidMount() {
     const urlParams = new URLSearchParams(window.location.search)
-    const artist = urlParams.get("artist") || "queen"
-    const type = urlParams.get("type") || "studio_album"
 
-    this.setState(await getArtistsData(decode(artist), decode(type)))
+    let artistID
+    let typeID
+    const releaseID = urlParams.get("release") || 1
+    let entry
+
+    if (releaseID) {
+      const { entry_id, id } = await getRelease(releaseID)
+      entry = await getEntry(entry_id)
+      artistID = entry.artist_id
+      typeID = entry.type
+    }
+
+    const artist = {
+      id: artistID || null,
+      name: decode(urlParams.get("artist") || "queen")
+    }
+
+    const type = {
+      id: typeID || null,
+      name: decode(urlParams.get("type") || "studio_album")
+    }
+
+    const basicData = await getArtistsData(artist, type)
+
+    const selectedEntryIdx = entry ? basicData.entries.findIndex(e => e.id === entry.id) : null
+
+    this.setState({
+      ...basicData,
+      selectedEntryIdx,
+      initialSelectedReleaseID: releaseID
+    })
   }
 
   componentDidUpdate() {
@@ -93,8 +122,12 @@ export default class App extends React.Component {
     this.setState({ selectedEntryIdx })
   }
 
+  removeInitialSelectedReleaseID = () => {
+    this.setState({ initialSelectedReleaseID: null })
+  }
+
   render() {
-    const { artists, selectedArtist, types, selectedType, entries, selectedEntryIdx, entryFilterText } = this.state
+    const { artists, selectedArtist, types, selectedType, entries, selectedEntryIdx, entryFilterText, initialSelectedReleaseID } = this.state
 
     return (
       <div className="main-content">
@@ -118,9 +151,33 @@ export default class App extends React.Component {
             selectNextEntry={this.selectNextEntry}
             onEntrySelect={this.onEntrySelect}
             selectedEntryIdx={selectedEntryIdx}
+            initialSelectedReleaseID={initialSelectedReleaseID}
+            removeInitialSelectedReleaseID={this.removeInitialSelectedReleaseID}
           />
         </main>
       </div>
     )
   }
+}
+
+export default class AppWrapper extends React.Component {
+  state = {
+    error: null
+  }
+
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { error };
+  }
+  componentDidCatch(error, info) {
+    // You can also log the error to an error reporting service
+    console.log(error, info);
+  }
+
+  render() {
+    if (this.state.error)
+      return "ERROR"
+    return <App />
+  }
+
 }

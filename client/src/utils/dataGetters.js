@@ -1,4 +1,4 @@
-import { fetchArtistTypes, fetchArtists, fetchEntries, fetchReleases } from './apiCalls'
+import { fetchArtistTypes, fetchArtists, fetchEntries, fetchEntry, fetchReleases, fetchRelease } from './apiCalls'
 import { sortBy, sortByReleaseDate } from './dataHelpers'
 
 const getArtists = () => fetchArtists().then(sortBy('name'))
@@ -6,11 +6,19 @@ const getArtistTypes = artistID => fetchArtistTypes(artistID).then(sortBy('name'
 const getEntries = (artistID, type) => fetchEntries(artistID, type).then(sortByReleaseDate)
 
 export const getReleases = entryID => fetchReleases(entryID).then(sortByReleaseDate)
+export const getRelease = releaseID => fetchRelease(releaseID)
+export const getEntry = entryID => fetchEntry(entryID)
 
-export const getArtistsData = async (preferredSelectedArtistName, preferredSelectedTypeName) => {
+export const getArtistsData = async (preferredSelectedArtist, preferredSelectedType) => {
   const artists = await getArtists()
 
-  let selectedArtist = artists.find(a => a.name.toLowerCase() === preferredSelectedArtistName.toLowerCase())
+  let selectedArtist
+
+  if (preferredSelectedArtist && preferredSelectedArtist.id) {
+    selectedArtist = artists.find(a => a.id === Number(preferredSelectedArtist.id))
+  } else if (preferredSelectedArtist) {
+    selectedArtist = artists.find(a => a.name.toLowerCase() === preferredSelectedArtist.name.toLowerCase())
+  }
 
   if (!selectedArtist) {
     selectedArtist = artists[0]
@@ -18,22 +26,29 @@ export const getArtistsData = async (preferredSelectedArtistName, preferredSelec
 
   return ({
     artists,
-    ...(await getArtistData(selectedArtist, preferredSelectedTypeName))
+    ...(await getArtistData(selectedArtist, preferredSelectedType))
   })
 }
 
-export const getArtistData = async (artist, typeRequestString) => {
+export const getArtistData = async (artist, typeRequest) => {
   if (!artist)
     return ({
       selectedArtist: null,
-      entries: []
+      entries: [],
     })
 
   const types = await getArtistTypes(artist.id)
 
-  let selectedType = (typeRequestString && types.find(
-    t => t.name.toLowerCase() === typeRequestString.toLowerCase()
-  )) || types[0]
+  let selectedType
+
+  if (typeRequest && typeRequest.id) {
+    selectedType = types.find(t => t.id === Number(typeRequest.id))
+  } else if (typeRequest) {
+    selectedType = types.find(t => t.name.toLowerCase() === typeRequest.name.toLowerCase())
+  }
+
+  if (!selectedType)
+    selectedType = types[0]
 
   return ({
     selectedArtist: artist,

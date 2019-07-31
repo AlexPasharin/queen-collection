@@ -39,7 +39,7 @@ class App extends React.Component {
     let entry
 
     if (releaseID) {
-      const { entry_id, id } = await getRelease(releaseID)
+      const { entry_id } = await getRelease(releaseID)
       entry = await getEntry(entry_id)
       artistID = entry.artist_id
       typeID = entry.type
@@ -94,30 +94,6 @@ class App extends React.Component {
     })
   }
 
-  selectPrevEntry = () => {
-    this.setState(prevState => {
-      const { selectedEntryIdx } = prevState
-      const newSelectedIdx = selectedEntryIdx === null ? 0 :
-        selectedEntryIdx === 0 ? this.entries.length - 1 : selectedEntryIdx - 1
-
-      return ({
-        selectedEntryIdx: newSelectedIdx
-      })
-    })
-  }
-
-  selectNextEntry = () => {
-    this.setState(prevState => {
-      const { selectedEntryIdx } = prevState
-      const newSelectedIdx = selectedEntryIdx === null ? 0 :
-        selectedEntryIdx === this.entries.length - 1 ? 0 : selectedEntryIdx + 1
-
-      return ({
-        selectedEntryIdx: newSelectedIdx
-      })
-    })
-  }
-
   onEntrySelect = selectedEntryIdx => {
     this.setState({ selectedEntryIdx })
   }
@@ -147,8 +123,6 @@ class App extends React.Component {
             entries={this.entries}
             artist={selectedArtist}
             type={selectedType}
-            selectPrevEntry={this.selectPrevEntry}
-            selectNextEntry={this.selectNextEntry}
             onEntrySelect={this.onEntrySelect}
             selectedEntryIdx={selectedEntryIdx}
             initialSelectedReleaseID={initialSelectedReleaseID}

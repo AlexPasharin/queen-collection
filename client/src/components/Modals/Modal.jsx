@@ -1,21 +1,20 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { createPortal } from 'react-dom'
 
 import '../../styles/Modal.css'
 
 export default class Modal extends Component {
   el = document.createElement('div')
+  modalEl = createRef()
 
   componentDidMount() {
-    this.el.tabIndex = "0"
     this.el.classList.add('modal-container')
     this.el.addEventListener('click', this.closeFromOutside)
-    this.el.addEventListener('keydown', this.onKeyDown)
 
     document.body.classList.add('has-modal')
     document.body.appendChild(this.el);
 
-    this.el.focus()
+    this.modalEl.current.focus()
   }
 
   componentWillUnmount() {
@@ -31,7 +30,7 @@ export default class Modal extends Component {
 
   onKeyDown = e => {
     const { key } = e
-    if (key === 'Tab' || key === 'Enter') {
+    if (key === 'Tab') {
       e.stopPropagation()
     }
   }
@@ -39,7 +38,12 @@ export default class Modal extends Component {
   render() {
     return (
       createPortal(
-        <div className="modal">
+        <div
+          className="modal no-focus-outline"
+          tabIndex="0"
+          ref={this.modalEl}
+          onKeyDown={this.onKeyDown}
+        >
           {this.props.children}
           <button onClick={this.props.onClose}>CLOSE MODAL</button>
         </div>,

@@ -57,7 +57,7 @@ export default class Entry extends Component {
     return selectedReleaseIdx === null ?
       null :
       ({
-        ...releases[selectedReleaseIdx],
+        release: releases[selectedReleaseIdx],
         artistName,
         entryName: entry.name,
         typeName
@@ -146,7 +146,7 @@ export default class Entry extends Component {
   render() {
     const { entry, selected, selectedReleaseID } = this.props
     const { open, selectedReleaseIdx, releases, releaseModalOpen } = this.state
-    const { name, release_date, id } = entry
+    const { name, release_date } = entry
 
     return (
       <li
@@ -175,6 +175,7 @@ export default class Entry extends Component {
           <ReleaseDetailsModal
             release={this.selectedRelease}
             onClose={this.onModalClose}
+            initialMode="add"
           />
         }
       </li>

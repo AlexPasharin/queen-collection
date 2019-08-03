@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
-
-import { formatDate } from '../../utils/dataHelpers'
+import React, { useEffect, useState } from 'react'
+import { getCountries, getFormats, getLabels } from "../../utils/dataGetters"
+import { validateDate } from "../../utils/stringHelpers"
+import { classList } from "../../utils/classList"
 
 const capitalizeString = str => {
   if (!str) return str
@@ -13,108 +14,188 @@ const normalizeKeyString = key =>
 
 const releaseObjFields = [
   {
-    key: 'version'
+    key: 'version',
+    required: true,
+    validate(val) {
+      const result = {
+        valid: !!val
+      }
+
+      if (val) {
+        result.value = val
+      } else {
+        result.reason = "empty string"
+      }
+
+      return result
+    }
   },
   {
-    key: 'country'
-  },
-  {
-    key: 'format'
+    key: 'format',
+    options: 'formats',
+    required: true
   },
   {
     key: 'release_date',
-    format: formatDate
+    validate: validateDate
+  },
+  {
+    key: 'name',
+    text: 'Alt name'
+  },
+  {
+    key: 'discogs_url'
+  },
+  {
+    key: 'country',
+    options: 'countries'
   },
   {
     key: 'label',
+    options: 'labels',
   },
   {
     key: 'cat_number',
     text: 'Cat.number'
   },
   {
-    key: 'comment'
+    key: 'comment',
+    type: 'textarea'
   },
   {
-    key: 'condition_problems'
+    key: 'condition_problems',
+    type: 'textarea'
   }
 ]
 
-const DetailRow = ({ fieldObj, release, onChange }) => {
-  const { key, text, format } = fieldObj
-  let value = release[key]
+const defaultValidate = () => ({ valid: true })
 
-  if (value == null) {
-    return null
-  }
-
-  if (format) {
-    value = format(value)
-  }
+const InputRow = ({ value, valid, onUpdateValue, fieldObj, options }) => {
+  const { key, text, type, required, validate = defaultValidate } = fieldObj
 
   const title = text || normalizeKeyString(key)
 
+  const onChange = e => {
+    const { name, value } = e.target
+    const { valid, reason } = validate(value)
+
+    if (!valid) {
+      console.log(name, reason)
+    }
+
+    onUpdateValue({ name, value, valid })
+  }
+
+  const inputProps = {
+    value: value || '',
+    onChange,
+    name: key,
+    className: classList("add-release-form__input", {
+      invalid: !valid
+    })
+  }
+
   return (
-    <tr>
-      <td>{title}:</td>
-      <td>
-        <input key={key} type="text" value={value} onChange={onChange} name={key} />
-      </td>
-    </tr>
+    <label key={key}>
+      <span className="add-release-form__title">{title}</span>
+      {type === 'textarea' ?
+        <textarea {...inputProps} /> :
+        options ?
+          <select {...inputProps}>
+            {!required && <option value="">(none)</option>}
+            {options.map(o => {
+              const optionValue = o.name || o.id
+
+              return <option key={optionValue} value={optionValue}>{optionValue}</option>
+            })}
+          </select> :
+          <input {...inputProps} type="text" required={required} />
+      }
+    </label>
   )
 }
 
-const AddReleaseForm = ({ releaseData }) => {
-  const [btnFocused, setBtnFocused] = useState(false)
 
-  const {
-    discogs_url,
-    name,
-    artistName,
-    entryName,
-    typeName
-  } = releaseData
-
-  const onChange = e => {
-    const { name, value } = e.target
-
-    // setReleaseState(r => ({
-    //   ...r,
-    //   [name]: value
-    // }))
+const releaseDataToFieldsData = releaseData => {
+  const fieldsData = {
+    entry_id: {
+      value: releaseData.entry_id,
+      valid: true
+    }
   }
 
-  const formEl = useRef()
+  for (let field of releaseObjFields) {
+    const value = releaseData[field.key] || null
+    const { valid, reason } = field.validate ? field.validate(value) : true
 
-  // useEffect(() => {
-  //   formEl.current.focus()
-  // }, [])
+    if (reason) console.log(field, reason)
+
+    fieldsData[field.key] = {
+      value, valid
+    }
+  }
+
+  return fieldsData
+}
+
+const AddReleaseForm = ({ initialReleaseData }) => {
+  const {
+    artistName,
+    entryName,
+    typeName,
+    release: initialReleaseValue
+  } = initialReleaseData
+
+  const [release, setRelease] = useState(
+    releaseDataToFieldsData(initialReleaseValue)
+  )
+
+  const [data, setData] = useState({ loaded: false })
+
+  useEffect(() => {
+    Promise.all([
+      getLabels(),
+      getFormats(),
+      getCountries()
+    ]).then(([labels, formats, countries]) => {
+      setData({
+        labels,
+        formats,
+        countries,
+        loaded: true,
+      })
+    }).catch(() => {
+      setData({ error: true })
+    })
+  }, [])
+
+  const onUpdateValue = ({ name, value, valid }) => {
+
+    setRelease(r => ({
+      ...r,
+      [name]: {
+        value: value || null,
+        valid
+      }
+    }))
+  }
 
   const onKeyDown = e => {
-    // if (e.key === 'Tab') {
-    //   e.stopPropagation()
-    // }
-
-
-
-
-
-    // const { key } = e
-
-    // if (key === "Enter" && !btnFocused) {
-    //   closeModal()
-    // } else if (key === 'ArrowUp' || key === "ArrowDown") {
-    //   e.preventDefault()
-    // }
+    e.stopPropagation()
   }
 
   const onSubmit = e => {
     e.preventDefault()
-  }
 
-  const onBtnBlur = () => {
-    setBtnFocused(false)
-    formEl.current.focus()
+    const acceptSubmit = window.confirm("Are you sure you want to ADD new release to the database?")
+
+    if (acceptSubmit) {
+      console.log(release)
+    } else {
+      console.log('denied')
+    }
+
+
   }
 
   return (
@@ -123,37 +204,34 @@ const AddReleaseForm = ({ releaseData }) => {
       <div className="release-info-block">
         {typeName}
       </div>
-      {name &&
-        <div className="release-info-block">
-          (Released as "<span className="detail__title">{name}</span>")
-        </div>
-      }
-      {discogs_url ?
-        <a className="release-discogs-url" href={discogs_url} target="_blank" rel="noopener noreferrer">
-          <span>{discogs_url}</span>
-        </a> :
-        "(no discogs url)"
-      }
-      <form
-        // tabIndex="0" ref={formEl}
-        onKeyDown={onKeyDown} className="no-focus-outline">
-        <table className="release-block-details">
-          <tbody>
-            {releaseObjFields.map(
-              f => <DetailRow key={f.key} fieldObj={f} onChange={onChange} release={releaseData} />
+      {data.loaded ?
+        <form
+          onKeyDown={onKeyDown}
+          className="add-release-form no-focus-outline">
+          <fieldset>
+            {releaseObjFields.map(f =>
+              <InputRow
+                key={f.key}
+                fieldObj={f}
+                onUpdateValue={onUpdateValue}
+                value={release[f.key].value || ''}
+                valid={release[f.key].valid}
+                options={f.options ? data[f.options] : null}
+              />
             )}
-          </tbody>
-        </table>
-        <button
-          ref={formEl}
-          type="button"
-        //         onClick={onSubmit}
-        // onFocus={() => setBtnFocused(true)}
-        // onBlur={onBtnBlur}
-        >
-          SUBMIT
+
+            <button
+              type="button"
+              onClick={onSubmit}
+            >
+              SUBMIT
         </button>
-      </form>
+          </fieldset>
+        </form> :
+        data.error ?
+          "There has been an error fetching data..." :
+          "Loading data..."
+      }
     </div>
   )
 }

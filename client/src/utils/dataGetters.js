@@ -1,13 +1,17 @@
-import { fetchArtistTypes, fetchArtists, fetchEntries, fetchEntry, fetchReleases, fetchRelease } from './apiCalls'
+import * as api from './apiCalls'
 import { sortBy, sortByReleaseDate } from './dataHelpers'
 
-const getArtists = () => fetchArtists().then(sortBy('name'))
-const getArtistTypes = artistID => fetchArtistTypes(artistID).then(sortBy('name'))
-const getEntries = (artistID, type) => fetchEntries(artistID, type).then(sortByReleaseDate)
+const getArtists = () => api.fetchArtists().then(sortBy('name'))
+const getArtistTypes = artistID => api.fetchArtistTypes(artistID).then(sortBy('name'))
+const getEntries = (artistID, type) => api.fetchEntries(artistID, type).then(sortByReleaseDate)
 
-export const getReleases = entryID => fetchReleases(entryID).then(sortByReleaseDate)
-export const getRelease = releaseID => fetchRelease(releaseID)
-export const getEntry = entryID => fetchEntry(entryID)
+export const getReleases = entryID => api.fetchReleases(entryID).then(sortByReleaseDate)
+export const getRelease = releaseID => api.fetchRelease(releaseID)
+export const getEntry = entryID => api.fetchEntry(entryID)
+
+export const getLabels = () => api.fetchLabels().then(sortBy('name'))
+export const getFormats = () => api.fetchFormats().then(sortBy('id'))
+export const getCountries = () => api.fetchCountries()
 
 export const getArtistsData = async (preferredSelectedArtist, preferredSelectedType) => {
   const artists = await getArtists()

@@ -102,3 +102,22 @@ main {
   cursor: pointer;
   margin-top: 10px;
 }
+
+.add-release-form label {
+  display: flex;
+  margin: 5px 0;
+}
+
+.add-release-form label .add-release-form__title {
+  flex-basis: 30%;
+  font-size: 18px;
+}
+
+.add-release-form label .add-release-form__input {
+  flex-basis: 60%;
+  font-size: 16px;
+}
+
+.add-release-form label .add-release-form__input--invalid {
+  outline-color: red;
+}

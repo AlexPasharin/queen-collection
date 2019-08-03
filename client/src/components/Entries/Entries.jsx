@@ -35,7 +35,6 @@ const Entries = ({ entries, artist, type, selectedEntryIdx, onEntrySelect, initi
           selectNextEntry={selectNextEntry}
           lastEntry={idx === entries.length - 1}
           initialSelectedReleaseID={selectedEntryIdx === idx ? initialSelectedReleaseID : null}
-          initialSelectedReleaseID={initialSelectedReleaseID}
           removeInitialSelectedReleaseID={removeInitialSelectedReleaseID}
         />)
       }

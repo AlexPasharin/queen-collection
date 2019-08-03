@@ -11,9 +11,9 @@ const ReleaseDetailsModal = ({ release, onClose, initialMode = 'details' }) => {
   return (
     <Modal onClose={onClose}>
       {mode === 'details' ?
-        <ReleaseDetails release={release} onCopy={() => setMode('add')} /> :
+        <ReleaseDetails releaseData={release} onCopy={() => setMode('add')} /> :
         <AddReleaseForm
-          releaseData={release}
+          initialReleaseData={release}
         />
       }
     </Modal>

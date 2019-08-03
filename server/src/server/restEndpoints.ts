@@ -58,5 +58,23 @@ export const setUpRestEndPoints = (app: Express, dBConnection: dbConnection) => 
       .catch(errorHandler(res, `Could not retrieve release with id ${id} from the database`))
   })
 
+  app.get('/rest/labels', (_, res) => {
+    dBConnection.getLabels()
+      .then(successHandler(res))
+      .catch(errorHandler(res, `Could not retrieve labels from the database`))
+  })
+
+  app.get('/rest/formats', (_, res) => {
+    dBConnection.getFormats()
+      .then(successHandler(res))
+      .catch(errorHandler(res, `Could not retrieve formats from the database`))
+  })
+
+  app.get('/rest/countries', (_, res) => {
+    dBConnection.getCountries()
+      .then(successHandler(res))
+      .catch(errorHandler(res, `Could not retrieve countries from the database`))
+  })
+
   return app
 }

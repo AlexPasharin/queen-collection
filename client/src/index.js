@@ -4,7 +4,7 @@ import App from './App.jsx';
 import * as serviceWorker from './serviceWorker';
 
 const _findIndex = Array.prototype.findIndex
-
+// eslint-disable-next-line
 Array.prototype.findIndex = function (predicate) {
   const index = _findIndex.call(this, predicate)
 

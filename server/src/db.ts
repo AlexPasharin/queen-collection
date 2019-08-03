@@ -9,6 +9,15 @@ export class dbConnection {
     }
   })
 
+  checkHealth = () => {
+    this.dbInstance.raw('select 1+1 as result')
+      .then(() => console.log("Successfully established connection"))
+      .catch(() => {
+        console.log("Could not establish db connection\n");
+        process.exit(1);
+      });
+  }
+
   getArtists = () => this.dbInstance('Artist').select()
 
   getArtistTypes = (artistID: number) => this.dbInstance
@@ -54,6 +63,22 @@ export class dbConnection {
       .where({
         id
       })
+
+  getLabels = () =>
+    this.dbInstance('Label')
+      .select()
+
+  getFormats = () =>
+    this.dbInstance('Format')
+      .select()
+
+  getCountries = () =>
+    this.dbInstance('Country')
+      .select()
 }
 
-export default (new dbConnection)
+const connection = new dbConnection
+
+connection.checkHealth();
+
+export default connection

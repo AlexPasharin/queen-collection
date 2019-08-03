@@ -64,14 +64,25 @@ const DetailRow = ({ fieldObj, release }) => {
   )
 }
 
-const ReleaseDetails = ({ release, onCopy }) => {
+const ReleaseDetails = ({ releaseData, onCopy }) => {
   const {
-    discogs_url,
-    name,
+    release,
     artistName,
     entryName,
     typeName
+  } = releaseData
+
+  const {
+    discogs_url,
+    name
   } = release
+
+  const onKeyDown = e => {
+    if (e.key === "Enter") {
+      e.stopPropagation()
+      onCopy()
+    }
+  }
 
   return (
     <div className="release-block">
@@ -101,6 +112,7 @@ const ReleaseDetails = ({ release, onCopy }) => {
         <button
           type="button"
           onClick={onCopy}
+          onKeyDown={onKeyDown}
         >
           COPY
         </button>

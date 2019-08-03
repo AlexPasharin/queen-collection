@@ -11,3 +11,7 @@ export const fetchReleases = entryID => fetchData(`releases?entry=${entryID}`)
 
 export const fetchRelease = releaseID => fetchData(`release?id=${releaseID}`)
 export const fetchEntry = entryID => fetchData(`entry?id=${entryID}`)
+
+export const fetchLabels = () => fetchData('labels')
+export const fetchFormats = () => fetchData('formats')
+export const fetchCountries = () => fetchData('countries')

@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/AlexPasharin/queen-collection/issues"
   },
-  "homepage": "https://github.com/AlexPasharin/queen-collection#readme"
+  "homepage": "https://github.com/AlexPasharin/queen-collection#readme",
+  "dependencies": {
+    "cors": "^2.8.5"
+  }
 }

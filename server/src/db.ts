@@ -75,6 +75,12 @@ export class dbConnection {
   getCountries = () =>
     this.dbInstance('Country')
       .select()
+
+  addRelease = release =>
+    this.dbInstance('Release')
+      .returning('id')
+      .insert(release)
+      .then(([release_id]) => ({ release_id }))
 }
 
 const connection = new dbConnection

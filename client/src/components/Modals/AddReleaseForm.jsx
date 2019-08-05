@@ -104,9 +104,9 @@ const InputRow = ({ value, valid, onUpdateValue, fieldObj, options }) => {
           <select {...inputProps}>
             {!required && <option value="">(none)</option>}
             {options.map(o => {
-              const optionValue = o.name || o.id
+              const optionValue = o.id || o.name
 
-              return <option key={optionValue} value={optionValue}>{optionValue}</option>
+              return <option key={optionValue} value={optionValue}>{o.name || o.id}</option>
             })}
           </select> :
           <input {...inputProps} type="text" required={required} />
@@ -126,9 +126,9 @@ const releaseDataToFieldsData = releaseData => {
 
   for (let field of releaseObjFields) {
     const value = releaseData[field.key] || null
-    const { valid, reason } = field.validate ? field.validate(value) : true
+    const { valid, reason } = field.validate ? field.validate(value) : { valid: true }
 
-    if (reason) console.log(field, reason)
+    if (reason) console.log(field.key, reason)
 
     fieldsData[field.key] = {
       value, valid
@@ -138,7 +138,7 @@ const releaseDataToFieldsData = releaseData => {
   return fieldsData
 }
 
-const AddReleaseForm = ({ initialReleaseData }) => {
+const AddReleaseForm = ({ initialReleaseData, addRelease }) => {
   const {
     artistName,
     entryName,
@@ -151,6 +151,16 @@ const AddReleaseForm = ({ initialReleaseData }) => {
   )
 
   const [data, setData] = useState({ loaded: false })
+
+  const formIsInvalid = () => {
+    for (let field of releaseObjFields) {
+      if (!release[field.key].valid) {
+        return true
+      }
+    }
+
+    return false
+  }
 
   useEffect(() => {
     Promise.all([
@@ -170,7 +180,6 @@ const AddReleaseForm = ({ initialReleaseData }) => {
   }, [])
 
   const onUpdateValue = ({ name, value, valid }) => {
-
     setRelease(r => ({
       ...r,
       [name]: {
@@ -190,12 +199,14 @@ const AddReleaseForm = ({ initialReleaseData }) => {
     const acceptSubmit = window.confirm("Are you sure you want to ADD new release to the database?")
 
     if (acceptSubmit) {
-      console.log(release)
-    } else {
-      console.log('denied')
+      const newRelease = {}
+
+      for (let prop in release) {
+        newRelease[prop] = release[prop].value
+      }
+
+      addRelease(newRelease)
     }
-
-
   }
 
   return (
@@ -221,11 +232,13 @@ const AddReleaseForm = ({ initialReleaseData }) => {
             )}
 
             <button
-              type="button"
+              className="cta-button"
+              type="submit"
               onClick={onSubmit}
+              disabled={formIsInvalid()}
             >
               SUBMIT
-        </button>
+            </button>
           </fieldset>
         </form> :
         data.error ?

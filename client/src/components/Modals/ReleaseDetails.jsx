@@ -110,6 +110,7 @@ const ReleaseDetails = ({ releaseData, onCopy }) => {
           </tbody>
         </table>
         <button
+          className="cta-button"
           type="button"
           onClick={onCopy}
           onKeyDown={onKeyDown}

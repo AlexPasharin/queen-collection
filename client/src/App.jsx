@@ -35,7 +35,7 @@ class App extends React.Component {
 
     let artistID
     let typeID
-    const releaseID = urlParams.get("release") || 1
+    const releaseID = urlParams.get("release")
     let entry
 
     if (releaseID) {

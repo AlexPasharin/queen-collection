@@ -28,3 +28,19 @@ body, ul, p, h1 {
 .no-focus-outline:focus {
   outline: none;
 }
+
+.cta-button {
+  font-weight: 600;
+  text-transform: uppercase;
+  margin: 10px 0;
+  padding: 5px;
+  border-radius: 2px;
+  background-color:lightpink;
+}
+
+.cta-button:focus, .cta-button:hover {
+  outline: none;
+  background-color: rgb(184, 152, 215);
+}
+
+

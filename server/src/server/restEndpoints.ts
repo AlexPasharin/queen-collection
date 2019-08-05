@@ -1,4 +1,5 @@
 import { Express } from 'express'
+import * as cors from 'cors'
 
 import { dbConnection } from "../db"
 
@@ -76,5 +77,11 @@ export const setUpRestEndPoints = (app: Express, dBConnection: dbConnection) => 
       .catch(errorHandler(res, `Could not retrieve countries from the database`))
   })
 
+  app.options('/rest/release', cors({ origin: "http://localhost:3000" }))
+  app.post('/rest/release', cors({ origin: "http://localhost:3000" }), (req, res) => {
+    dBConnection.addRelease(req.body)
+      .then(successHandler(res))
+      .catch(errorHandler(res, `Could not add release to the database`))
+  })
   return app
 }

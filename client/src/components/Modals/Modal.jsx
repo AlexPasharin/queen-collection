@@ -45,7 +45,7 @@ export default class Modal extends Component {
           onKeyDown={this.onKeyDown}
         >
           {this.props.children}
-          <button onClick={this.props.onClose}>CLOSE MODAL</button>
+          <button className="cta-button" onClick={this.props.onClose}>CLOSE MODAL</button>
         </div>,
         this.el
       )

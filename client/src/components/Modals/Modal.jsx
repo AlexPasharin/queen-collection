@@ -6,6 +6,7 @@ import '../../styles/Modal.css'
 export default class Modal extends Component {
   el = document.createElement('div')
   modalEl = createRef()
+  buttonEl = createRef()
 
   componentDidMount() {
     this.el.classList.add('modal-container')
@@ -32,6 +33,10 @@ export default class Modal extends Component {
     const { key } = e
     if (key === 'Tab') {
       e.stopPropagation()
+
+      if (e.target === this.buttonEl.current) {
+        this.modalEl.current.focus()
+      }
     }
   }
 
@@ -45,7 +50,13 @@ export default class Modal extends Component {
           onKeyDown={this.onKeyDown}
         >
           {this.props.children}
-          <button className="cta-button" onClick={this.props.onClose}>CLOSE MODAL</button>
+          <button
+            className="cta-button"
+            onClick={this.props.onClose}
+            ref={this.buttonEl}
+          >
+            CLOSE MODAL
+          </button>
         </div>,
         this.el
       )

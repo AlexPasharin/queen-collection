@@ -2,10 +2,15 @@ import React from 'react'
 
 import Release from './Release'
 
-const EntryReleases = ({ releases, selectedReleaseIdx, onSelectRelease }) => {
-  if (!releases)
+const EntryReleases = ({ releases, releasesLoading, releasesFetchFailed, selectedReleaseIdx, onSelectRelease }) => {
+  if (releasesLoading)
     return (
       <p className="release-view detail__title"> Loading releases...</p>
+    )
+
+  if (releasesFetchFailed)
+    return (
+      <p className="release-view detail__title"> There has been an error fetching releases :(</p>
     )
 
   if (!releases.length)

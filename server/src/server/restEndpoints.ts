@@ -83,5 +83,12 @@ export const setUpRestEndPoints = (app: Express, dBConnection: dbConnection) => 
       .then(successHandler(res))
       .catch(errorHandler(res, `Could not add release to the database`))
   })
+
+  app.put('/rest/release', cors({ origin: "http://localhost:3000" }), (req, res) => {
+    dBConnection.updateRelease(req.body)
+      .then(successHandler(res))
+      .catch(errorHandler(res, `Could not add update release`))
+  })
+
   return app
 }

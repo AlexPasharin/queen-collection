@@ -81,6 +81,14 @@ export class dbConnection {
       .returning('id')
       .insert(release)
       .then(([release_id]) => ({ release_id }))
+
+  updateRelease = release =>
+    this.dbInstance('Release')
+      .where({ id: release.id })
+      .update(release)
+      .then(() => this.getRelease(release.id))
+
+
 }
 
 const connection = new dbConnection

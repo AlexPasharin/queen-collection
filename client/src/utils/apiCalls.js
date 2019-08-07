@@ -25,4 +25,19 @@ export const postNewRelease = release => fetchData('release', 'POST', release,
   {
     'Content-Type': "application/json"
   }
-)
+).catch(e => {
+  console.log("Release add failed:", e)
+
+  return { release_id: null }
+})
+
+
+export const updateRelease = release => fetchData('release', 'PUT', release,
+  {
+    'Content-Type': "application/json"
+  }
+).catch(e => {
+  console.log("Release update failed:", e)
+
+  return { id: null }
+})

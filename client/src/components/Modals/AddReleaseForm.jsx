@@ -92,7 +92,7 @@ const InputRow = ({ value, valid, onUpdateValue, fieldObj, options }) => {
     name: key,
     className: classList("add-release-form__input", {
       invalid: !valid
-    })
+    }, ["no-focus-outline"])
   }
 
   return (
@@ -116,10 +116,17 @@ const InputRow = ({ value, valid, onUpdateValue, fieldObj, options }) => {
 }
 
 
-const releaseDataToFieldsData = releaseData => {
+const releaseDataToFieldsData = (releaseData, editMode) => {
   const fieldsData = {
     entry_id: {
       value: releaseData.entry_id,
+      valid: true
+    }
+  }
+
+  if (editMode) {
+    fieldsData.id = {
+      value: releaseData.id,
       valid: true
     }
   }
@@ -138,7 +145,7 @@ const releaseDataToFieldsData = releaseData => {
   return fieldsData
 }
 
-const AddReleaseForm = ({ initialReleaseData, addRelease }) => {
+const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode }) => {
   const {
     artistName,
     entryName,
@@ -147,7 +154,7 @@ const AddReleaseForm = ({ initialReleaseData, addRelease }) => {
   } = initialReleaseData
 
   const [release, setRelease] = useState(
-    releaseDataToFieldsData(initialReleaseValue)
+    releaseDataToFieldsData(initialReleaseValue, mode === 'edit')
   )
 
   const [data, setData] = useState({ loaded: false })
@@ -196,7 +203,11 @@ const AddReleaseForm = ({ initialReleaseData, addRelease }) => {
   const onSubmit = e => {
     e.preventDefault()
 
-    const acceptSubmit = window.confirm("Are you sure you want to ADD new release to the database?")
+    const acceptSubmit = window.confirm(
+      mode === 'add' ?
+        "Are you sure you want to ADD new release to the database?" :
+        "Are you sure you want to EDIT this release?"
+    )
 
     if (acceptSubmit) {
       const newRelease = {}
@@ -205,7 +216,7 @@ const AddReleaseForm = ({ initialReleaseData, addRelease }) => {
         newRelease[prop] = release[prop].value
       }
 
-      addRelease(newRelease)
+      mode === 'add' ? addRelease(newRelease) : updateRelease(newRelease)
     }
   }
 
@@ -215,6 +226,7 @@ const AddReleaseForm = ({ initialReleaseData, addRelease }) => {
       <div className="release-info-block">
         {typeName}
       </div>
+      <h2>This is {mode === 'add' ? "add" : "editing"} mode</h2>
       {data.loaded ?
         <form
           onKeyDown={onKeyDown}

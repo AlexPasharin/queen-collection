@@ -64,7 +64,7 @@ const DetailRow = ({ fieldObj, release }) => {
   )
 }
 
-const ReleaseDetails = ({ releaseData, onCopy }) => {
+const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
   const {
     release,
     artistName,
@@ -80,7 +80,7 @@ const ReleaseDetails = ({ releaseData, onCopy }) => {
   const onKeyDown = e => {
     if (e.key === "Enter") {
       e.stopPropagation()
-      onCopy()
+      e.target.dataset.mode === 'copy' ? onCopy() : onEdit()
     }
   }
 
@@ -111,11 +111,21 @@ const ReleaseDetails = ({ releaseData, onCopy }) => {
         </table>
         <button
           className="cta-button"
+          data-mode="copy"
           type="button"
           onClick={onCopy}
           onKeyDown={onKeyDown}
         >
           COPY
+        </button>
+        <button
+          className="cta-button"
+          data-mode="edit"
+          type="button"
+          onClick={onEdit}
+          onKeyDown={onKeyDown}
+        >
+          EDIT
         </button>
       </div>
     </div>

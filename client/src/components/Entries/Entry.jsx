@@ -1,6 +1,6 @@
 import React, { Component, createRef } from 'react'
 
-import { postNewRelease } from "../../utils/apiCalls"
+import { postNewRelease, updateRelease } from "../../utils/apiCalls"
 import { formatDate } from '../../utils/dataHelpers'
 import { classList } from '../../utils/classList'
 import { getReleases } from '../../utils/dataGetters'
@@ -23,7 +23,7 @@ export default class Entry extends Component {
   componentDidMount() {
     if (this.props.selected) {
       this.el.current.focus()
-      this.setState({ open: true })
+      this.toggleReleasesBlock()
     }
   }
 
@@ -37,22 +37,18 @@ export default class Entry extends Component {
     }
 
     if (!prevState.open && this.state.open) {
-      this.setState(
-        { releases: await getReleases(this.props.entry.id) },
-        () => {
-          this.el.current.scrollIntoView()
-          if (this.state.releases && this.props.initialSelectedReleaseID !== null) {
-            const selectedReleaseIdx = this.state.releases.findIndex(r => r.id === this.props.initialSelectedReleaseID)
-
-            this.selectRelease(selectedReleaseIdx)
-            this.props.removeInitialSelectedReleaseID()
-          }
-        }
-      )
+      this.el.current.scrollIntoView()
     }
 
-    if (prevState.open && !this.state.open) {
-      this.setState({ releases: null })
+    if (!prevState.releases && this.state.releases) {
+      this.el.current.scrollIntoView()
+
+      if (this.props.initialSelectedReleaseID !== null) {
+        const selectedReleaseIdx = this.state.releases.findIndex(r => r.id === this.props.initialSelectedReleaseID)
+
+        this.selectRelease(selectedReleaseIdx)
+        this.props.removeInitialSelectedReleaseID()
+      }
     }
 
     if (prevState.selectedReleaseIdx !== -1 && this.state.selectedReleaseIdx === -1) {
@@ -69,7 +65,7 @@ export default class Entry extends Component {
     const { selectedReleaseIdx, releases } = this.state
     const { artistName, entry, typeName } = this.props
 
-    if (selectedReleaseIdx === null) {
+    if (!releases || selectedReleaseIdx === null) {
       return null
     }
 
@@ -88,7 +84,8 @@ export default class Entry extends Component {
   selectPrevRelease = () => {
     this.setState(prevState => {
       const { selectedReleaseIdx, releases, releaseModalOpen } = prevState
-      const newSelectedReleaseIdx = (selectedReleaseIdx === null) || (releaseModalOpen && selectedReleaseIdx === 0) ? releases.length - 1 :
+      const amountOfReleases = releases ? releases.length : 0
+      const newSelectedReleaseIdx = (selectedReleaseIdx === null) || (releaseModalOpen && selectedReleaseIdx === 0) ? amountOfReleases - 1 :
         selectedReleaseIdx === -1 ? null : selectedReleaseIdx - 1
 
       return { selectedReleaseIdx: newSelectedReleaseIdx }
@@ -98,17 +95,73 @@ export default class Entry extends Component {
   selectNextRelease = () => {
     this.setState(prevState => {
       const { selectedReleaseIdx, releases, releaseModalOpen } = prevState
+      const amountOfReleases = releases ? releases.length : 0
       const newSelectedReleaseIdx = selectedReleaseIdx === null ? -1 :
-        selectedReleaseIdx === releases.length - 1 ? (releaseModalOpen ? 0 : null) : selectedReleaseIdx + 1
+        selectedReleaseIdx === amountOfReleases - 1 ? (releaseModalOpen ? 0 : null) : selectedReleaseIdx + 1
 
       return { selectedReleaseIdx: newSelectedReleaseIdx }
     })
   }
 
-  toggleReleasesBlock = () => {
-    this.setState(
-      prevState => ({ open: !prevState.open })
-    )
+  getReleases = async preferredSelectedReleaseIndex => {
+    try {
+      const releases = await getReleases(this.props.entry.id)
+      const newSelectedReleaseIdx = preferredSelectedReleaseIndex ?
+        releases.findIndex(r => r.id === preferredSelectedReleaseIndex) : null
+
+      this.setState({
+        releases,
+        releasesLoading: false,
+        selectedReleaseIdx: newSelectedReleaseIdx,
+        releaseModalOpen: newSelectedReleaseIdx !== null,
+      })
+    } catch {
+      this.setState({
+        releasesLoading: false,
+        releasesFetchFailed: true
+      })
+    }
+  }
+
+  toggleReleasesBlock = async () => {
+    if (this.state.open) {
+      this.setState({
+        open: false,
+        releases: null,
+        selectedReleaseIdx: null
+      })
+    } else {
+      this.setState({
+        open: true,
+        releasesLoading: true,
+        releasesFetchFailed: false
+      })
+
+      this.getReleases()
+    }
+  }
+
+  addRelease = async release => {
+    this.setState({
+      releaseModalOpen: false,
+      releases: null,
+      releasesLoading: true,
+      releasesFetchFailed: false
+    })
+
+    const { release_id } = await postNewRelease(release)
+    this.getReleases(release_id)
+  }
+
+  updateRelease = async release => {
+    this.setState({
+      releaseModalOpen: false,
+      releases: null,
+      releasesLoading: true
+    })
+
+    const { id } = await updateRelease(release)
+    this.getReleases(id)
   }
 
   selectRelease = idx => {
@@ -163,25 +216,6 @@ export default class Entry extends Component {
       this.props.select()
   }
 
-  addRelease = async release => {
-    const { release_id } = await postNewRelease(release)
-    this.setState({
-      releaseModalOpen: false,
-      releases: null
-    })
-
-    const releases = await getReleases(this.props.entry.id)
-    const newSelectedReleaseIdx = releases ? releases.findIndex(r => r.id === release_id) : null
-
-    this.setState(
-      {
-        releases,
-        selectedReleaseIdx: newSelectedReleaseIdx,
-        releaseModalOpen: newSelectedReleaseIdx !== null
-      }
-    )
-  }
-
   openAddNewReleaseModal = e => {
     e.stopPropagation()
 
@@ -193,7 +227,7 @@ export default class Entry extends Component {
 
   render() {
     const { entry, selected, selectedReleaseID } = this.props
-    const { open, selectedReleaseIdx, releases, releaseModalOpen } = this.state
+    const { open, selectedReleaseIdx, releases, releasesLoading, releasesFetchFailed, releaseModalOpen } = this.state
     const { name, release_date } = entry
 
     return (
@@ -225,6 +259,8 @@ export default class Entry extends Component {
             selectedReleaseIdx={selectedReleaseIdx}
             onSelectRelease={this.selectRelease}
             selectedReleaseID={selectedReleaseID}
+            releasesLoading={releasesLoading}
+            releasesFetchFailed={releasesFetchFailed}
           />
         }
         {releaseModalOpen &&
@@ -232,6 +268,7 @@ export default class Entry extends Component {
             release={this.selectedRelease}
             onClose={this.onModalClose}
             addRelease={this.addRelease}
+            updateRelease={this.updateRelease}
             initialMode={selectedReleaseIdx === -1 ? 'add' : 'details'}
           />
         }

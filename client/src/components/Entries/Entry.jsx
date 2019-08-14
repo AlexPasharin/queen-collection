@@ -13,8 +13,8 @@ export default class Entry extends Component {
   state = {
     open: false,
     releases: null,
-    selectedReleaseIdx: null,
-    releaseModalOpen: false
+    selectedReleaseIdx: null, // value null means nothing is selected, value -1 means "add new button is selected"!
+    releaseModalOpen: false,
   }
 
   el = createRef()
@@ -63,20 +63,23 @@ export default class Entry extends Component {
 
   get selectedRelease() {
     const { selectedReleaseIdx, releases } = this.state
-    const { artistName, entry, typeName } = this.props
+    const { entry } = this.props
+    const { artistName, typeName, entryArtistName, name } = entry
 
-    if (!releases || selectedReleaseIdx === null) {
+    if (selectedReleaseIdx === null) {
       return null
     }
 
     const release = selectedReleaseIdx === -1 ?
-      { entry_id: entry.id } :
+      {
+        entry_id: entry.id,
+      } :
       releases[selectedReleaseIdx]
 
     return ({
       release,
-      artistName,
-      entryName: entry.name,
+      artistName: entryArtistName || artistName,
+      entryName: name,
       typeName
     })
   }
@@ -228,7 +231,7 @@ export default class Entry extends Component {
   render() {
     const { entry, selected, selectedReleaseID } = this.props
     const { open, selectedReleaseIdx, releases, releasesLoading, releasesFetchFailed, releaseModalOpen } = this.state
-    const { name, release_date } = entry
+    const { name, release_date, entryArtistName } = entry
 
     return (
       <li
@@ -241,6 +244,7 @@ export default class Entry extends Component {
       >
         <div className="entry-block__details" onClick={this.toggleReleasesBlock}>
           <h2>{name} </h2>
+          {entryArtistName && <i><h3>by <b>{entryArtistName}</b></h3></i>}
           <p>
             <span className="detail__title">Original release date: </span>
             {formatDate(release_date)}

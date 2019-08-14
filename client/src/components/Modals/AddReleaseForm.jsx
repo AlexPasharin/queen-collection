@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { getCountries, getFormats, getLabels } from "../../utils/dataGetters"
 import { validateDate } from "../../utils/stringHelpers"
 import { classList } from "../../utils/classList"
@@ -169,6 +169,15 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
     return false
   }
 
+  const formEl = useRef()
+
+  useEffect(() => {
+    if (data.loaded) {
+      console.log("Focusing")
+      formEl.current.querySelector(".cta-button").focus()
+    }
+  }, [data])
+
   useEffect(() => {
     Promise.all([
       getLabels(),
@@ -196,10 +205,6 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
     }))
   }
 
-  const onKeyDown = e => {
-    e.stopPropagation()
-  }
-
   const onSubmit = e => {
     e.preventDefault()
 
@@ -213,10 +218,25 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
       const newRelease = {}
 
       for (let prop in release) {
-        newRelease[prop] = release[prop].value
+        let { value } = release[prop]
+        if (typeof value === "string") {
+          value = value.trim().replace(/\s+/g, " ")
+        }
+
+        newRelease[prop] = value
       }
 
       mode === 'add' ? addRelease(newRelease) : updateRelease(newRelease)
+    }
+  }
+
+  const onKeyDown = e => {
+    e.stopPropagation()
+
+    console.log("hello")
+
+    if (e.key === "Enter") {
+      onSubmit(e)
     }
   }
 
@@ -230,7 +250,9 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
       {data.loaded ?
         <form
           onKeyDown={onKeyDown}
-          className="add-release-form no-focus-outline">
+          className="add-release-form no-focus-outline"
+          ref={formEl}
+        >
           <fieldset>
             {releaseObjFields.map(f =>
               <InputRow

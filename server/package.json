@@ -8,7 +8,8 @@
     "watch": "ts-node ./index.ts",
     "lint": "tslint -p tsconfig.json",
     "lint:fix": "npm run lint -- --fix && npm run lint",
-    "test": "jest __tests__ --forceExit"
+    "test": "jest __tests__ --forceExit",
+    "script": "ts-node ./script.ts"
   },
   "author": "Aleksandr Pasharin",
   "license": "ISC",

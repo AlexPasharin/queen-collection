@@ -26,6 +26,19 @@ main {
   padding: 10px 40px;
 }
 
+.entry-block__details h2{
+  display: inline-block;
+  margin-right: 1em;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.entry-block__details h3{
+  display: inline-block;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
 .entry-block:focus, .entry-block--open, .entry-block--selected {
   border-bottom: 1px solid black;
   border-top: 1px solid black;
@@ -75,14 +88,16 @@ main {
 
 .release-view ul li span:hover, .entry-block-release--selected {
   display: inline-block;
-  transform: scale(1.05);
   color: blue;
   cursor: pointer;
 }
 
-.release-block {
-  margin: 20px;
+.release-block .table-section-name{
+  margin: 10px 0;
+  display: inline-block;
+  font-weight: 600;
 }
+
 
 .release-info-block {
   line-height: 25px;

@@ -1,13 +1,37 @@
 import * as api from './apiCalls'
-import { sortBy, sortByReleaseDate } from './dataHelpers'
+import { groupBy, map, sortBy, sortByReleaseDate, values } from './dataHelpers'
 
 const getArtists = () => api.fetchArtists().then(sortBy('name'))
 const getArtistTypes = artistID => api.fetchArtistTypes(artistID).then(sortBy('name'))
-const getEntries = (artistID, type) => api.fetchEntries(artistID, type).then(sortByReleaseDate)
+const getEntries = (artist, type, artists) =>
+  api.fetchEntries(artist.id, type.id)
+    .then(sortByReleaseDate)
+    .then(entries => entries.map(
+      e => {
+        let entryArtistName
+
+        if (e.entry_artist_id && e.entry_artist_id !== artist.id) {
+          const entryArtist = artists.find(a => a.id === e.entry_artist_id)
+          entryArtistName = entryArtist ? entryArtist.name : undefined
+        }
+
+        return ({
+          ...e,
+          artistName: artist.name,
+          typeName: type.name,
+          entryArtistName
+        })
+      }
+    ))
 
 export const getReleases = entryID => api.fetchReleases(entryID).then(sortByReleaseDate)
 export const getRelease = releaseID => api.fetchRelease(releaseID)
 export const getEntry = entryID => api.fetchEntry(entryID)
+
+export const getReleaseTracks = releaseID => api.fetchReleaseTracks(releaseID)
+  .then(groupBy('place'))
+  .then(res => map(res, sortBy('number')))
+  .then(values)
 
 export const getLabels = () => api.fetchLabels().then(sortBy('name'))
 export const getFormats = () => api.fetchFormats().then(sortBy('id'))
@@ -30,11 +54,11 @@ export const getArtistsData = async (preferredSelectedArtist, preferredSelectedT
 
   return ({
     artists,
-    ...(await getArtistData(selectedArtist, preferredSelectedType))
+    ...(await getArtistData(selectedArtist, preferredSelectedType, artists))
   })
 }
 
-export const getArtistData = async (artist, typeRequest) => {
+export const getArtistData = async (artist, typeRequest, artists) => {
   if (!artist)
     return ({
       selectedArtist: null,
@@ -57,11 +81,11 @@ export const getArtistData = async (artist, typeRequest) => {
   return ({
     selectedArtist: artist,
     types,
-    ...(await getTypeData(artist, selectedType))
+    ...(await getTypeData(artist, selectedType, artists))
   })
 }
 
-export const getTypeData = async (artist, type) => ({
+export const getTypeData = async (artist, type, artists) => ({
   selectedType: type,
-  entries: artist && type ? await getEntries(artist.id, type.id) : []
+  entries: artist && type ? await getEntries(artist, type, artists) : []
 })

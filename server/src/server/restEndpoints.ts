@@ -90,5 +90,14 @@ export const setUpRestEndPoints = (app: Express, dBConnection: dbConnection) => 
       .catch(errorHandler(res, `Could not add update release`))
   })
 
+  app.get('/rest/tracks', (req, res) => {
+    const { release_id } = req.query
+
+    dBConnection.getReleaseTracks(release_id)
+      .then(successHandler(res))
+      .catch(errorHandler(res, `Could not retrieve tracks of release with id ${release_id} from the database`))
+  })
+
+
   return app
 }

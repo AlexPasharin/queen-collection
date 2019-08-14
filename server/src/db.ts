@@ -30,6 +30,7 @@ export class dbConnection {
       't.id',
     )
     .where('artist_id', artistID)
+    .orWhere('entry_artist_id', artistID)
 
   getEntriesByArtistAndType = (artistID: number, typeID: number) =>
     this.dbInstance
@@ -37,6 +38,10 @@ export class dbConnection {
       .from('Discography_entry')
       .where({
         artist_id: artistID,
+        type: typeID,
+      })
+      .orWhere({
+        entry_artist_id: artistID,
         type: typeID,
       })
 
@@ -88,7 +93,20 @@ export class dbConnection {
       .update(release)
       .then(() => this.getRelease(release.id))
 
-
+  getReleaseTracks = release_id =>
+    this.dbInstance('Composition as c')
+      .join(
+        'Track as t',
+        'c.id',
+        't.composition_id',
+      )
+      .join(
+        'Release_track as rt',
+        'rt.track_id',
+        't.id'
+      )
+      .select(['name', 't.id', 'composition_id', 'alt_name', 'version', 'performer_id', 'release_id', 'track_id', 'number', 'subversion', 'comment', 'length', 'place'])
+      .where({ release_id })
 }
 
 const connection = new dbConnection

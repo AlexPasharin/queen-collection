@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
+import { getReleaseTracks } from '../../utils/dataGetters'
 import { formatDate } from '../../utils/dataHelpers'
 
 const capitalizeString = str => {
@@ -40,6 +41,8 @@ const releaseObjFields = [
   }
 ]
 
+const whiteListedVersion = ['album version', 'original version']
+
 const DetailRow = ({ fieldObj, release }) => {
   const { key, text, format } = fieldObj
   let value = release[key]
@@ -69,13 +72,20 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
     release,
     artistName,
     entryName,
-    typeName
+    typeName,
   } = releaseData
 
   const {
     discogs_url,
-    name
+    name,
+    id
   } = release
+
+  const [releaseTracks, setReleaseTracks] = useState(null)
+
+  useEffect(() => {
+    getReleaseTracks(id).then(setReleaseTracks)
+  }, [id])
 
   const onKeyDown = e => {
     if (e.key === "Enter") {
@@ -86,15 +96,17 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
 
   return (
     <div className="release-block">
-      <h1>{artistName} - {entryName}</h1>
-      <div className="release-info-block">
-        {typeName}
-      </div>
-      {name &&
+      <div className="release-block__header">
+        <h1>{artistName} - {entryName}</h1>
         <div className="release-info-block">
-          (Released as "<span className="detail__title">{name}</span>")
+          {typeName}
         </div>
-      }
+        {name &&
+          <div className="release-info-block">
+            (Released as "<span className="detail__title">{name}</span>")
+        </div>
+        }
+      </div>
       {discogs_url ?
         <a className="release-discogs-url" href={discogs_url} target="_blank" rel="noopener noreferrer">
           <span>{discogs_url}</span>
@@ -127,6 +139,25 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
         >
           EDIT
         </button>
+        <h3>Tracks:</h3>
+        {releaseTracks ?
+          releaseTracks.map(({ prop, value }) => (
+            <table>
+              {prop !== "nullValue" && <thead><span className="table-section-name">{prop}</span></thead>}
+              <tbody>
+                {value.map(t => (
+                  <tr>
+                    <td>{t.number}</td>
+                    <td>{t.alt_name || t.name}</td>
+                    <td>{!whiteListedVersion.includes(t.version) && "(" + t.version + ")"}</td>
+                    <td>{t.subversion && "(" + t.subversion + ")"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ))
+          : "Loading tracks.."
+        }
       </div>
     </div>
   )

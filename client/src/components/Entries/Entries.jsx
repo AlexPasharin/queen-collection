@@ -11,7 +11,7 @@ const nextIndex = (arr, index) =>
   index === null ? 0 :
     index === arr.length ? 0 : index + 1
 
-const Entries = ({ entries, artist, type, selectedEntryIdx, onEntrySelect, initialSelectedReleaseID, removeInitialSelectedReleaseID }) => {
+const Entries = ({ entries, selectedEntryIdx, onEntrySelect, initialSelectedReleaseID, removeInitialSelectedReleaseID }) => {
   if (!entries)
     return <div className="entry-list-empty">Loading data...</div>
 
@@ -29,8 +29,6 @@ const Entries = ({ entries, artist, type, selectedEntryIdx, onEntrySelect, initi
           entry={e}
           selected={selectedEntryIdx === idx}
           select={() => onEntrySelect(idx)}
-          artistName={artist.name}
-          typeName={type.name}
           selectPrevEntry={selectPrevEntry}
           selectNextEntry={selectNextEntry}
           lastEntry={idx === entries.length - 1}

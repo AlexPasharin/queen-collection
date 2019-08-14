@@ -72,11 +72,11 @@ class App extends React.Component {
   }
 
   onSelectArtist = async artist => {
-    this.setState(await getArtistData(artist))
+    this.setState(await getArtistData(artist, this.state.selectedType && { name: this.state.selectedType.name }, this.state.artists))
   }
 
   onSelectType = async type => {
-    this.setState(await getTypeData(this.state.selectedArtist, type))
+    this.setState(await getTypeData(this.state.selectedArtist, type, this.state.artists))
   }
 
   get entries() {
@@ -121,8 +121,6 @@ class App extends React.Component {
         <main>
           <Entries
             entries={this.entries}
-            artist={selectedArtist}
-            type={selectedType}
             onEntrySelect={this.onEntrySelect}
             selectedEntryIdx={selectedEntryIdx}
             initialSelectedReleaseID={initialSelectedReleaseID}

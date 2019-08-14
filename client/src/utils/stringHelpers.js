@@ -22,7 +22,7 @@ export const validateDate = dateStr => {
   if (month === undefined)
     return { valid: true }
 
-  if (!/^([1-9]|(0[1-9])|(1[1-2]))$/.test(month)) {
+  if (!/^([1-9]|(0[1-9])|(1[0-2]))$/.test(month)) {
     return { valid: false, reason: `month is ${month}` }
   }
 

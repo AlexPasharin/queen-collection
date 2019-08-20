@@ -33,6 +33,8 @@ export const getReleaseTracks = releaseID => api.fetchReleaseTracks(releaseID)
   .then(res => map(res, sortBy('number')))
   .then(values)
 
+export const getCompositions = () => api.fetchCompositions().then(sortBy('name'))
+
 export const getLabels = () => api.fetchLabels().then(sortBy('name'))
 export const getFormats = () => api.fetchFormats().then(sortBy('id'))
 export const getCountries = () => api.fetchCountries()

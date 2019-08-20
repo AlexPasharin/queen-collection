@@ -3,16 +3,16 @@ const directory = __dirname + "/queen"
 
 fs.readdir(directory, (err, files) => {
   const result = files.reduce((acc, fileName) => {
-    const flacMatch = /\d{2}\s(.*)\.flac$/.exec(fileName)
+    const flacMatch = /\d{2} (.*)\.flac$/.exec(fileName)
     if (!flacMatch)
       return acc
 
     return [...acc, {
       name: flacMatch[1],
-      version: 'album version',
-      compositor: ['Freddie Mercury'],
-
-      //      subversion: "2011 remaster by Adam Ayan",
+      version: '',
+      // version: 'album version',
+      //      compositor: ['Brian May'],
+      subversion: "2011 remaster by Adam Ayan",
     }]
     // if (!fs.lstatSync(directory + fileName).isDirectory()) {
     //     const [_, a, fileNumber, ...rest] = fileName.split(" ")

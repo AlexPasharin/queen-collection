@@ -107,6 +107,9 @@ export class dbConnection {
       )
       .select(['name', 't.id', 'composition_id', 'alt_name', 'version', 'performer_id', 'release_id', 'track_id', 'number', 'subversion', 'comment', 'length', 'place'])
       .where({ release_id })
+
+  getCompositions = () =>
+    this.dbInstance('Composition').select()
 }
 
 const connection = new dbConnection

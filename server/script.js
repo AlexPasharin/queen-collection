@@ -20,126 +20,128 @@ const getReleases = entry =>
 
 const getFormats = () => knex('Format').select()
 
-const entry = 2
+const entry = 14
 const artist = 1
 
-const A = [
-  {
-    name: 'Brighton Rock',
+const A =
+  [{
+    name: 'One Vision',
     version: 'album version',
-    compositor: ['Brian May']
+    compositor: ['Brian May', 'Roger Taylor', 'Freddie Mercury', 'John Deacon']
   },
   {
-    name: 'Killer Queen',
-    version: 'album version',
-    compositor: ['Freddie Mercury']
-  },
-  {
-    name: 'Tenement Funster',
+    name: 'A Kind Of Magic',
     version: 'album version',
     compositor: ['Roger Taylor']
   },
   {
-    name: 'Flick Of The Wrist',
-    version: 'album version',
-    compositor: ['Freddie Mercury']
-  },
-  {
-    name: 'Lily Of The Valley',
-    version: 'album version',
-    compositor: ['Freddie Mercury']
-  },
-  {
-    name: "Now I'm Here",
-    version: 'album version',
-    compositor: ['Brian May']
-  },
-]
-
-const B = [
-  {
-    name: 'In The Lap Of The Gods',
-    version: 'album version',
-    compositor: ['Freddie Mercury']
-  },
-  {
-    name: 'Stone Cold Crazy',
-    version: 'album version',
-    compositor: ['Freddie Mercury', 'Brian May', 'Roger Taylor', 'John Deacon']
-  },
-  {
-    name: 'Dear Friends',
-    version: 'album version',
-    compositor: ['Freddie Mercury']
-  },
-  {
-    name: 'Misfire',
+    name: 'One Year Of Love',
     version: 'album version',
     compositor: ['John Deacon']
   },
   {
-    name: 'Bring Back That Leroy Brown',
+    name: 'Pain Is So Close To Pleasure',
     version: 'album version',
-    compositor: ['Freddie Mercury']
+    compositor: ['Freddie Mercury', 'John Deacon']
   },
   {
-    name: 'She Makes Me (Stormtrooper In Stilettoes)',
+    name: 'Friends Will Be Friends',
     version: 'album version',
-    compositor: ['Brian May']
+    compositor: ['Freddie Mercury', 'John Deacon']
   },
-  {
-    name: 'In The Lap Of The Gods... revisited',
-    version: 'album version',
-    compositor: ['Freddie Mercury']
-  },
-  {
-    name: 'Stone Cold Crazy',
-    releases: [{
-      version: '1991 Remix By Michael Wagener',
-      release_ids: [247]
-    }],
-  },
+  ]
+const B = [{
+  name: 'Who Wants To Live Forever',
+  version: 'album version',
+  compositor: ['Brian May']
+},
+{
+  name: 'Gimme The Prize',
+  version: 'album version',
+  compositor: ['Brian May']
+},
+{
+  name: 'Don\'t Lose Your Head',
+  version: 'album version',
+  compositor: ['Roger Taylor']
+},
+{
+  name: 'Princes Of The Universe',
+  version: 'album version',
+  compositor: ['Freddie Mercury']
+},
+{
+  name: 'A Kind Of Magic',
+  r_name: 'A Kind Of \'A Kind Of Magic\'',
+  releases: [{
+    version: 'A Kind Of \'A Kind Of Magic\' - Extended Edit',
+    release_ids: [203, 268, 556]
+  }],
+},
+{
+  name: 'Friends Will Be Friends',
+  r_name: 'Friends Will Be Friends Will Be Friends...',
+  releases: [{
+    version: 'Friends Will Be Friends Will Be Friends... - Extended Edit',
+    release_ids: [203, 268, 556]
+  }],
+},
+{
+  name: 'Who Wants To Live Forever',
+  r_name: 'Forever',
+  releases: [{
+    version: 'Forever - piano version',
+    release_ids: [203, 268, 556, 256]
+  }],
+},
+{
+  name: 'One Vision',
+  releases: [{
+    version: 'Extended Vision',
+    release_ids: [256]
+  }],
+},
 ]
 
 const places = [
   {
     name: "Bonus EP",
-    release_id: 229,
+    release_id: 240,
     tracks:
       [{
-        name: 'Keep Yourself Alive',
-        version: 'De Lane Lea Demo',
-        compositor: ['Brian May'],
+        name: 'A Kind Of Magic',
+        version: 'Highlander Version',
         subversion: '2011 remaster by Adam Ayan'
       },
       {
-        name: 'The Night Comes Down',
-        version: 'De Lane Lea Demo',
-        compositor: ['Brian May'],
+        name: 'One Vision',
+        version: 'single edit',
         subversion: '2011 remaster by Adam Ayan'
       },
       {
-        name: 'Great King Rat',
-        version: 'De Lane Lea Demo',
-        compositor: ['Freddie Mercury'],
+        name: 'Pain Is So Close To Pleasure',
+        version: 'single remix',
         subversion: '2011 remaster by Adam Ayan'
       },
       {
-        name: 'Jesus',
-        version: 'De Lane Lea Demo',
-        compositor: ['Freddie Mercury'],
-        subversion: '2011 remaster by Adam Ayan'
+        name: 'Who Wants To Live Forever',
+        version: 'Forever - piano version',
+        subversion: '2011 remaster by Adam Ayan',
+        dontAddTrack: true
       },
       {
-        name: 'Liar',
-        version: 'De Lane Lea Demo',
-        compositor: ['Freddie Mercury'],
-        subversion: '2011 remaster by Adam Ayan'
+        name: 'A Kind Of Magic',
+        r_name: 'A Kind Of Vision',
+        version: 'Demo August 1985'
       },
       {
-        name: 'Mad The Swine',
-        version: '1991 remix',
-        compositor: ['Freddie Mercury'],
+        name: 'One Vision',
+        version: 'Live at Wembley Stadium 11.7.1986',
+        subversion: '2011 remaster bonus track'
+      },
+      {
+        name: 'Friends Will Be Friends',
+        version: 'Friends Will Be Friends Will Be Friends... - Extended Edit',
         subversion: '2011 remaster by Adam Ayan',
         dontAddTrack: true
       }]
@@ -154,14 +156,15 @@ for (let p of places) {
   placesTracks = [...placesTracks, ...p.tracks]
 }
 
-const newTracks = []  // [...tracks, ...placesTracks].filter(t => t.compositor)
+const newTracks = [...tracks, ...placesTracks].filter(t => t.compositor)
 
 const getCompositionIDByName = async name => {
   const composition = await knex('Composition')
     .select('id')
     .first()
     .where({ name })
-    .then(({ id }) => id)
+    .then(res => res.id)
+    .catch(() => console.log("choked on " + name))
 
   return composition
 }
@@ -188,11 +191,13 @@ const getTrackIDByNameAndVersion = async (name, version) => {
 const flatten = arr =>
   arr.reduce((acc, next) => [...acc, ...next], [])
 
-const addTracks = async (stop) => {
+const addTracks = async () => {
   //insert new compositions
   await knex('Composition').insert(newTracks.map(t => ({
     name: t.name
   })))
+
+  console.log("Added compositions")
 
   // add compositors
   await Promise.all(newTracks
@@ -214,7 +219,7 @@ const addTracks = async (stop) => {
         })
     ))
 
-  if (!stop) return
+  console.log("Added compositors")
 
   // add tracks
 
@@ -225,7 +230,7 @@ const addTracks = async (stop) => {
     composition_id: t.id,
     alt_name: t.r_name,
     version: t.version,
-    performer_id: artist
+    performer_id: t.performer_id || artist
   }))
 
   const alt_versions = enhancedTracks
@@ -234,7 +239,7 @@ const addTracks = async (stop) => {
       composition_id: t.id,
       alt_name: t.r_name,
       version: r.version,
-      performer_id: artist
+      performer_id: r.performer_id || artist
     })))
     .reduce((acc, versions) => [...acc, ...versions], [])
 
@@ -250,25 +255,15 @@ const addTracks = async (stop) => {
       composition_id: t.id,
       alt_name: t.r_name,
       version: t.version,
-      performer_id: artist
+      performer_id: t.performer_id || artist
     }))
 
-  // await knex('Track').insert(versions)
-  // await knex('Track').insert(alt_versions)
-  //  await knex('Track').insert(placeVersions)
-
-  // const enhancedPlaces = await Promise.all(places.map(async place => {
-  //   const newTracks
-
-  //   return ({
-  //     ...place,
-  //     tracks: enhancedPlaceTracks
-  //   })
-  // }))
-
-  // await Promise.all(places.map(p => knex('Track').insert(
-  //   p.tracks
-  // )
+  await knex('Track').insert(versions)
+  console.log("Added versions")
+  await knex('Track').insert(alt_versions)
+  console.log("Added alt versions")
+  await knex('Track').insert(placeVersions)
+  console.log("Added place versions")
 
   // add releases tracks
   const [
@@ -378,13 +373,9 @@ const addTracks = async (stop) => {
       }).filter(t => t.track_id !== null)
     }
 
-    // console.log({ release_id: release.id })
-    // console.log(JSON.stringify(r_tracks, null, 4))
-    // console.log()
-    // console.log()
-    // console.log()
+    await knex('Release_track').insert(r_tracks)
 
-    //    await knex('Release_track').insert(r_tracks)
+    console.log("Added releases for " + release.id)
   }
 
   const placeReleaseTracks = await Promise.all(places.map(async p =>
@@ -399,6 +390,7 @@ const addTracks = async (stop) => {
 
   //  show(flatten(placeReleaseTracks))
   await knex('Release_track').insert(flatten(placeReleaseTracks))
+  console.log("added places tracks")
 }
 
 const script = () => addTracks(true)

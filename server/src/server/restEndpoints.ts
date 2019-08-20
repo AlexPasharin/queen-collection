@@ -98,6 +98,11 @@ export const setUpRestEndPoints = (app: Express, dBConnection: dbConnection) => 
       .catch(errorHandler(res, `Could not retrieve tracks of release with id ${release_id} from the database`))
   })
 
+  app.get('/rest/compositions', (req, res) => {
+    dBConnection.getCompositions()
+      .then(successHandler(res))
+      .catch(errorHandler(res, `Could not retrieve compositions from the database`))
+  })
 
   return app
 }

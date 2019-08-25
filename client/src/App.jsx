@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
 
-import EntriesMain from "../src/components/Entries/EntriesMain.jsx"
-import Tracks from "../src/components/Tracks/Tracks.jsx"
+import EntriesContainer from "../src/components/Entries/EntriesContainer"
+// import Tracks from "../src/components/Tracks/Tracks.jsx"
 
 const App = () => {
-  const [mode, setMode] = useState(null)
 
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-
-    const tracksMode = urlParams.get("tracks")
-    setMode(!!tracksMode)
-  }, [])
-
-  if (mode === null)
-    return "Loading app..."
-
-  return mode ? <Tracks /> : <EntriesMain />;
+  return (
+    <Router>
+      <Switch>
+        <Route path="/entries/:artist?/:type?" component={EntriesContainer} />
+        {/* TODO: route for tracks */}
+        <Redirect to="/entries" />
+      </Switch>
+    </Router>
+  )
 }
 
 export default App;

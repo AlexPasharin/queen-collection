@@ -11,7 +11,6 @@ const update = (artist, type, history) => {
 
 const EntriesContainer = ({ match, history }) => {
   const { artist, type } = match.params
-  console.log({ artist, type })
 
   const [{ artists, artistsLoading, artistsFetchFailed }, setArtists] = useState({
     artists: [],
@@ -29,8 +28,6 @@ const EntriesContainer = ({ match, history }) => {
   useEffect(() => {
     getArtists()
       .then(artists => {
-        if (!artists.length) throw Error("No artists in the database")
-
         setArtists({
           artists,
           artistsLoading: false,
@@ -57,9 +54,14 @@ const EntriesContainer = ({ match, history }) => {
     }
   }, [artist, type, artists])
 
-  if (artistsLoading) return <h1>Loading artists...</h1>
+  let errorText
+  let infoText
 
-  if (artistsFetchFailed) return <h1>Could not fetch artists </h1>
+  if (!artists.length) errorText = "Error: There are no artists in the database"
+  else if (artistsFetchFailed) errorText = "Error: Could not fetch artists from the database"
+
+  if (artistsLoading) infoText = "Loading artists..."
+
 
   const updateArtist = newArtist => update(newArtist, type, history)
   const updateType = newType => update(artist, newType, history)

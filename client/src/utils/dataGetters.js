@@ -30,7 +30,17 @@ export const getArtistData = async (preferredArtistName, preferredTypeName, arti
     })
 
   const selectedArtist = artists.find(a => a.name.toLowerCase() === decode(preferredArtistName).toLowerCase())
-  const types = selectedArtist ? await getArtistTypes(selectedArtist.id) : []
+
+  if (!selectedArtist)
+    return ({
+      selectedArtist: null,
+      types: [],
+      selectedType: null,
+      entries: [],
+      error: 'Artist does not exist in the database'
+    })
+
+  const types = await getArtistTypes(selectedArtist.id)
 
   const selectedType = preferredTypeName ?
     types.find(t => t.name.toLowerCase() === decode(preferredTypeName).toLowerCase()) : null

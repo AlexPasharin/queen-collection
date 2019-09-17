@@ -45,7 +45,7 @@ export default class EntriesMain extends React.Component {
   }
 
   render() {
-    const { artists, types, entries, selectedArtist, selectedType } = this.props
+    const { artists, types, entries, selectedArtist, selectedType, errorText, infoText } = this.props
     const { selectedEntryIdx, entryFilterText, initialSelectedReleaseID } = this.state
 
     return (
@@ -62,13 +62,22 @@ export default class EntriesMain extends React.Component {
           showEntriesFilter={!!entries}
         />
         <main>
-          <Entries
-            entries={this.entries}
-            onEntrySelect={this.onEntrySelect}
-            selectedEntryIdx={selectedEntryIdx}
-            initialSelectedReleaseID={initialSelectedReleaseID}
-            removeInitialSelectedReleaseID={this.removeInitialSelectedReleaseID}
-          />
+          {errorText ?
+            <section className="main-error-text">
+              {errorText}
+            </section>
+            : infoText ?
+              <section className="main-info-text">
+                {infoText}
+              </section> :
+              <Entries
+                entries={this.entries}
+                onEntrySelect={this.onEntrySelect}
+                selectedEntryIdx={selectedEntryIdx}
+                initialSelectedReleaseID={initialSelectedReleaseID}
+                removeInitialSelectedReleaseID={this.removeInitialSelectedReleaseID}
+              />
+          }
         </main>
       </div>
     )

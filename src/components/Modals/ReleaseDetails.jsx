@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { getReleaseTracks } from '../../utils/dataGetters'
+import { getTracks } from '../../utils/dataGetters'
 import { formatDate } from '../../utils/dataHelpers'
 
 const capitalizeString = str => {
@@ -81,10 +81,24 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
     id
   } = release
 
-  const [releaseTracks, setReleaseTracks] = useState(null)
+  const [{ tracks, tracksLoading, tracksFetchFailed }, setTracks] = useState({
+    tracks: [],
+    tracksLoading: true,
+    tracksFetchFailed: false
+  })
 
   useEffect(() => {
-    getReleaseTracks(id).then(setReleaseTracks)
+    getTracks(id)
+      .then(tracks => setTracks({
+        tracks,
+        tracksLoading: false,
+        tracksFetchFailed: false
+      }))
+      .catch(() => setTracks({
+        tracks: [],
+        tracksLoading: false,
+        tracksFetchFailed: true
+      }))
   }, [id])
 
   const onKeyDown = e => {
@@ -140,23 +154,25 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
           EDIT
         </button>
         <h3>Tracks:</h3>
-        {releaseTracks ?
-          releaseTracks.map(({ prop, value }) => (
-            <table>
-              {prop !== "nullValue" && <thead><span className="table-section-name">{prop}</span></thead>}
-              <tbody>
-                {value.map(t => (
-                  <tr>
-                    <td>{t.number}</td>
-                    <td>{t.alt_name || t.name}</td>
-                    <td>{!whiteListedVersion.includes(t.version) && "(" + t.version + ")"}</td>
-                    <td>{t.subversion && "(" + t.subversion + ")"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ))
-          : "Loading tracks.."
+        {tracksLoading ?
+          "Loading tracks.." :
+          tracksFetchFailed ?
+            "ERROR: Could not fetch tracks from the database" :
+            tracks.map(({ prop, value }) => (
+              <table>
+                {prop !== "nullValue" && <thead><span className="table-section-name">{prop}</span></thead>}
+                <tbody>
+                  {value.map(t => (
+                    <tr>
+                      <td>{t.number}</td>
+                      <td>{t.alt_name || t.name}</td>
+                      <td>{!whiteListedVersion.includes(t.version) && "(" + t.version + ")"}</td>
+                      <td>{t.subversion && "(" + t.subversion + ")"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ))
         }
       </div>
     </div>

@@ -5,8 +5,7 @@ const fetchData = (resource, method, body, headers) =>
     method: method || 'GET',
     body: body ? JSON.stringify(body) : undefined,
     headers
-  })
-    .then(response => response.json())
+  }).then(response => response.json())
 
 
 export const fetchArtists = () => fetchData('artists')

@@ -9,7 +9,7 @@ export const getReleases = entryID => api.fetchReleases(entryID).then(sortByRele
 export const getRelease = releaseID => api.fetchRelease(releaseID)
 export const getEntry = entryID => api.fetchEntry(entryID)
 
-export const getReleaseTracks = releaseID => api.fetchReleaseTracks(releaseID)
+export const getTracks = releaseID => api.fetchReleaseTracks(releaseID)
   .then(groupBy('place'))
   .then(res => map(res, sortBy('number')))
   .then(values)
@@ -37,19 +37,30 @@ export const getArtistData = async (preferredArtistName, preferredTypeName, arti
       types: [],
       selectedType: null,
       entries: [],
-      error: 'Artist does not exist in the database'
+      artistDoesntExistError: true,
     })
 
-  const types = await getArtistTypes(selectedArtist.id)
+  return getArtistTypes(selectedArtist.id)
+    .then(async types => {
+      const selectedType = preferredTypeName ?
+        types.find(t => t.name.toLowerCase() === decode(preferredTypeName).toLowerCase()) :
+        types.length === 1 ? types[0] : null
 
-  const selectedType = preferredTypeName ?
-    types.find(t => t.name.toLowerCase() === decode(preferredTypeName).toLowerCase()) : null
-
-  return ({
-    selectedArtist,
-    types,
-    ...(await getTypeData(selectedArtist, selectedType, artists))
-  })
+      return ({
+        selectedArtist,
+        types,
+        artistTypesLoading: false,
+        ...(await getTypeData(selectedArtist, selectedType, artists))
+      })
+    })
+    .catch(() => ({
+      selectedArtist,
+      types: [],
+      selectedType: null,
+      entries: [],
+      typesFetchingError: true,
+      artistTypesLoading: false
+    }))
 }
 
 export const getTypeData = async (artist, type, artists) => ({

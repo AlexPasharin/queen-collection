@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import { getArtists, getArtistData } from '../../utils/dataGetters'
-import { encode } from '../../utils/stringHelpers'
+import { encode, decode } from '../../utils/stringHelpers'
 import EntriesMain from './EntriesMain'
 
 const update = (artist, type, history) => {
@@ -13,7 +13,6 @@ const EntriesContainer = ({ match, history }) => {
   const { artist, type } = match.params
 
   const [{ artists, artistsLoading, artistsFetchFailed }, setArtists] = useState({
-    artists: [],
     artistsLoading: true,
     artistsFetchFailed: false
   })
@@ -22,7 +21,11 @@ const EntriesContainer = ({ match, history }) => {
     types: [],
     entries: [],
     selectedArtist: null,
-    selectedType: null
+    selectedType: null,
+    artistDoesntExistError: false,
+    typesFetchingError: false,
+    entriesFetcingError: false,
+    artistTypesLoading: true
   })
 
   useEffect(() => {
@@ -34,16 +37,12 @@ const EntriesContainer = ({ match, history }) => {
           artistsFetchFailed: false
         })
       })
-      .catch(error => {
+      .catch(() => {
         setArtists({
+          artists: [],
           artistsLoading: false,
           artistsFetchFailed: true
         })
-
-        console.group()
-        console.error("Artists fetch failed")
-        console.error(error)
-        console.groupEnd()
       })
   }, [])
 
@@ -57,13 +56,20 @@ const EntriesContainer = ({ match, history }) => {
   let errorText
   let infoText
 
-  if (!artists.length) errorText = "Error: There are no artists in the database"
-  else if (artistsFetchFailed) errorText = "Error: Could not fetch artists from the database"
+  if (artistsFetchFailed) errorText = "Error: Could not fetch artists from the database"
+  else if (artists && !artists.length) errorText = "Error: There are no artists in the database"
+  else if (selectedArtistData.artistDoesntExistError) errorText = `Error: Artist "${decode(artist)}" does not exist in the database`
+  else if (selectedArtistData.typesFetchingError) errorText = `Error: Could not fetch record types of the artist ${selectedArtistData.selectedArtist.name} from the database`
+  else if (selectedArtistData.selectedArtist && !selectedArtistData.types.length) errorText = `Error: Artist ${selectedArtistData.selectedArtist.name} does not have any record types in the database`
+  else if (type && !selectedArtistData.artistTypesLoading && !selectedArtistData.selectedType) {
+    errorText = `Error: Artist ${selectedArtistData.selectedArtist.name} does not have entries with type "${type}"`
+  }
 
   if (artistsLoading) infoText = "Loading artists..."
+  else if (!selectedArtistData.selectedArtist) infoText = "Select an artist"
+  else if (!type) infoText = "Select a record type"
 
-
-  const updateArtist = newArtist => update(newArtist, type, history)
+  const updateArtist = newArtist => update(newArtist, null, history)
   const updateType = newType => update(artist, newType, history)
 
   return (
@@ -72,6 +78,8 @@ const EntriesContainer = ({ match, history }) => {
       {...selectedArtistData}
       updateArtist={updateArtist}
       updateType={updateType}
+      errorText={errorText}
+      infoText={infoText}
     />
   )
 }

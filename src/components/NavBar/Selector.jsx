@@ -11,8 +11,7 @@ const initialState = (items, selectedItem) => ({
   selectedItemIdx: null
 })
 
-const Selector = props => {
-  const { items, selectedItem, onSelect } = props
+const Selector = ({ items = [], selectedItem, onSelect }) => {
   const [state, setState] = useState(initialState(items, selectedItem))
 
   const inputEl = useRef()
@@ -73,27 +72,10 @@ const Selector = props => {
   const onKeyDown = e => {
     const { key } = e
 
-    if (key === "Enter") {
+    if (key === "Enter" || key === "Tab") {
       const item = getSuitableItem()
-
       if (item) {
         onSelect(item)
-      } else {
-        e.preventDefault()
-
-        setState(prevState => ({
-          ...prevState,
-          error: true
-        }))
-      }
-    } else if (key === "Tab") {
-      const item = getSuitableItem()
-
-      if (item) {
-        setState(prevState => ({
-          ...prevState,
-          showList: false
-        }))
       } else {
         e.preventDefault()
 
@@ -138,7 +120,7 @@ const Selector = props => {
   }
 
   const { showList, inputValue, filteredItems, selectedItemIdx, error } = state
-  const oneOrZeroItems = items.length < 2
+  const disable = items.length < 2 && selectedItem
 
   return (
     <div
@@ -156,10 +138,10 @@ const Selector = props => {
         onKeyDown={onKeyDown}
         onChange={onChange}
         onMouseEnter={onInputMouseEnter}
-        disabled={oneOrZeroItems}
+        disabled={disable}
       />
       {
-        showList && !oneOrZeroItems &&
+        showList && !disable &&
         <ul
           className="selector-list"
         >

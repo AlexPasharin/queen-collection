@@ -44,3 +44,17 @@ body, ul, p, h1 {
 }
 
 
+.main-error-text {
+  margin: 20px;
+  text-align: center;
+  color: red;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.main-info-text {
+  margin: 20px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+}

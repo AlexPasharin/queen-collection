@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
-import { getTracks } from '../../utils/dataGetters'
 import { formatDate } from '../../utils/dataHelpers'
 
 const capitalizeString = str => {
@@ -41,8 +40,6 @@ const releaseObjFields = [
   }
 ]
 
-const whiteListedVersion = ['album version', 'original version']
-
 const DetailRow = ({ fieldObj, release }) => {
   const { key, text, format } = fieldObj
   let value = release[key]
@@ -67,7 +64,7 @@ const DetailRow = ({ fieldObj, release }) => {
   )
 }
 
-const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
+const ReleaseDetails = ({ releaseData }) => {
   const {
     release,
     artistName,
@@ -80,33 +77,6 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
     name,
     id
   } = release
-
-  const [{ tracks, tracksLoading, tracksFetchFailed }, setTracks] = useState({
-    tracks: [],
-    tracksLoading: true,
-    tracksFetchFailed: false
-  })
-
-  useEffect(() => {
-    getTracks(id)
-      .then(tracks => setTracks({
-        tracks,
-        tracksLoading: false,
-        tracksFetchFailed: false
-      }))
-      .catch(() => setTracks({
-        tracks: [],
-        tracksLoading: false,
-        tracksFetchFailed: true
-      }))
-  }, [id])
-
-  const onKeyDown = e => {
-    if (e.key === "Enter") {
-      e.stopPropagation()
-      e.target.dataset.mode === 'copy' ? onCopy() : onEdit()
-    }
-  }
 
   return (
     <div className="release-block">
@@ -135,45 +105,6 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
             )}
           </tbody>
         </table>
-        <button
-          className="cta-button"
-          data-mode="copy"
-          type="button"
-          onClick={onCopy}
-          onKeyDown={onKeyDown}
-        >
-          COPY
-        </button>
-        <button
-          className="cta-button"
-          data-mode="edit"
-          type="button"
-          onClick={onEdit}
-          onKeyDown={onKeyDown}
-        >
-          EDIT
-        </button>
-        <h3>Tracks:</h3>
-        {tracksLoading ?
-          "Loading tracks.." :
-          tracksFetchFailed ?
-            "ERROR: Could not fetch tracks from the database" :
-            tracks.map(({ prop, value }) => (
-              <table>
-                {prop !== "nullValue" && <thead><span className="table-section-name">{prop}</span></thead>}
-                <tbody>
-                  {value.map(t => (
-                    <tr>
-                      <td>{t.number}</td>
-                      <td>{t.alt_name || t.name}</td>
-                      <td>{!whiteListedVersion.includes(t.version) && "(" + t.version + ")"}</td>
-                      <td>{t.subversion && "(" + t.subversion + ")"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ))
-        }
       </div>
     </div>
   )

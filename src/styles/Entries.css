@@ -118,23 +118,5 @@ main {
   margin-top: 10px;
 }
 
-.add-release-form label {
-  display: flex;
-  margin: 5px 0;
-}
-
-.add-release-form label .add-release-form__title {
-  font-size: 18px;
-  width: 100px;
-}
-
-.add-release-form label .add-release-form__input {
-  font-size: 16px;
-  width: 500px;
-}
-
-.add-release-form label .add-release-form__input--invalid {
-  border-color: red;
-}
 
 

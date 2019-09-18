@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:2000'
+const BASE_URL = "https://queen-collection-db.herokuapp.com"// 'http://localhost:2000'
 
 const fetchData = (resource, method, body, headers) =>
   fetch(`${BASE_URL}/rest/${resource}`, {

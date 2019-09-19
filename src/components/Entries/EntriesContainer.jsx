@@ -28,6 +28,9 @@ const EntriesContainer = ({ match, history }) => {
     artistTypesLoading: true
   })
 
+  const updateArtist = newArtist => update(newArtist, null, history)
+  const updateType = newType => update(artist, newType, history)
+
   useEffect(() => {
     getArtists()
       .then(artists => {
@@ -53,6 +56,12 @@ const EntriesContainer = ({ match, history }) => {
     }
   }, [artist, type, artists])
 
+  useEffect(() => {
+    if (!type && selectedArtistData.selectedType) {
+      updateType(selectedArtistData.selectedType.name)
+    }
+  }, [selectedArtistData.selectedType])
+
   let errorText
   let infoText
 
@@ -68,9 +77,6 @@ const EntriesContainer = ({ match, history }) => {
   if (artistsLoading) infoText = "Loading artists..."
   else if (!selectedArtistData.selectedArtist) infoText = "Select an artist"
   else if (!type) infoText = "Select a record type"
-
-  const updateArtist = newArtist => update(newArtist, null, history)
-  const updateType = newType => update(artist, newType, history)
 
   return (
     <EntriesMain

@@ -43,6 +43,7 @@ export const getArtistData = async (preferredArtistName, preferredTypeName, arti
         selectedArtist,
         types,
         artistTypesLoading: false,
+        typesFetchingError: false,
         ...(await getTypeData(selectedArtist, selectedType, artists))
       })
     })

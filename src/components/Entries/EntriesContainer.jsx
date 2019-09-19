@@ -70,9 +70,9 @@ const EntriesContainer = ({ match, history }) => {
   else if (selectedArtistData.artistDoesntExistError) errorText = `Error: Artist "${decode(artist)}" does not exist in the database`
   else if (selectedArtistData.typesFetchingError) errorText = `Error: Could not fetch record types of the artist ${selectedArtistData.selectedArtist.name} from the database`
   else if (selectedArtistData.selectedArtist && !selectedArtistData.types.length) errorText = `Error: Artist ${selectedArtistData.selectedArtist.name} does not have any record types in the database`
-  else if (type && !selectedArtistData.artistTypesLoading && !selectedArtistData.selectedType) {
-    errorText = `Error: Artist ${selectedArtistData.selectedArtist.name} does not have entries with type "${type}"`
-  }
+  // else if (type && !selectedArtistData.artistTypesLoading && selectedArtistData.selectedType) {
+  //   errorText = `Error: Artist ${selectedArtistData.selectedArtist.name} does not have entries with type "${type}"`
+  // }
 
   if (artistsLoading) infoText = "Loading artists..."
   else if (!selectedArtistData.selectedArtist) infoText = "Select an artist"

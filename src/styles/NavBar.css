@@ -54,6 +54,10 @@
   background-color: #d5dbe3;
 }
 
+.entries-filter:disabled {
+  visibility: hidden;
+}
+
 .selector-input:focus, .entries-filter:focus {
   outline:none;
   border: 1px solid blue;

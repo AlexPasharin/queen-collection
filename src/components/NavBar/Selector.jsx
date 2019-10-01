@@ -120,7 +120,7 @@ const Selector = ({ items = [], selectedItem, onSelect }) => {
   }
 
   const { showList, inputValue, filteredItems, selectedItemIdx, error } = state
-  const disable = items.length < 2 && selectedItem
+  const disable = items.length === 0 || (items.length < 2 && selectedItem)
 
   return (
     <div

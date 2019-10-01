@@ -3,7 +3,7 @@ import React from 'react'
 import Selector from './Selector'
 import '../../styles/NavBar.css'
 
-const NavBar = ({ artists, selectedArtist, onSelectArtist, types, selectedType, onSelectType, showEntriesFilter, entryFilterText, onChangeEntryFilterText }) => (
+const NavBar = ({ artists, selectedArtist, onSelectArtist, types, selectedType, onSelectType, showEntriesFilter, entryFilterText, onChangeEntryFilterText, entries }) => (
   <header className="app-header">
     <h1 className="app-header__title">Queen Collection</h1>
     <div className="app-header__selectors" >
@@ -18,7 +18,14 @@ const NavBar = ({ artists, selectedArtist, onSelectArtist, types, selectedType, 
         onSelect={onSelectType}
       />
       {showEntriesFilter &&
-        <input className="entries-filter" type="text" placeholder="Filter entries" value={entryFilterText} onChange={onChangeEntryFilterText} />
+        <input
+          className="entries-filter"
+          type="text"
+          placeholder="Filter entries"
+          value={entryFilterText}
+          onChange={onChangeEntryFilterText}
+          disabled={entries.length === 0}
+        />
       }
     </div>
   </header>

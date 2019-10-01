@@ -1,12 +1,18 @@
-const BASE_URL = process.env.BASE_API_URL || 'https://queen-collection-db.herokuapp.com' || 'http://localhost:2000'
+const BASE_URL = process.env.BASE_API_URL ||
+  // 'https://queen-collection-db.herokuapp.com' ||
+  'http://localhost:2000'
 
 const fetchData = (resource, method, body, headers) =>
-  fetch(`${BASE_URL}/rest/${resource}`, {
-    method: method || 'GET',
-    body: body ? JSON.stringify(body) : undefined,
-    headers
-  }).then(response => response.json())
-
+  new Promise(resolve => {
+    setTimeout(() =>
+      fetch(`${BASE_URL}/rest/${resource}`, {
+        method: method || 'GET',
+        body: body ? JSON.stringify(body) : undefined,
+        headers
+      }).then(response => resolve(response.json())),
+      0
+    )
+  })
 
 export const fetchArtists = () => fetchData('artists')
 export const fetchArtistTypes = artistID => fetchData(`types?artist=${artistID}`)

@@ -60,6 +60,7 @@ export default class EntriesMain extends React.Component {
           entryFilterText={entryFilterText}
           onChangeEntryFilterText={this.onChangeEntryFilterText}
           showEntriesFilter={!!entries}
+          entries={entries}
         />
         <main>
           {errorText ?

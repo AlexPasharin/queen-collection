@@ -9,6 +9,9 @@ const update = (artist, type, history) => {
   history.push(url)
 }
 
+const findByName = (arr, value) =>
+  arr.find(a => a.name.toLowerCase() === decode(value).toLowerCase())
+
 const EntriesContainer = ({ match, history }) => {
   const { artist = "", type = "" } = match.params
 
@@ -32,9 +35,8 @@ const EntriesContainer = ({ match, history }) => {
     entriesFetchFailed: false
   })
 
-  // TODO: Refactor to "findByName"
-  const selectedArtist = artists.find(a => a.name.toLowerCase() === decode(artist).toLowerCase())
-  const selectedType = types.find(t => t.name.toLowerCase() === decode(type).toLowerCase())
+  const selectedArtist = findByName(artists, artist)
+  const selectedType = findByName(types, type)
 
   const updateArtist = newArtist => update(newArtist, null, history)
   const updateType = newType => update(artist, newType, history)

@@ -57,6 +57,8 @@ const EntriesContainer = ({ match, history }) => {
       })
   }, [])
 
+
+
   useEffect(() => {
     setTypes({
       types: [],
@@ -116,6 +118,12 @@ const EntriesContainer = ({ match, history }) => {
         })
     }
   }, [entriesLoading])
+
+  useEffect(() => {
+    if (types.length === 1) {
+      updateType(types[0].name)
+    }
+  }, [types])
 
   let errorText
   let infoText

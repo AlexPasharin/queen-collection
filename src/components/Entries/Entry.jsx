@@ -240,7 +240,6 @@ export default class Entry extends Component {
         className={classList("entry-block", { open, selected }, ["no-focus-outline"])}
         onKeyDown={this.onKeyDown}
         onFocus={this.onFocus}
-
       >
         <div className="entry-block__details" onClick={this.toggleReleasesBlock}>
           <h2>{name} </h2>

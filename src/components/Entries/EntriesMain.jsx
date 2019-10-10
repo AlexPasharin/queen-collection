@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { createRef } from 'react'
 
 import NavBar from '../NavBar/NavBar'
 import Entries from './Entries'
@@ -12,12 +12,12 @@ export default class EntriesMain extends React.Component {
     initialSelectedReleaseID: null
   }
 
+  artistsSelector = createRef()
+  typesSelector = createRef()
+
   componentDidUpdate(prevProps) {
     if (prevProps.entries !== this.props.entries) {
-      this.setState({
-        entryFilterText: "",
-        selectedEntryIdx: null
-      })
+      this.onChangeEntryFilterText("")
     }
   }
 
@@ -29,9 +29,9 @@ export default class EntriesMain extends React.Component {
     if (type) this.props.updateType(type.name)
   }
 
-  onChangeEntryFilterText = e => {
+  onChangeEntryFilterText = value => {
     this.setState({
-      entryFilterText: e.target.value,
+      entryFilterText: value,
       selectedEntryIdx: null
     })
   }
@@ -39,6 +39,14 @@ export default class EntriesMain extends React.Component {
   onEntrySelect = selectedEntryIdx => {
     this.setState({ selectedEntryIdx })
   }
+
+  focusArtistsSelector = () => {
+    this.artistsSelector.current.focus()
+  }
+
+  // setArtistSelectorRef = element => {
+  //   this.artistsSelector = element
+  // }
 
   removeInitialSelectedReleaseID = () => {
     this.setState({ initialSelectedReleaseID: null })
@@ -60,6 +68,8 @@ export default class EntriesMain extends React.Component {
           entryFilterText={entryFilterText}
           onChangeEntryFilterText={this.onChangeEntryFilterText}
           showEntriesFilter={entries.length > 1}
+          artistsSelector={this.artistsSelector}
+          typesSelector={this.typesSelector}
         />
         <main>
           {errorText &&

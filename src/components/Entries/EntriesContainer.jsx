@@ -52,6 +52,7 @@ const EntriesContainer = ({ match, history }) => {
   useEffect(() => {
     if (artists.length && !selectedArtist) {
       setInfoText("Select an artist")
+      mainComponentRef.current.focusArtistsSelector()
 
       if (artist) {
         setErrorText(`Error: Artist "${decode(artist)}" does not exist in the database`)

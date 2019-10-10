@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { forwardRef, useEffect, useState, useRef } from 'react'
 
 import { classList } from '../../utils/classList'
 import SelectorItem from './SelectorItem'
@@ -11,10 +11,9 @@ const initialState = (items, selectedItem) => ({
   selectedItemIdx: null
 })
 
-const Selector = ({ items = [], selectedItem, onSelect }) => {
+const Selector = forwardRef(({ items = [], selectedItem, onSelect, placeholder }, inputEl) => {
   const [state, setState] = useState(initialState(items, selectedItem))
 
-  const inputEl = useRef()
   const selectedItemEl = useRef(null)
 
   useEffect(() => {
@@ -134,6 +133,7 @@ const Selector = ({ items = [], selectedItem, onSelect }) => {
         type="text"
         ref={inputEl}
         value={inputValue}
+        placeholder={disable ? "" : placeholder}
         onFocus={onFocus}
         onKeyDown={onKeyDown}
         onChange={onChange}
@@ -163,6 +163,6 @@ const Selector = ({ items = [], selectedItem, onSelect }) => {
       }
     </div >
   )
-}
+})
 
 export default Selector

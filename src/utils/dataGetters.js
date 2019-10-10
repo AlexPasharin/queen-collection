@@ -1,5 +1,5 @@
 import * as api from './apiCalls'
-import { sortBy, sortByReleaseDate } from './dataHelpers'
+import { groupBy, map, sortBy, sortByReleaseDate, values } from './dataHelpers'
 
 export const getArtists = () => api.fetchArtists().then(sortBy('name'))
 export const getArtistTypes = artistID => api.fetchArtistTypes(artistID).then(sortBy('name'))

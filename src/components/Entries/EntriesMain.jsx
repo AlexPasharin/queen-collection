@@ -1,108 +1,90 @@
-import React, { createRef } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import NavBar from '../NavBar/NavBar'
 import Entries from './Entries'
 
-import '../../styles/App.css'
+const EntriesMain = ({
+  artists,
+  types,
+  entries,
+  selectedArtist,
+  selectedType,
+  errorText,
+  infoText,
+  artistsSelector,
+  typesSelector,
+  filterInput,
+  updateArtist,
+  updateType
+}) => {
+  const [entryFilterText, setEntryFilterText] = useState("")
+  const [selectedEntryIdx, setSelectedEntryIdx] = useState(null)
+  const [initialSelectedReleaseID, setInitialSelectedReleaseID] = useState(null)
 
-export default class EntriesMain extends React.Component {
-  state = {
-    entryFilterText: "",
-    selectedEntryIdx: null,
-    initialSelectedReleaseID: null
+  const onChangeEntryFilterText = value => {
+    setEntryFilterText(value)
+    setSelectedEntryIdx(null)
   }
 
-  artistsSelector = createRef()
-  typesSelector = createRef()
-  filterInput = createRef()
+  useEffect(() => {
+    onChangeEntryFilterText("")
+  }, [entries])
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.entries !== this.props.entries) {
-      this.onChangeEntryFilterText("")
-    }
+  const onSelectArtist = async artist => {
+    if (artist) updateArtist(artist.name)
   }
 
-  onSelectArtist = async artist => {
-    if (artist) this.props.updateArtist(artist.name)
+  const onSelectType = async type => {
+    if (type) updateType(type.name)
   }
 
-  onSelectType = async type => {
-    if (type) this.props.updateType(type.name)
+  const onEntrySelect = selectedEntryIdx => {
+    setSelectedEntryIdx(selectedEntryIdx)
   }
 
-  onChangeEntryFilterText = value => {
-    this.setState({
-      entryFilterText: value,
-      selectedEntryIdx: null
-    })
+  const removeInitialSelectedReleaseID = () => {
+    setInitialSelectedReleaseID(null)
   }
 
-  onEntrySelect = selectedEntryIdx => {
-    this.setState({ selectedEntryIdx })
-  }
 
-  focusArtistsSelector = () => {
-    this.artistsSelector.current.focus()
-  }
-
-  focusTypesSelector = () => {
-    this.typesSelector.current.focus()
-  }
-
-  focusEntriesFilter = () => {
-    if (this.props.entries.length > 1 && this.filterInput.current) {
-      this.filterInput.current.focus()
-    } else {
-      this.typesSelector.current.blur()
-    }
-  }
-
-  removeInitialSelectedReleaseID = () => {
-    this.setState({ initialSelectedReleaseID: null })
-  }
-
-  render() {
-    const { artists, types, entries, selectedArtist, selectedType, errorText, infoText } = this.props
-    const { selectedEntryIdx, entryFilterText, initialSelectedReleaseID } = this.state
-
-    return (
-      <div className="main-content">
-        <NavBar
-          artists={artists}
-          selectedArtist={selectedArtist}
-          onSelectArtist={this.onSelectArtist}
-          types={types}
-          selectedType={selectedType}
-          onSelectType={this.onSelectType}
+  return (
+    <div className="main-content">
+      <NavBar
+        artists={artists}
+        selectedArtist={selectedArtist}
+        onSelectArtist={onSelectArtist}
+        types={types}
+        selectedType={selectedType}
+        onSelectType={onSelectType}
+        entryFilterText={entryFilterText}
+        onChangeEntryFilterText={onChangeEntryFilterText}
+        showEntriesFilter={entries.length > 1}
+        artistsSelector={artistsSelector}
+        typesSelector={typesSelector}
+        filterInput={filterInput}
+      />
+      <main>
+        {errorText &&
+          <section className="main-error-text">
+            {errorText}
+          </section>
+        }
+        {infoText &&
+          <section className="main-info-text">
+            {infoText}
+          </section>
+        }
+        <Entries
           entryFilterText={entryFilterText}
-          onChangeEntryFilterText={this.onChangeEntryFilterText}
-          showEntriesFilter={entries.length > 1}
-          artistsSelector={this.artistsSelector}
-          typesSelector={this.typesSelector}
-          filterInput={this.filterInput}
+          entries={entries}
+          onEntrySelect={onEntrySelect}
+          selectedEntryIdx={selectedEntryIdx}
+          initialSelectedReleaseID={initialSelectedReleaseID}
+          removeInitialSelectedReleaseID={removeInitialSelectedReleaseID}
         />
-        <main>
-          {errorText &&
-            <section className="main-error-text">
-              {errorText}
-            </section>
-          }
-          {infoText &&
-            <section className="main-info-text">
-              {infoText}
-            </section>
-          }
-          <Entries
-            entryFilterText={entryFilterText}
-            entries={entries}
-            onEntrySelect={this.onEntrySelect}
-            selectedEntryIdx={selectedEntryIdx}
-            initialSelectedReleaseID={initialSelectedReleaseID}
-            removeInitialSelectedReleaseID={this.removeInitialSelectedReleaseID}
-          />
-        </main>
-      </div>
-    )
-  }
+      </main>
+    </div>
+  )
 }
 
+export default EntriesMain

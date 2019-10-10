@@ -5,7 +5,6 @@ import App from './App.jsx';
 import * as serviceWorker from './serviceWorker';
 
 dotenv.config()
-console.log(process.env)
 
 const _findIndex = Array.prototype.findIndex
 // eslint-disable-next-line

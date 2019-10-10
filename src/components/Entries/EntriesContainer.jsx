@@ -4,6 +4,8 @@ import { getArtists, getArtistTypes, getEntries } from '../../utils/dataGetters'
 import { encode, decode } from '../../utils/stringHelpers'
 import EntriesMain from './EntriesMain'
 
+import '../../styles/App.css'
+
 const update = (artist, type, history) => {
   const url = `/entries/${encode(artist.toLowerCase())}${type ? `/${encode(type.toLowerCase())}` : ""}`
   history.push(url)
@@ -22,7 +24,9 @@ const EntriesContainer = ({ match, history }) => {
   const [infoText, setInfoText] = useState("")
   const [errorText, setErrorText] = useState("")
 
-  const mainComponentRef = useRef()
+  const artistsSelector = useRef()
+  const typesSelector = useRef()
+  const filterInput = useRef()
 
   const selectedArtist = findByName(artists, artist)
   const selectedType = findByName(types, type)
@@ -54,18 +58,16 @@ const EntriesContainer = ({ match, history }) => {
       if (artist) {
         setErrorText(`Error: Artist "${decode(artist)}" does not exist in the database`)
       } else {
-        mainComponentRef.current.focusArtistsSelector()
+        artistsSelector.current.focus()
       }
     }
   }, [artists, selectedArtist])
 
   useEffect(() => {
-    if (!selectedType && types.length > 1) {
-      mainComponentRef.current.focusTypesSelector()
-    }
-
     if (types.length && type && !selectedType && selectedArtist) {
       setErrorText(`Error: Artist ${selectedArtist.name} does not have records of type ${decode(type)}`)
+    } else if (!selectedType && types.length > 1) {
+      typesSelector.current.focus()
     }
   }, [types])
 
@@ -118,14 +120,15 @@ const EntriesContainer = ({ match, history }) => {
   }, [selectedType])
 
   useEffect(() => {
-    if (entries.length) {
-      mainComponentRef.current.focusEntriesFilter()
+    if (filterInput.current) {
+      filterInput.current.focus()
+    } else if (entries.length > 0) {
+      typesSelector.current.blur()
     }
   }, [entries])
 
   return (
     <EntriesMain
-      ref={mainComponentRef}
       artists={artists}
       types={types}
       entries={entries}
@@ -135,6 +138,9 @@ const EntriesContainer = ({ match, history }) => {
       updateType={updateType}
       errorText={errorText}
       infoText={infoText}
+      artistsSelector={artistsSelector}
+      typesSelector={typesSelector}
+      filterInput={filterInput}
     />
   )
 }

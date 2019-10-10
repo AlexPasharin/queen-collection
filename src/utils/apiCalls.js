@@ -3,14 +3,15 @@ const BASE_URL = process.env.BASE_API_URL ||
   'http://localhost:2000'
 
 const fetchData = (resource, method, body, headers) =>
-  new Promise(resolve => {
+  new Promise((resolve, reject) => {
     setTimeout(() =>
       fetch(`${BASE_URL}/rest/${resource}`, {
         method: method || 'GET',
         body: body ? JSON.stringify(body) : undefined,
         headers
-      }).then(response => resolve(response.json())),
-      0
+      }).then(response => resolve(response.json()))
+        .catch(err => reject(err)),
+      3000
     )
   })
 

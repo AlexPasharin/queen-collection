@@ -10,7 +10,7 @@ export default class Modal extends Component {
 
   componentDidMount() {
     this.el.classList.add('modal-container')
-    document.body.addEventListener('click', this.closeFromOutside)
+    this.el.addEventListener('click', this.closeFromOutside)
 
     document.body.classList.add('has-modal')
     document.body.appendChild(this.el);
@@ -19,27 +19,26 @@ export default class Modal extends Component {
   }
 
   componentWillUnmount() {
-    document.body.removeEventListener('click', this.closeFromOutside)
     document.body.classList.remove('has-modal')
     document.body.removeChild(this.el)
   }
 
   closeFromOutside = e => {
-    if (!this.modalEl.current.contains(e.target)) {
+    if (e.target === this.el) {
       this.props.onClose()
     }
   }
 
-  // onKeyDown = e => {
-  //   const { key } = e
-  //   if (key === 'Tab') {
-  //     e.stopPropagation()
+  onKeyDown = e => {
+    const { key } = e
+    if (key === 'Tab') {
+      e.stopPropagation()
 
-  //     if (!this.modalEl.contains(e.target)) {
-  //       this.modalEl.current.focus()
-  //     }
-  //   }
-  // }
+      if (e.target === this.buttonEl.current) {
+        this.modalEl.current.focus()
+      }
+    }
+  }
 
   render() {
     return (
@@ -48,7 +47,7 @@ export default class Modal extends Component {
           className="modal no-focus-outline"
           tabIndex="0"
           ref={this.modalEl}
-        //        onKeyDown={this.onKeyDown}
+          onKeyDown={this.onKeyDown}
         >
           {this.props.children}
           <button

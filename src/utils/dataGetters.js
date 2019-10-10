@@ -29,5 +29,4 @@ export const getEntries = (artist, type, artists) =>
         typeName: type.name,
         entryArtistName
       })
-    }
-    ))
+    }))

@@ -1,5 +1,6 @@
 import React, { Component, createRef } from 'react'
 
+import { postNewRelease, updateRelease } from "../../utils/apiCalls"
 import { formatDate } from '../../utils/dataHelpers'
 import { classList } from '../../utils/classList'
 import { getReleases } from '../../utils/dataGetters'
@@ -12,11 +13,12 @@ export default class Entry extends Component {
   state = {
     open: false,
     releases: null,
-    selectedReleaseIdx: null, // value null means nothing is selected
+    selectedReleaseIdx: null, // value null means nothing is selected, value -1 means "add new button is selected"!
     releaseModalOpen: false,
   }
 
   el = createRef()
+  buttonEl = createRef()
 
   componentDidMount() {
     if (this.props.selected) {
@@ -48,6 +50,15 @@ export default class Entry extends Component {
         this.props.removeInitialSelectedReleaseID()
       }
     }
+
+    if (prevState.selectedReleaseIdx !== -1 && this.state.selectedReleaseIdx === -1) {
+      this.buttonEl.current.focus()
+    }
+
+    if (prevState.selectedReleaseIdx === -1 && this.state.selectedReleaseIdx !== -1) {
+      this.buttonEl.current.blur()
+      this.el.current.focus()
+    }
   }
 
   get selectedRelease() {
@@ -59,7 +70,11 @@ export default class Entry extends Component {
       return null
     }
 
-    const release = releases[selectedReleaseIdx]
+    const release = selectedReleaseIdx === -1 ?
+      {
+        entry_id: entry.id,
+      } :
+      releases[selectedReleaseIdx]
 
     return ({
       release,
@@ -71,12 +86,10 @@ export default class Entry extends Component {
 
   selectPrevRelease = () => {
     this.setState(prevState => {
-      const { selectedReleaseIdx, releases = [], releaseModalOpen } = prevState
-      const amountOfReleases = releases.length
-      const newSelectedReleaseIdx = (selectedReleaseIdx === null) || (releaseModalOpen && selectedReleaseIdx === 0) ?
-        amountOfReleases - 1 :
-        selectedReleaseIdx === 0 ? null :
-          selectedReleaseIdx - 1
+      const { selectedReleaseIdx, releases, releaseModalOpen } = prevState
+      const amountOfReleases = releases ? releases.length : 0
+      const newSelectedReleaseIdx = (selectedReleaseIdx === null) || (releaseModalOpen && selectedReleaseIdx === 0) ? amountOfReleases - 1 :
+        selectedReleaseIdx === -1 ? null : selectedReleaseIdx - 1
 
       return { selectedReleaseIdx: newSelectedReleaseIdx }
     })
@@ -84,9 +97,9 @@ export default class Entry extends Component {
 
   selectNextRelease = () => {
     this.setState(prevState => {
-      const { selectedReleaseIdx, releases = [], releaseModalOpen } = prevState
-      const amountOfReleases = releases.length
-      const newSelectedReleaseIdx = selectedReleaseIdx === null ? 0 :
+      const { selectedReleaseIdx, releases, releaseModalOpen } = prevState
+      const amountOfReleases = releases ? releases.length : 0
+      const newSelectedReleaseIdx = selectedReleaseIdx === null ? -1 :
         selectedReleaseIdx === amountOfReleases - 1 ? (releaseModalOpen ? 0 : null) : selectedReleaseIdx + 1
 
       return { selectedReleaseIdx: newSelectedReleaseIdx }
@@ -129,6 +142,29 @@ export default class Entry extends Component {
 
       this.getReleases()
     }
+  }
+
+  addRelease = async release => {
+    this.setState({
+      releaseModalOpen: false,
+      releases: null,
+      releasesLoading: true,
+      releasesFetchFailed: false
+    })
+
+    const { release_id } = await postNewRelease(release)
+    this.getReleases(release_id)
+  }
+
+  updateRelease = async release => {
+    this.setState({
+      releaseModalOpen: false,
+      releases: null,
+      releasesLoading: true
+    })
+
+    const { id } = await updateRelease(release)
+    this.getReleases(id)
   }
 
   selectRelease = idx => {
@@ -183,6 +219,15 @@ export default class Entry extends Component {
       this.props.select()
   }
 
+  openAddNewReleaseModal = e => {
+    e.stopPropagation()
+
+    this.setState({
+      selectedReleaseIdx: -1,
+      releaseModalOpen: true
+    })
+  }
+
   render() {
     const { entry, selected, selectedReleaseID } = this.props
     const { open, selectedReleaseIdx, releases, releasesLoading, releasesFetchFailed, releaseModalOpen } = this.state
@@ -204,6 +249,13 @@ export default class Entry extends Component {
             <span className="detail__title">Original release date: </span>
             {formatDate(release_date)}
           </p>
+          <button
+            className="cta-button"
+            ref={this.buttonEl}
+            onClick={this.openAddNewReleaseModal}
+          >
+            Add new release
+          </button>
         </div>
         {open &&
           <EntryReleases
@@ -219,6 +271,9 @@ export default class Entry extends Component {
           <ReleaseDetailsModal
             release={this.selectedRelease}
             onClose={this.onModalClose}
+            addRelease={this.addRelease}
+            updateRelease={this.updateRelease}
+            initialMode={selectedReleaseIdx === -1 ? 'add' : 'details'}
           />
         }
       </li>

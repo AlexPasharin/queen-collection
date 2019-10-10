@@ -1,8 +1,5 @@
-const BASE_URL = process.env.BASE_API_URL ||
-  // 'https://queen-collection-db.herokuapp.com' ||
-  'http://localhost:2000'
+const BASE_URL = process.env.REACT_APP_BASE_API_URL
 
-console.log("env: ", process.env)
 const fetchData = (resource, method, body, headers) =>
   new Promise((resolve, reject) => {
     setTimeout(() =>
@@ -12,7 +9,7 @@ const fetchData = (resource, method, body, headers) =>
         headers
       }).then(response => resolve(response.json()))
         .catch(err => reject(err)),
-      100 || 3000
+      process.env.REACT_APP_THROTTLE_TIME || 0
     )
   })
 

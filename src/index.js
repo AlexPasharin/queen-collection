@@ -1,7 +1,10 @@
+import * as dotenv from 'dotenv'
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App.jsx';
 import * as serviceWorker from './serviceWorker';
+
+dotenv.config()
 
 const _findIndex = Array.prototype.findIndex
 // eslint-disable-next-line

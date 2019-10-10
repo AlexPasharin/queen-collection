@@ -30,3 +30,10 @@ export const getEntries = (artist, type, artists) =>
         entryArtistName
       })
     }))
+
+export const getTracks = releaseID => api.fetchReleaseTracks(releaseID)
+  .then(groupBy('place'))
+  .then(res => map(res, sortBy('number')))
+  .then(values)
+
+export const getCompositions = () => api.fetchCompositions().then(sortBy('name'))

@@ -2,6 +2,7 @@ const BASE_URL = process.env.BASE_API_URL ||
   // 'https://queen-collection-db.herokuapp.com' ||
   'http://localhost:2000'
 
+console.log("env: ", process.env)
 const fetchData = (resource, method, body, headers) =>
   new Promise((resolve, reject) => {
     setTimeout(() =>
@@ -11,7 +12,7 @@ const fetchData = (resource, method, body, headers) =>
         headers
       }).then(response => resolve(response.json()))
         .catch(err => reject(err)),
-      3000
+      100 || 3000
     )
   })
 

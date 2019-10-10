@@ -14,6 +14,7 @@ export default class EntriesMain extends React.Component {
 
   artistsSelector = createRef()
   typesSelector = createRef()
+  filterInput = createRef()
 
   componentDidUpdate(prevProps) {
     if (prevProps.entries !== this.props.entries) {
@@ -44,9 +45,17 @@ export default class EntriesMain extends React.Component {
     this.artistsSelector.current.focus()
   }
 
-  // setArtistSelectorRef = element => {
-  //   this.artistsSelector = element
-  // }
+  focusTypesSelector = () => {
+    this.typesSelector.current.focus()
+  }
+
+  focusEntriesFilter = () => {
+    if (this.props.entries.length > 1 && this.filterInput.current) {
+      this.filterInput.current.focus()
+    } else {
+      this.typesSelector.current.blur()
+    }
+  }
 
   removeInitialSelectedReleaseID = () => {
     this.setState({ initialSelectedReleaseID: null })
@@ -70,6 +79,7 @@ export default class EntriesMain extends React.Component {
           showEntriesFilter={entries.length > 1}
           artistsSelector={this.artistsSelector}
           typesSelector={this.typesSelector}
+          filterInput={this.filterInput}
         />
         <main>
           {errorText &&

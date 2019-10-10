@@ -51,18 +51,17 @@ const EntriesContainer = ({ match, history }) => {
 
   useEffect(() => {
     if (artists.length && !selectedArtist) {
-      setInfoText("Select an artist")
-      mainComponentRef.current.focusArtistsSelector()
-
       if (artist) {
         setErrorText(`Error: Artist "${decode(artist)}" does not exist in the database`)
+      } else {
+        mainComponentRef.current.focusArtistsSelector()
       }
     }
   }, [artists, selectedArtist])
 
   useEffect(() => {
     if (!selectedType && types.length > 1) {
-      setInfoText("Select a record type")
+      mainComponentRef.current.focusTypesSelector()
     }
 
     if (types.length && type && !selectedType && selectedArtist) {
@@ -117,6 +116,12 @@ const EntriesContainer = ({ match, history }) => {
         })
     }
   }, [selectedType])
+
+  useEffect(() => {
+    if (entries.length) {
+      mainComponentRef.current.focusEntriesFilter()
+    }
+  }, [entries])
 
   return (
     <EntriesMain

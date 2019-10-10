@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { getArtists, getArtistTypes, getEntries } from '../../utils/dataGetters'
 import { encode, decode } from '../../utils/stringHelpers'
@@ -21,6 +21,8 @@ const EntriesContainer = ({ match, history }) => {
 
   const [infoText, setInfoText] = useState("")
   const [errorText, setErrorText] = useState("")
+
+  const mainComponentRef = useRef()
 
   const selectedArtist = findByName(artists, artist)
   const selectedType = findByName(types, type)
@@ -117,6 +119,7 @@ const EntriesContainer = ({ match, history }) => {
 
   return (
     <EntriesMain
+      ref={mainComponentRef}
       artists={artists}
       types={types}
       entries={entries}

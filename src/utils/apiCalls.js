@@ -53,5 +53,5 @@ export const login = password => fetchData('login', 'POST', { password }, {
 }).catch(e => {
   console.log(e)
 
-  return ({ authenticated: true })
+  return ({ authenticated: false })
 })

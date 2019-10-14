@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
+import { authContext } from "../../context/AuthContext"
 import { getTracks } from '../../utils/dataGetters'
 import { formatDate } from '../../utils/dataHelpers'
 
@@ -87,6 +88,8 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
     tracksFetchFailed: false
   })
 
+  const { authenticated } = useContext(authContext)
+
   useEffect(() => {
     getTracks(id)
       .then(tracks => setTracks({
@@ -135,24 +138,28 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
             )}
           </tbody>
         </table>
-        <button
-          className="cta-button"
-          data-mode="copy"
-          type="button"
-          onClick={onCopy}
-          onKeyDown={onKeyDown}
-        >
-          COPY
-        </button>
-        <button
-          className="cta-button"
-          data-mode="edit"
-          type="button"
-          onClick={onEdit}
-          onKeyDown={onKeyDown}
-        >
-          EDIT
-        </button>
+        {authenticated &&
+          <>
+            <button
+              className="cta-button"
+              data-mode="copy"
+              type="button"
+              onClick={onCopy}
+              onKeyDown={onKeyDown}
+            >
+              COPY
+            </button>
+            <button
+              className="cta-button"
+              data-mode="edit"
+              type="button"
+              onClick={onEdit}
+              onKeyDown={onKeyDown}
+            >
+              EDIT
+            </button>
+          </>
+        }
         <h3>Tracks:</h3>
         {tracksLoading ?
           "Loading tracks.." :

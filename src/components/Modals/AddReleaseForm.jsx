@@ -173,7 +173,6 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
 
   useEffect(() => {
     if (data.loaded) {
-      console.log("Focusing")
       formEl.current.querySelector(".cta-button").focus()
     }
   }, [data])
@@ -232,8 +231,6 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
 
   const onKeyDown = e => {
     e.stopPropagation()
-
-    console.log("hello")
 
     if (e.key === "Enter") {
       onSubmit(e)

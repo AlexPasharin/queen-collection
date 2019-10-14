@@ -4,8 +4,6 @@ import { getArtists, getArtistTypes, getEntries } from '../../utils/dataGetters'
 import { encode, decode } from '../../utils/stringHelpers'
 import EntriesMain from './EntriesMain'
 
-import '../../styles/App.css'
-
 const update = (artist, type, history) => {
   const url = `/entries/${encode(artist.toLowerCase())}${type ? `/${encode(type.toLowerCase())}` : ""}`
   history.push(url)

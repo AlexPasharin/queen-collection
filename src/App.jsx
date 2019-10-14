@@ -1,20 +1,14 @@
 import React from 'react'
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
 
-import EntriesContainer from "../src/components/Entries/EntriesContainer"
-// import Tracks from "../src/components/Tracks/Tracks.jsx"
+import AppRoutes from "./AppRoutes"
+import AuthController from "./context/AuthContext"
 
-const App = () => {
+import './styles/App.css'
 
-  return (
-    <Router>
-      <Switch>
-        <Route path="/entries/:artist?/:type?" component={EntriesContainer} />
-        {/* TODO: route for tracks */}
-        <Redirect to="/entries" />
-      </Switch>
-    </Router>
-  )
-}
+const App = () => (
+  <AuthController>
+    <AppRoutes />
+  </AuthController>
+)
 
-export default App;
+export default App

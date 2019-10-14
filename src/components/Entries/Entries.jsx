@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
+
+import { authContext } from "../../context/AuthContext"
 import Entry from './Entry'
 import '../../styles/Entries.css'
 
@@ -12,6 +14,8 @@ const nextIndex = (arr, index) =>
     index === arr.length ? 0 : index + 1
 
 const Entries = ({ entries, selectedEntryIdx, onEntrySelect, entryFilterText, initialSelectedReleaseID, removeInitialSelectedReleaseID }) => {
+  const { authenticated } = useContext(authContext)
+
   const filteredEntries = entryFilterText ?
     entries.filter(e => e.name.toLowerCase().includes(entryFilterText.toLowerCase().trim())) :
     entries
@@ -37,6 +41,7 @@ const Entries = ({ entries, selectedEntryIdx, onEntrySelect, entryFilterText, in
           lastEntry={idx === entries.length - 1}
           initialSelectedReleaseID={selectedEntryIdx === idx ? initialSelectedReleaseID : null}
           removeInitialSelectedReleaseID={removeInitialSelectedReleaseID}
+          authenticated={authenticated}
         />)
       }
     </ul>

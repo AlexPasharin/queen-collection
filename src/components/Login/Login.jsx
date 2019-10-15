@@ -1,3 +1,4 @@
+import * as Cookies from 'js-cookie'
 import React, { useContext, useState } from 'react'
 
 import "../../styles/Login.css"
@@ -10,36 +11,38 @@ const Login = ({ history }) => {
   const [submitting, setSubmitting] = useState(false)
   const [loginError, setLoginError] = useState(false)
 
-  const { login } = useContext(authContext)
+  const { authenticated, login } = useContext(authContext)
+
+  if (authenticated) {
+    history.push("/entries")
+  }
 
   const onInputChange = e => {
     setLoginError(false)
     setInputValue(e.target.value)
   }
 
-  const onLogin = e => {
+  const onLogin = async e => {
     e.preventDefault()
 
     setSubmitting(true)
+    const { authenticated } = await loginRequest(inputValue)
 
-    loginRequest(inputValue)
-      .then(({ authenticated }) => {
-        setSubmitting(false)
+    if (authenticated) {
+      Cookies.set(process.env.REACT_APP_COOKIE_NAME, inputValue, { expires: 7 })
+      login()
+    } else {
+      setLoginError(true)
+    }
 
-        if (authenticated) {
-          login()
-          history.push("/entries")
-        } else {
-          setLoginError(true)
-        }
-      })
+    setSubmitting(false)
   }
 
   return (
     <form className="login-input" onSubmit={onLogin}>
       <input autoFocus type="password" placeholder="Password" value={inputValue} onChange={onInputChange} />
       <button type="submit">Log in</button >
-      {submitting && "Submitting..."}
+      {!loginError && submitting && "Submitting..."}
       {loginError && "Failed to authorize"}
     </form>
   )

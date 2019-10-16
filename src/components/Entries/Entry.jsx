@@ -22,18 +22,18 @@ export default class Entry extends Component {
 
   componentDidMount() {
     if (this.props.selected) {
-      this.el.current.focus()
+      this.focus()
       this.toggleReleasesBlock()
     }
   }
 
   async componentDidUpdate(prevProps, prevState) {
     if (!prevProps.selected && this.props.selected) {
-      this.el.current.focus()
+      this.focus()
     }
 
     if (prevState.releaseModalOpen && !this.state.releaseModalOpen) {
-      this.el.current.focus()
+      this.focus()
     }
 
     if (!prevState.open && this.state.open) {
@@ -57,7 +57,7 @@ export default class Entry extends Component {
 
     if (prevState.selectedReleaseIdx === -1 && this.state.selectedReleaseIdx !== -1) {
       this.buttonEl.current && this.buttonEl.current.blur()
-      this.el.current.focus()
+      this.focus()
     }
   }
 
@@ -229,6 +229,10 @@ export default class Entry extends Component {
       selectedReleaseIdx: -1,
       releaseModalOpen: true
     })
+  }
+
+  focus = () => {
+    this.el.current.focus()
   }
 
   render() {

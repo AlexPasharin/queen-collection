@@ -25,6 +25,7 @@ const EntriesContainer = ({ match, history }) => {
   const artistsSelector = useRef()
   const typesSelector = useRef()
   const filterInput = useRef()
+  const entriesSection = useRef()
 
   const selectedArtist = findByName(artists, artist)
   const selectedType = findByName(types, type)
@@ -120,7 +121,9 @@ const EntriesContainer = ({ match, history }) => {
   useEffect(() => {
     if (filterInput.current) {
       filterInput.current.focus()
-    } else if (entries.length > 0) {
+    } else if (types.length === 1 || entries.length === 1) {
+      entriesSection.current && entriesSection.current.focus()
+    } if (types.length > 0) {
       typesSelector.current.blur()
     }
   }, [entries])
@@ -139,6 +142,7 @@ const EntriesContainer = ({ match, history }) => {
       artistsSelector={artistsSelector}
       typesSelector={typesSelector}
       filterInput={filterInput}
+      entriesSection={entriesSection}
     />
   )
 }

@@ -14,6 +14,7 @@ const EntriesMain = ({
   artistsSelector,
   typesSelector,
   filterInput,
+  entriesSection,
   updateArtist,
   updateType
 }) => {
@@ -46,7 +47,6 @@ const EntriesMain = ({
     setInitialSelectedReleaseID(null)
   }
 
-
   return (
     <div className="main-content">
       <NavBar
@@ -75,6 +75,7 @@ const EntriesMain = ({
           </section>
         }
         <Entries
+          ref={entriesSection}
           entryFilterText={entryFilterText}
           entries={entries}
           onEntrySelect={onEntrySelect}

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { forwardRef, useContext } from 'react'
 
 
 import { authContext } from "../../context/AuthContext"
@@ -13,7 +13,7 @@ const nextIndex = (arr, index) =>
   index === null ? 0 :
     index === arr.length ? 0 : index + 1
 
-const Entries = ({ entries, selectedEntryIdx, onEntrySelect, entryFilterText, initialSelectedReleaseID, removeInitialSelectedReleaseID }) => {
+const Entries = forwardRef(({ entries, selectedEntryIdx, onEntrySelect, entryFilterText, initialSelectedReleaseID, removeInitialSelectedReleaseID }, ref) => {
   const { authenticated } = useContext(authContext)
 
   const filteredEntries = entryFilterText ?
@@ -32,6 +32,7 @@ const Entries = ({ entries, selectedEntryIdx, onEntrySelect, entryFilterText, in
     <ul>
       {filteredEntries.map((e, idx) =>
         <Entry
+          ref={idx === 0 ? ref : null}
           key={e.id}
           entry={e}
           selected={selectedEntryIdx === idx}
@@ -46,6 +47,6 @@ const Entries = ({ entries, selectedEntryIdx, onEntrySelect, entryFilterText, in
       }
     </ul>
   )
-}
+})
 
 export default Entries

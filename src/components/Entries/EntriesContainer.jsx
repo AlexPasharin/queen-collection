@@ -123,8 +123,6 @@ const EntriesContainer = ({ match, history }) => {
       filterInput.current.focus()
     } else if (types.length === 1 || entries.length === 1) {
       entriesSection.current && entriesSection.current.focus()
-    } if (types.length > 0) {
-      typesSelector.current.blur()
     }
   }, [entries])
 

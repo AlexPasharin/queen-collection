@@ -92,13 +92,17 @@ main {
   cursor: pointer;
 }
 
-.release-block .table-section-name{
+.release-block .table-section-name {
   margin: 10px 0;
   display: inline-block;
   font-weight: 600;
 }
 
-
+.release-block__just-added {
+  margin: 10px;
+  color: blue;
+  font-size: 30px;
+}
 .release-info-block {
   line-height: 25px;
 }

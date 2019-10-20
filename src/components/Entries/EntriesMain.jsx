@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import NavBar from '../NavBar/NavBar'
 import Entries from './Entries'
@@ -11,10 +11,8 @@ const EntriesMain = ({
   selectedType,
   errorText,
   infoText,
-  artistsSelector,
-  typesSelector,
-  filterInput,
-  entriesSection,
+  artistParam,
+  typeParam,
   updateArtist,
   updateType
 }) => {
@@ -22,10 +20,35 @@ const EntriesMain = ({
   const [selectedEntryIdx, setSelectedEntryIdx] = useState(null)
   const [initialSelectedReleaseID, setInitialSelectedReleaseID] = useState(null)
 
+  const artistsSelector = useRef()
+  const typesSelector = useRef()
+  const filterInput = useRef()
+  const entriesSection = useRef()
+
   const onChangeEntryFilterText = value => {
     setEntryFilterText(value)
     setSelectedEntryIdx(null)
   }
+
+  useEffect(() => {
+    if (artists.length && !artistParam) {
+      artistsSelector.current.focus()
+    }
+  }, [artists])
+
+  useEffect(() => {
+    if (types.length > 1 && !typeParam) {
+      typesSelector.current.focus()
+    }
+  }, [types])
+
+  useEffect(() => {
+    if (filterInput.current) {
+      filterInput.current.focus()
+    } else if (types.length === 1 || entries.length === 1) {
+      entriesSection.current && entriesSection.current.focus()
+    }
+  }, [entries])
 
   useEffect(() => {
     onChangeEntryFilterText("")

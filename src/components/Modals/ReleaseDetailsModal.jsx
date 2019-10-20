@@ -6,7 +6,7 @@ import Modal from './Modal'
 
 import '../../styles/Modal.css'
 
-const ReleaseDetailsModal = ({ release, onClose, addRelease, updateRelease, initialMode = 'details' }) => {
+const ReleaseDetailsModal = ({ release, onClose, addRelease, updateRelease, initialMode, justAdded }) => {
   const [mode, setMode] = useState(initialMode)
 
   const onModalClose = () => {
@@ -24,7 +24,7 @@ const ReleaseDetailsModal = ({ release, onClose, addRelease, updateRelease, init
   return (
     <Modal onClose={onModalClose}>
       {mode === 'details' ?
-        <ReleaseDetails releaseData={release} onCopy={() => setMode('add')} onEdit={() => setMode('edit')} /> :
+        <ReleaseDetails justAdded={justAdded} releaseData={release} onCopy={() => setMode('add')} onEdit={() => setMode('edit')} /> :
         <AddReleaseForm
           initialReleaseData={release}
           addRelease={addRelease}

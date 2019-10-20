@@ -68,7 +68,7 @@ const DetailRow = ({ fieldObj, release }) => {
   )
 }
 
-const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
+const ReleaseDetails = ({ releaseData, onCopy, onEdit, justAdded }) => {
   const {
     release,
     artistName,
@@ -113,6 +113,7 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit }) => {
 
   return (
     <div className="release-block">
+      {justAdded && <div className="release-block__just-added">Successfully added this release to the database!</div>}
       <div className="release-block__header">
         <h1>{artistName} - {entryName}</h1>
         <div className="release-info-block">

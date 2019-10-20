@@ -34,7 +34,9 @@ export default class Entry extends Component {
 
     if (prevState.releaseModalOpen && !this.state.releaseModalOpen) {
       this.focus()
+      this.setState({ justAdded: false })
     }
+
 
     if (!prevState.open && this.state.open) {
       this.el.current.scrollIntoView()
@@ -58,6 +60,10 @@ export default class Entry extends Component {
     if (prevState.selectedReleaseIdx === -1 && this.state.selectedReleaseIdx !== -1) {
       this.buttonEl.current && this.buttonEl.current.blur()
       this.focus()
+    }
+
+    if (prevState.selectedReleaseIdx !== this.state.selectedReleaseIdx) {
+      this.setState({ justAdded: false })
     }
   }
 
@@ -109,7 +115,7 @@ export default class Entry extends Component {
     })
   }
 
-  getReleases = async preferredSelectedReleaseIndex => {
+  getReleases = async (preferredSelectedReleaseIndex, justAdded = false) => {
     try {
       const releases = await getReleases(this.props.entry.id)
       const newSelectedReleaseIdx = preferredSelectedReleaseIndex ?
@@ -120,6 +126,7 @@ export default class Entry extends Component {
         releasesLoading: false,
         selectedReleaseIdx: newSelectedReleaseIdx,
         releaseModalOpen: newSelectedReleaseIdx !== null,
+        justAdded
       })
     } catch {
       this.setState({
@@ -156,7 +163,7 @@ export default class Entry extends Component {
     })
 
     const { release_id } = await postNewRelease(release)
-    this.getReleases(release_id)
+    this.getReleases(release_id, true)
   }
 
   updateRelease = async release => {
@@ -237,7 +244,7 @@ export default class Entry extends Component {
 
   render() {
     const { entry, selected, selectedReleaseID, authenticated } = this.props
-    const { open, selectedReleaseIdx, releases, releasesLoading, releasesFetchFailed, releaseModalOpen } = this.state
+    const { open, selectedReleaseIdx, releases, releasesLoading, releasesFetchFailed, releaseModalOpen, justAdded } = this.state
     const { name, release_date, entryArtistName } = entry
 
     return (
@@ -282,6 +289,7 @@ export default class Entry extends Component {
             addRelease={this.addRelease}
             updateRelease={this.updateRelease}
             initialMode={selectedReleaseIdx === -1 ? 'add' : 'details'}
+            justAdded={justAdded}
           />
         }
       </li>

@@ -158,6 +158,8 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
   )
 
   const [data, setData] = useState({ loaded: false })
+  const [infoText, setInfoText] = useState("")
+  const [addError, setAddError] = useState(false)
 
   const formIsInvalid = () => {
     for (let field of releaseObjFields) {
@@ -178,6 +180,8 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
   }, [data])
 
   useEffect(() => {
+    setInfoText("Loading data...")
+
     Promise.all([
       getLabels(),
       getFormats(),
@@ -187,10 +191,13 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
         labels,
         formats,
         countries,
-        loaded: true,
+        loaded: true
       })
+
+      setInfoText("")
     }).catch(() => {
       setData({ error: true })
+      setInfoText("There has been an error fetching data...")
     })
   }, [])
 
@@ -204,7 +211,7 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
     }))
   }
 
-  const onSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault()
 
     const acceptSubmit = window.confirm(
@@ -214,6 +221,12 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
     )
 
     if (acceptSubmit) {
+
+      setInfoText(
+        mode === "add" ?
+          "Adding release to the database..." : "Updating release..."
+      )
+
       const newRelease = {}
 
       for (let prop in release) {
@@ -225,7 +238,15 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
         newRelease[prop] = value
       }
 
-      mode === 'add' ? addRelease(newRelease) : updateRelease(newRelease)
+      try {
+        mode === 'add' ?
+          await addRelease(newRelease) :
+          await updateRelease(newRelease)
+
+        setInfoText("")
+      } catch {
+        setAddError(true)
+      }
     }
   }
 
@@ -239,12 +260,22 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
 
   return (
     <div className="release-block">
+      {addError &&
+        <div className="release-block__submit-error">
+          {`Error: could not ${mode} release`}
+        </div>
+      }
+      {infoText &&
+        <div className="release-block__info-text">
+          {infoText}
+        </div>
+      }
       <h1>{artistName} - {entryName}</h1>
       <div className="release-info-block">
         {typeName}
       </div>
       <h2>This is {mode === 'add' ? "add" : "editing"} mode</h2>
-      {data.loaded ?
+      {data.loaded &&
         <form
           onKeyDown={onKeyDown}
           className="add-release-form no-focus-outline"
@@ -271,10 +302,7 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
               SUBMIT
             </button>
           </fieldset>
-        </form> :
-        data.error ?
-          "There has been an error fetching data..." :
-          "Loading data..."
+        </form>
       }
     </div>
   )

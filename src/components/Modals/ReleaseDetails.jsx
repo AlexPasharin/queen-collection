@@ -113,7 +113,7 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit, justAdded }) => {
 
   return (
     <div className="release-block">
-      {justAdded && <div className="release-block__just-added">Successfully added this release to the database!</div>}
+      {justAdded && <div className="release-block__info-text">Successfully added this release to the database!</div>}
       <div className="release-block__header">
         <h1>{artistName} - {entryName}</h1>
         <div className="release-info-block">

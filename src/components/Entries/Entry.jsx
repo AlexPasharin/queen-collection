@@ -155,6 +155,8 @@ export default class Entry extends Component {
   }
 
   addRelease = async release => {
+    const { release_id } = await postNewRelease(release)
+
     this.setState({
       releaseModalOpen: false,
       releases: null,
@@ -162,18 +164,18 @@ export default class Entry extends Component {
       releasesFetchFailed: false
     })
 
-    const { release_id } = await postNewRelease(release)
     this.getReleases(release_id, true)
   }
 
   updateRelease = async release => {
+    const { id } = await updateRelease(release)
+
     this.setState({
       releaseModalOpen: false,
       releases: null,
       releasesLoading: true
     })
 
-    const { id } = await updateRelease(release)
     this.getReleases(id)
   }
 

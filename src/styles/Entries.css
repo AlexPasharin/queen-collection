@@ -98,11 +98,18 @@ main {
   font-weight: 600;
 }
 
-.release-block__just-added {
+.release-block__info-text {
   margin: 10px;
   color: blue;
   font-size: 30px;
 }
+
+.release-block__submit-error {
+  margin: 10px;
+  color: red;
+  font-size: 30px;
+}
+
 .release-info-block {
   line-height: 25px;
 }

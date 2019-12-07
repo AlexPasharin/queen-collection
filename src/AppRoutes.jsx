@@ -24,7 +24,7 @@ const AppRoutes = () => {
     loginRequest(cookieValue)
       .then(({ authenticated }) => {
         if (authenticated) {
-          login()
+          login(cookieValue)
         }
 
         setLoading(false)

@@ -1,10 +1,9 @@
-import * as Cookies from 'js-cookie'
 import React, { useContext, useState } from 'react'
-
-import "../../styles/Login.css"
 
 import { authContext } from "../../context/AuthContext"
 import { login as loginRequest } from '../../utils/apiCalls'
+
+import "../../styles/Login.css"
 
 const Login = ({ history }) => {
   const [inputValue, setInputValue] = useState("")
@@ -29,8 +28,7 @@ const Login = ({ history }) => {
     const { authenticated } = await loginRequest(inputValue)
 
     if (authenticated) {
-      Cookies.set(process.env.REACT_APP_COOKIE_NAME, inputValue, { expires: 7 })
-      login()
+      login(inputValue)
     } else {
       setLoginError(true)
     }

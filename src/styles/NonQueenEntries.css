@@ -1,7 +1,6 @@
 .non-queen-filter, .non-queen-entries {
   margin: 16px 0;
   padding-left: 40px;
-  height: 30px;
   font-size: 20px;
 }
 
@@ -13,6 +12,8 @@
 .non-queen-filter input {
   width: 60%;
   margin-left: 10px;
+  height: 30px;
+  font-size: inherit;
 }
 
 .non-queen-filter-text {

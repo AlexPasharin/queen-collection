@@ -17,7 +17,7 @@ const NonQueenEntries = () => {
   })
 
   if (loading)
-    return "Loading entries..."
+    return <div className="non-queen-entries">Loading entries...</div>
 
   const onSearch = e => {
     setSearchKey(e.target.value.toLowerCase())

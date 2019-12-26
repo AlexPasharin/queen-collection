@@ -87,3 +87,16 @@ export const values = obj => {
 
   return result
 }
+
+const sortWith = (arr, keyFn) =>
+  arr.sort((a, b) => {
+    const val1 = keyFn(a)
+    const val2 = keyFn(b)
+
+    if (val1 < val2) return -1
+    else if (val1 > val2) return 1
+    else return 0
+  })
+
+export const sortNonQueenEntries = entries =>
+  sortWith(entries, a => a.index_by || a.artist_name.match(/^(?:The )?(.+)/)[1])

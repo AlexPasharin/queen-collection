@@ -42,6 +42,7 @@ const Login = ({ history }) => {
       <button type="submit">Log in</button >
       {!loginError && submitting && "Submitting..."}
       {loginError && "Failed to authorize"}
+
     </form>
   )
 }

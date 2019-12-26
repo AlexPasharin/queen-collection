@@ -1,5 +1,5 @@
 import * as api from './apiCalls'
-import { groupBy, map, sortBy, sortByReleaseDate, values } from './dataHelpers'
+import { groupBy, map, sortBy, sortByReleaseDate, sortNonQueenEntries, values } from './dataHelpers'
 
 export const getArtists = () => api.fetchArtists().then(sortBy('name'))
 export const getArtistTypes = artistID => api.fetchArtistTypes(artistID).then(sortBy('name'))
@@ -10,7 +10,9 @@ export const getEntry = entryID => api.fetchEntry(entryID)
 
 export const getLabels = () => api.fetchLabels().then(sortBy('name'))
 export const getFormats = () => api.fetchFormats().then(sortBy('id'))
-export const getCountries = () => api.fetchCountries()
+export const getCountries = api.fetchCountries
+
+export const getNonQueenEntries = () => api.fetchNonQueenEntries().then(sortNonQueenEntries)
 
 export const getEntries = (artist, type, artists) =>
   api.fetchEntries(artist.id, type.id)

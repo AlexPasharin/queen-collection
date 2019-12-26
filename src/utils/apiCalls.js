@@ -27,6 +27,8 @@ export const fetchLabels = () => fetchData('labels')
 export const fetchFormats = () => fetchData('formats')
 export const fetchCountries = () => fetchData('countries')
 
+export const fetchNonQueenEntries = () => fetchData('non_queen')
+
 export const postNewRelease = release => fetchData('release', 'POST', release,
   {
     'Content-Type': "application/json"

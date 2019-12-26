@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-d
 import { authContext } from "./context/AuthContext"
 import EntriesContainer from "./components/Entries/EntriesContainer"
 import Login from "./components/Login/Login"
+import NonQueenEntries from "./components/Non-Queen/NonQueenEntries"
 // import Tracks from "./components/Tracks/Tracks.jsx"
 import { login as loginRequest } from './utils/apiCalls'
 
@@ -39,6 +40,7 @@ const AppRoutes = () => {
     <Router>
       <Switch>
         <Route path="/entries/:artist?/:type?" component={EntriesContainer} />
+        <Route path="/non_queen" component={NonQueenEntries} />
         <Route path="/login" component={Login} />
         {/* TODO: route for tracks */}
         {process.env.REACT_APP_INITIAL_DEFAULT === "LOGIN" ?

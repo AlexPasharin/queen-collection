@@ -1,0 +1,30 @@
+.non-queen-filter, .non-queen-entries {
+  margin: 16px 0;
+  padding-left: 40px;
+  height: 30px;
+  font-size: 20px;
+}
+
+.non-queen-filter {
+  padding-bottom: 20px;
+  border-bottom: 2px solid;
+}
+
+.non-queen-filter input {
+  width: 60%;
+  margin-left: 10px;
+}
+
+.non-queen-filter-text {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.non-queen-entries li {
+  padding-bottom: 20px;
+  border-bottom: 1px solid grey;
+}
+
+.non-queen-entries li h2 {
+  margin-bottom: 10px;
+}

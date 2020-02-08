@@ -14,7 +14,7 @@ const NonQueenEntries = () => {
       setEntries(entries)
       setLoading(false)
     })
-  })
+  }, [])
 
   if (loading)
     return <div className="non-queen-entries">Loading entries...</div>

@@ -5,7 +5,7 @@ import { encode, decode } from '../../utils/stringHelpers'
 import EntriesMain from './EntriesMain'
 
 const update = (artist, type, history) => {
-  const url = `/entries/${encode(artist.toLowerCase())}${type ? `/${encode(type.toLowerCase())}` : ""}`
+  const url = `/entries/${encode(artist)}${type ? `/${encode(type)}` : ""}`
   history.push(url)
 }
 

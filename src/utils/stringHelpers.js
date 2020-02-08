@@ -1,5 +1,5 @@
-export const decode = str => str.replace(/_/g, " ")
-export const encode = str => str.replace(/\s/g, "_")
+export const decode = decodeURIComponent
+export const encode = encodeURIComponent
 
 const daysInMonthes = Object.freeze([0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31])
 

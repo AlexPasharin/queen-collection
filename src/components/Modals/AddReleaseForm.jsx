@@ -145,7 +145,7 @@ const releaseDataToFieldsData = (releaseData, editMode) => {
   return fieldsData
 }
 
-const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode }) => {
+export default ({ initialReleaseData, addRelease, updateRelease, mode, closeModal }) => {
   const {
     artistName,
     entryName,
@@ -221,7 +221,6 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
     )
 
     if (acceptSubmit) {
-
       setInfoText(
         mode === "add" ?
           "Adding release to the database..." : "Updating release..."
@@ -243,7 +242,7 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
           await addRelease(newRelease) :
           await updateRelease(newRelease)
 
-        setInfoText("")
+        closeModal()
       } catch {
         setAddError(true)
       }
@@ -307,5 +306,3 @@ const AddReleaseForm = ({ initialReleaseData, addRelease, updateRelease, mode })
     </div>
   )
 }
-
-export default AddReleaseForm

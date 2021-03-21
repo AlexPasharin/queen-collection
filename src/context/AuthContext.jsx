@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 
 export const authContext = React.createContext()
 
-const AuthController = ({ children }) => {
+export default  ({ children }) => {
   const [authenticated, setAuthenticated] = useState(false)
 
   const login = password => {
@@ -21,6 +21,4 @@ const AuthController = ({ children }) => {
     </authContext.Provider>
   )
 }
-
-export default AuthController
 

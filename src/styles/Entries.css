@@ -99,13 +99,13 @@ main {
 }
 
 .release-block__info-text {
-  margin: 10px;
+  margin: 10px 0;
   color: blue;
   font-size: 30px;
 }
 
 .release-block__submit-error {
-  margin: 10px;
+  margin: 10px 0;
   color: red;
   font-size: 30px;
 }

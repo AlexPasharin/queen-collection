@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { getArtists, getArtistTypes, getEntries } from '../../utils/dataGetters'
 import { encode, decode } from '../../utils/stringHelpers'
+
 import EntriesMain from './EntriesMain'
 
 const update = (artist, type, history) => {
@@ -12,7 +13,8 @@ const update = (artist, type, history) => {
 const findByName = (arr, value) =>
   arr.find(a => a.name.toLowerCase() === decode(value).toLowerCase())
 
-const EntriesContainer = ({ match, history }) => {
+
+export default ({ match, history }) => {
   const { artist = "", type = "" } = match.params
 
   const [infoText, setInfoText] = useState("")
@@ -33,16 +35,16 @@ const EntriesContainer = ({ match, history }) => {
 
         fetchPromise()
           .then(data => {
-            setData(data)
-            setInfoText("")
-
             if (data.length === 0) {
               setErrorText(nullResultsErrorText())
+            } else {
+              setData(data)
             }
           }).catch(() => {
-            setInfoText("")
             setErrorText(fetchingErrorText())
             setData([])
+          }).finally(() => {
+            setInfoText("")
           })
       }
     }, dependencies)
@@ -82,7 +84,7 @@ const EntriesContainer = ({ match, history }) => {
     if (artists.length && artist && !selectedArtist) {
       setErrorText(`Error: Artist "${decode(artist)}" does not exist in the database`)
     }
-  }, [artists, selectedArtist])
+  }, [artists, artist, selectedArtist])
 
   useEffect(() => {
     if (types.length === 1) {
@@ -90,7 +92,7 @@ const EntriesContainer = ({ match, history }) => {
     } else if (types.length && type && !selectedType && selectedArtist) {
       setErrorText(`Error: Artist ${selectedArtist.name} does not have records of type ${decode(type)}`)
     }
-  }, [types])
+  }, [types, type, selectedType, selectedArtist])
 
   return (
     <EntriesMain
@@ -108,5 +110,3 @@ const EntriesContainer = ({ match, history }) => {
     />
   )
 }
-
-export default EntriesContainer

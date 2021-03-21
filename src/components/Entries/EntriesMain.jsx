@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import NavBar from '../NavBar/NavBar'
 import Entries from './Entries'
 
-const EntriesMain = ({
+export default ({
   artists,
   types,
   entries,
@@ -34,13 +34,13 @@ const EntriesMain = ({
     if (artists.length && !artistParam) {
       artistsSelector.current.focus()
     }
-  }, [artists])
+  }, [artists, artistParam])
 
   useEffect(() => {
     if (types.length > 1 && !typeParam) {
       typesSelector.current.focus()
     }
-  }, [types])
+  }, [types, typeParam])
 
   useEffect(() => {
     if (filterInput.current) {
@@ -48,7 +48,7 @@ const EntriesMain = ({
     } else if (types.length === 1 || entries.length === 1) {
       entriesSection.current && entriesSection.current.focus()
     }
-  }, [entries])
+  }, [entries, types])
 
   useEffect(() => {
     onChangeEntryFilterText("")
@@ -110,5 +110,3 @@ const EntriesMain = ({
     </div>
   )
 }
-
-export default EntriesMain

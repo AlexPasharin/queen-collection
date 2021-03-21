@@ -15,28 +15,29 @@ export default class Entry extends Component {
     releases: null,
     selectedReleaseIdx: null, // value null means nothing is selected, value -1 means "add new button is selected"!
     releaseModalOpen: false,
+    successfullyAdded: false
   }
 
   el = createRef()
   buttonEl = createRef()
 
-  componentDidMount() {
-    if (this.props.selected) {
-      this.focus()
-      this.toggleReleasesBlock()
-    }
-  }
+  // feature not used at the moment, since "selected" is always false on mount
+  // componentDidMount() {
+  //   if (this.props.selected) {
+  //     this.focus()
+  //     this.toggleReleasesBlock()
+  //   }
+  // }
 
-  async componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (!prevProps.selected && this.props.selected) {
       this.focus()
     }
 
     if (prevState.releaseModalOpen && !this.state.releaseModalOpen) {
       this.focus()
-      this.setState({ justAdded: false })
+      this.setState({ successfullyAdded: false })
     }
-
 
     if (!prevState.open && this.state.open) {
       this.el.current.scrollIntoView()
@@ -62,9 +63,9 @@ export default class Entry extends Component {
       this.focus()
     }
 
-    if (prevState.selectedReleaseIdx !== this.state.selectedReleaseIdx) {
-      this.setState({ justAdded: false })
-    }
+    // if (prevState.selectedReleaseIdx !== this.state.selectedReleaseIdx) {
+    //   this.setState({ successfullyAdded: false })
+    // }
   }
 
   get selectedRelease() {
@@ -96,10 +97,10 @@ export default class Entry extends Component {
       const amountOfReleases = releases ? releases.length : 0
       const newSelectedReleaseIdx = (selectedReleaseIdx === null) || (releaseModalOpen && selectedReleaseIdx === 0) ?
         amountOfReleases - 1 :
-        (selectedReleaseIdx === -1) || !this.props.authenticated && selectedReleaseIdx === 0 ?
+        (selectedReleaseIdx === -1) || (!this.props.authenticated && selectedReleaseIdx === 0) ?
           null : selectedReleaseIdx - 1
 
-      return { selectedReleaseIdx: newSelectedReleaseIdx }
+      return { selectedReleaseIdx: newSelectedReleaseIdx, successfullyAdded: false }
     })
   }
 
@@ -111,27 +112,31 @@ export default class Entry extends Component {
         (this.props.authenticated ? -1 : 0) :
         selectedReleaseIdx === amountOfReleases - 1 ? (releaseModalOpen ? 0 : null) : selectedReleaseIdx + 1
 
-      return { selectedReleaseIdx: newSelectedReleaseIdx }
+      return { selectedReleaseIdx: newSelectedReleaseIdx, successfullyAdded: false }
     })
   }
 
-  getReleases = async (preferredSelectedReleaseIndex, justAdded = false) => {
+  getReleases = async (preferredSelectedReleaseIndex, successfullyAdded = false) => {
     try {
+      this.setState({ releasesLoading: true })
+
       const releases = await getReleases(this.props.entry.id)
       const newSelectedReleaseIdx = preferredSelectedReleaseIndex ?
         releases.findIndex(r => r.id === preferredSelectedReleaseIndex) : null
 
       this.setState({
         releases,
-        releasesLoading: false,
         selectedReleaseIdx: newSelectedReleaseIdx,
         releaseModalOpen: newSelectedReleaseIdx !== null,
-        justAdded
+        successfullyAdded
       })
     } catch {
       this.setState({
-        releasesLoading: false,
         releasesFetchFailed: true
+      })
+    } finally {
+      this.setState({
+        releasesLoading: false,
       })
     }
   }
@@ -146,7 +151,6 @@ export default class Entry extends Component {
     } else {
       this.setState({
         open: true,
-        releasesLoading: true,
         releasesFetchFailed: false
       })
 
@@ -158,9 +162,6 @@ export default class Entry extends Component {
     const { release_id } = await postNewRelease(release)
 
     this.setState({
-      releaseModalOpen: false,
-      releases: null,
-      releasesLoading: true,
       releasesFetchFailed: false
     })
 
@@ -171,8 +172,6 @@ export default class Entry extends Component {
     const { id } = await updateRelease(release)
 
     this.setState({
-      releaseModalOpen: false,
-      releases: null,
       releasesLoading: true
     })
 
@@ -246,7 +245,7 @@ export default class Entry extends Component {
 
   render() {
     const { entry, selected, selectedReleaseID, authenticated } = this.props
-    const { open, selectedReleaseIdx, releases, releasesLoading, releasesFetchFailed, releaseModalOpen, justAdded } = this.state
+    const { open, selectedReleaseIdx, releases, releasesLoading, releasesFetchFailed, releaseModalOpen, successfullyAdded } = this.state
     const { name, release_date, entryArtistName } = entry
 
     return (
@@ -291,7 +290,7 @@ export default class Entry extends Component {
             addRelease={this.addRelease}
             updateRelease={this.updateRelease}
             initialMode={selectedReleaseIdx === -1 ? 'add' : 'details'}
-            justAdded={justAdded}
+            successfullyAdded={successfullyAdded}
           />
         }
       </li>

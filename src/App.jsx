@@ -5,10 +5,8 @@ import AuthController from "./context/AuthContext"
 
 import './styles/App.css'
 
-const App = () => (
+export default () => (
   <AuthController>
     <AppRoutes />
   </AuthController>
 )
-
-export default App

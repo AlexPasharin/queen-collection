@@ -4,71 +4,7 @@ import { authContext } from "../../context/AuthContext"
 import { getTracks } from '../../utils/dataGetters'
 import { formatDate } from '../../utils/dataHelpers'
 
-const capitalizeString = str => {
-  if (!str) return str
-
-  return str[0].toUpperCase() + str.slice(1)
-}
-
-const normalizeKeyString = key =>
-  capitalizeString(key.split("_").join(" "))
-
-const releaseObjFields = [
-  {
-    key: 'version'
-  },
-  {
-    key: 'country'
-  },
-  {
-    key: 'format'
-  },
-  {
-    key: 'release_date',
-    format: formatDate
-  },
-  {
-    key: 'label',
-  },
-  {
-    key: 'cat_number',
-    text: 'Cat.number'
-  },
-  {
-    key: 'comment'
-  },
-  {
-    key: 'condition_problems'
-  }
-]
-
-const whiteListedVersion = ['album version', 'original version']
-
-const DetailRow = ({ fieldObj, release }) => {
-  const { key, text, format } = fieldObj
-  let value = release[key]
-
-  if (value == null) {
-    return null
-  }
-
-  if (format) {
-    value = format(value)
-  }
-
-  const title = text || normalizeKeyString(key)
-
-  return (
-    <tr>
-      <td>{title}:</td>
-      <td>
-        {value}
-      </td>
-    </tr>
-  )
-}
-
-const ReleaseDetails = ({ releaseData, onCopy, onEdit, justAdded }) => {
+export default ({ releaseData, onCopy, onEdit, justAdded }) => {
   const {
     release,
     artistName,
@@ -174,7 +110,7 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit, justAdded }) => {
                     <tr>
                       <td>{t.number}</td>
                       <td>{t.alt_name || t.name}</td>
-                      <td>{!whiteListedVersion.includes(t.version) && "(" + t.version + ")"}</td>
+                      <td>{!allowedVersions.includes(t.version) && "(" + t.version + ")"}</td>
                       <td>{t.subversion && "(" + t.subversion + ")"}</td>
                     </tr>
                   ))}
@@ -187,4 +123,66 @@ const ReleaseDetails = ({ releaseData, onCopy, onEdit, justAdded }) => {
   )
 }
 
-export default ReleaseDetails
+const capitalizeString = str => {
+  if (!str) return str
+
+  return str[0].toUpperCase() + str.slice(1)
+}
+
+const normalizeKeyString = key =>
+  capitalizeString(key.split("_").join(" "))
+
+const releaseObjFields = [
+  {
+    key: 'version'
+  },
+  {
+    key: 'country'
+  },
+  {
+    key: 'format'
+  },
+  {
+    key: 'release_date',
+    format: formatDate
+  },
+  {
+    key: 'label',
+  },
+  {
+    key: 'cat_number',
+    text: 'Cat.number'
+  },
+  {
+    key: 'comment'
+  },
+  {
+    key: 'condition_problems'
+  }
+]
+
+const allowedVersions = ['album version', 'original version']
+
+const DetailRow = ({ fieldObj, release }) => {
+  const { key, text, format } = fieldObj
+  let value = release[key]
+
+  if (value == null) {
+    return null
+  }
+
+  if (format) {
+    value = format(value)
+  }
+
+  const title = text || normalizeKeyString(key)
+
+  return (
+    <tr>
+      <td>{title}:</td>
+      <td>
+        {value}
+      </td>
+    </tr>
+  )
+}

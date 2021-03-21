@@ -2,7 +2,7 @@ import React from 'react'
 
 import Release from './Release'
 
-const EntryReleases = ({ releases, releasesLoading, releasesFetchFailed, selectedReleaseIdx, onSelectRelease }) => {
+export default ({ releases, releasesLoading, releasesFetchFailed, selectedReleaseIdx, onSelectRelease }) => {
   if (releasesLoading)
     return (
       <p className="release-view detail__title"> Loading releases...</p>
@@ -18,7 +18,7 @@ const EntryReleases = ({ releases, releasesLoading, releasesFetchFailed, selecte
 
   return (
     <div className="release-view">
-      <div className="detail__title"> {releases.length > 1 ? `${releases.length} releases in the collection` : "1 release in the collection"} </div>
+      <div className="detail__title"> {releases.length > 1 ? `${releases.length} releases` : "1 release"} in the collection </div>
       <ul>
         {releases.map((r, idx) =>
           <Release key={r.id} release={r} selected={selectedReleaseIdx === idx} onSelect={() => onSelectRelease(idx)} />
@@ -27,6 +27,4 @@ const EntryReleases = ({ releases, releasesLoading, releasesFetchFailed, selecte
     </div>
   )
 }
-
-export default EntryReleases
 

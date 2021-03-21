@@ -1,19 +1,10 @@
 import React, { forwardRef, useContext } from 'react'
 
-
 import { authContext } from "../../context/AuthContext"
 import Entry from './Entry'
 import '../../styles/Entries.css'
 
-const prevIndex = (arr, index) =>
-  index === null ? 0 :
-    index === 0 ? arr.length - 1 : index - 1
-
-const nextIndex = (arr, index) =>
-  index === null ? 0 :
-    index === arr.length ? 0 : index + 1
-
-const Entries = forwardRef(({ entries, selectedEntryIdx, onEntrySelect, entryFilterText, initialSelectedReleaseID, removeInitialSelectedReleaseID }, ref) => {
+export default forwardRef(({ entries, selectedEntryIdx, onEntrySelect, entryFilterText, initialSelectedReleaseID, removeInitialSelectedReleaseID }, ref) => {
   const { authenticated } = useContext(authContext)
 
   const filteredEntries = entryFilterText ?
@@ -49,4 +40,10 @@ const Entries = forwardRef(({ entries, selectedEntryIdx, onEntrySelect, entryFil
   )
 })
 
-export default Entries
+const prevIndex = (arr, index) =>
+  index === null ? 0 :
+    index === 0 ? arr.length - 1 : index - 1
+
+const nextIndex = (arr, index) =>
+  index === null ? 0 :
+    index === arr.length ? 0 : index + 1

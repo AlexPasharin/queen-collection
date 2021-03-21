@@ -9,7 +9,7 @@ import NonQueenEntries from "./components/Non-Queen/NonQueenEntries"
 // import Tracks from "./components/Tracks/Tracks.jsx"
 import { login as loginRequest } from './utils/apiCalls'
 
-const AppRoutes = () => {
+export default () => {
   const [loading, setLoading] = useState(true)
   const { login } = useContext(authContext)
 
@@ -30,7 +30,7 @@ const AppRoutes = () => {
 
         setLoading(false)
       })
-  })
+  }, [login])
 
   if (loading) {
     return <div className="app-loading">Loading...</div>
@@ -51,5 +51,3 @@ const AppRoutes = () => {
     </Router>
   )
 }
-
-export default AppRoutes

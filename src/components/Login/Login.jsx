@@ -5,7 +5,7 @@ import { login as loginRequest } from '../../utils/apiCalls'
 
 import "../../styles/Login.css"
 
-const Login = ({ history }) => {
+export default ({ history }) => {
   const [inputValue, setInputValue] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [loginError, setLoginError] = useState(false)
@@ -24,6 +24,7 @@ const Login = ({ history }) => {
   const onLogin = async e => {
     e.preventDefault()
 
+    setLoginError(false)
     setSubmitting(true)
     const { authenticated } = await loginRequest(inputValue)
 
@@ -40,11 +41,8 @@ const Login = ({ history }) => {
     <form className="login-input" onSubmit={onLogin}>
       <input autoFocus type="password" placeholder="Password" value={inputValue} onChange={onInputChange} />
       <button type="submit">Log in</button >
-      {!loginError && submitting && "Submitting..."}
+      {submitting && "Submitting..."}
       {loginError && "Failed to authorize"}
-
     </form>
   )
 }
-
-export default Login

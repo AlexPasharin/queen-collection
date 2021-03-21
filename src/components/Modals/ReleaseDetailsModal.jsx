@@ -6,15 +6,11 @@ import Modal from './Modal'
 
 import '../../styles/Modal.css'
 
-const ReleaseDetailsModal = ({ release, onClose, addRelease, updateRelease, initialMode, justAdded }) => {
+export default ({ release, onClose, addRelease, updateRelease, initialMode, successfullyAdded}) => {
   const [mode, setMode] = useState(initialMode)
 
   const onModalClose = () => {
-    let allowClosing = true
-
-    if (mode !== 'details') {
-      allowClosing = window.confirm("You are about to close modal. All form information will be lost.")
-    }
+    const allowClosing = mode === 'details' ? true : window.confirm("You are about to close modal. All form information will be lost.")
 
     if (allowClosing) {
       onClose()
@@ -24,16 +20,15 @@ const ReleaseDetailsModal = ({ release, onClose, addRelease, updateRelease, init
   return (
     <Modal onClose={onModalClose}>
       {mode === 'details' ?
-        <ReleaseDetails justAdded={justAdded} releaseData={release} onCopy={() => setMode('add')} onEdit={() => setMode('edit')} /> :
+        <ReleaseDetails justAdded={successfullyAdded} releaseData={release} onCopy={() => setMode('add')} onEdit={() => setMode('edit')} /> :
         <AddReleaseForm
           initialReleaseData={release}
           addRelease={addRelease}
           updateRelease={updateRelease}
           mode={mode}
+          closeModal={onClose}
         />
       }
     </Modal>
   )
 }
-
-export default ReleaseDetailsModal

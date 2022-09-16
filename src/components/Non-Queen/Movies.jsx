@@ -35,12 +35,17 @@ const NonQueenmovies = () => {
         <span className="non-queen-filter-text">Filter:</span>
         <input value={searchKey} onChange={onSearch} />
       </div>
-      <ul className="non-queen-movies">
+      <ul className="non-queen-entries">
         {filteredmovies.map((e) => (
           <li key={e.id}>
             <h2>{e.name}</h2>
             <div>Format: {e.format}</div>
             <a href={e.imdb_url}>{e.imdb_url}</a>
+            {e.comment && (
+              <div>
+                <i>{e.comment}</i>
+              </div>
+            )}
           </li>
         ))}
       </ul>
